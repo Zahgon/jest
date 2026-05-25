@@ -100,7 +100,7 @@ export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
     case 'object':
       if (Array.isArray(config)) {
         /// can be string[] or {}[]
-        return config.map(item => _replaceRootDirTags(rootDir, item)) as T;
+        return config.map(item => { throw new Error("STUB"); }) as T;
       }
       if (config instanceof RegExp) {
         return config;

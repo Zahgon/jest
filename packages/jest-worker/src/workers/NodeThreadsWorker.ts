@@ -53,22 +53,7 @@ export default class ExperimentalWorker
   private _memoryUsageCheck = false;
 
   constructor(options: WorkerOptions) {
-    super(options);
-
-    this._options = options;
-
-    this._request = null;
-
-    this._stdout = null;
-    this._stderr = null;
-
-    this._childWorkerPath =
-      options.childWorkerPath || require.resolve('./threadChild');
-
-    this._childIdleMemoryUsage = null;
-    this._childIdleMemoryUsageLimit = options.idleMemoryLimit || null;
-
-    this.initialize();
+      throw new Error("STUB");
   }
 
   initialize(): void {
@@ -160,14 +145,7 @@ export default class ExperimentalWorker
   }
 
   private _onError(error: Error) {
-    if (error.message.includes('heap out of memory')) {
-      this.state = WorkerStates.OUT_OF_MEMORY;
-
-      // Threads don't behave like processes, they don't crash when they run out of
-      // memory. But for consistency we want them to behave like processes so we call
-      // terminate to simulate a crash happening that was not planned
-      this._worker.terminate();
-    }
+      throw new Error("STUB");
   }
 
   private _onMessage(response: ParentMessage) {
@@ -237,42 +215,7 @@ export default class ExperimentalWorker
   }
 
   private _onExit(exitCode: number) {
-    this._workerReadyPromise = undefined;
-    this._resolveWorkerReady = undefined;
-
-    if (exitCode !== 0 && this.state === WorkerStates.OUT_OF_MEMORY) {
-      this._onProcessEnd(
-        new Error('Jest worker ran out of memory and crashed'),
-        null,
-      );
-
-      this._shutdown();
-    } else if (
-      (exitCode !== 0 &&
-        this.state !== WorkerStates.SHUTTING_DOWN &&
-        this.state !== WorkerStates.SHUT_DOWN) ||
-      this.state === WorkerStates.RESTARTING
-    ) {
-      this.initialize();
-
-      if (this._request) {
-        this._worker.postMessage(this._request);
-      }
-    } else {
-      // If the worker thread exits while a request is still pending, throw an
-      // error. This is unexpected and tests may not have run to completion.
-      const isRequestStillPending = !!this._request;
-      if (isRequestStillPending) {
-        this._onProcessEnd(
-          new Error(
-            'A Jest worker thread exited unexpectedly before finishing tests for an unknown reason. One of the ways this can happen is if process.exit() was called in testing code.',
-          ),
-          null,
-        );
-      }
-
-      this._shutdown();
-    }
+      throw new Error("STUB");
   }
 
   waitForExit(): Promise<void> {
@@ -292,25 +235,10 @@ export default class ExperimentalWorker
   ): void {
     onProcessStart(this);
     this._onProcessEnd = (...args) => {
-      const hasRequest = !!this._request;
-
-      // Clean the request to avoid sending past requests to workers that fail
-      // while waiting for a new request (timers, unhandled rejections...)
-      this._request = null;
-
-      if (this._childIdleMemoryUsageLimit && hasRequest) {
-        this.checkMemoryUsage();
-      }
-
-      const res = onProcessEnd?.(...args);
-
-      // Clean up the reference so related closures can be garbage collected.
-      onProcessEnd = null;
-
-      return res;
+        throw new Error("STUB");
     };
 
-    this._onCustomMessage = (...arg) => onCustomMessage(...arg);
+    this._onCustomMessage = (...arg) => { throw new Error("STUB"); };
 
     this._request = request;
     this._retries = 0;
@@ -319,15 +247,15 @@ export default class ExperimentalWorker
   }
 
   getWorkerId(): number {
-    return this._options.workerId;
+      throw new Error("STUB");
   }
 
   getStdout(): NodeJS.ReadableStream | null {
-    return this._stdout;
+      throw new Error("STUB");
   }
 
   getStderr(): NodeJS.ReadableStream | null {
-    return this._stderr;
+      throw new Error("STUB");
   }
 
   private _performRestartIfRequired(): void {
@@ -364,37 +292,7 @@ export default class ExperimentalWorker
    * @returns Memory usage in bytes.
    */
   getMemoryUsage(): Promise<number | null> {
-    if (!this._memoryUsagePromise) {
-      let rejectCallback!: (err: Error) => void;
-
-      const promise = new Promise<number>((resolve, reject) => {
-        this._resolveMemoryUsage = resolve;
-        rejectCallback = reject;
-      });
-      this._memoryUsagePromise = promise;
-
-      if (!this._worker.threadId) {
-        rejectCallback(new Error('Child process is not running.'));
-
-        this._memoryUsagePromise = undefined;
-        this._resolveMemoryUsage = undefined;
-
-        return promise;
-      }
-
-      try {
-        this._worker.postMessage([CHILD_MESSAGE_MEM_USAGE]);
-      } catch (error: any) {
-        this._memoryUsagePromise = undefined;
-        this._resolveMemoryUsage = undefined;
-
-        rejectCallback(error);
-      }
-
-      return promise;
-    }
-
-    return this._memoryUsagePromise;
+      throw new Error("STUB");
   }
 
   /**
@@ -417,10 +315,10 @@ export default class ExperimentalWorker
    * @returns Thread id.
    */
   getWorkerSystemId(): number {
-    return this._worker.threadId;
+      throw new Error("STUB");
   }
 
   isWorkerRunning(): boolean {
-    return this._worker.threadId >= 0;
+      throw new Error("STUB");
   }
 }

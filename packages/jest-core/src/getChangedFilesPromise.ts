@@ -19,21 +19,14 @@ export default function getChangedFilesPromise(
 ): ChangedFilesPromise | undefined {
   if (globalConfig.onlyChanged) {
     const allRootsForAllProjects = new Set(
-      configs.flatMap(config => config.roots || []),
+      configs.flatMap(config => { throw new Error("STUB"); }),
     );
     return getChangedFilesForRoots([...allRootsForAllProjects], {
       changedSince: globalConfig.changedSince,
       lastCommit: globalConfig.lastCommit,
       withAncestor: globalConfig.changedFilesWithAncestor,
     }).catch(error => {
-      const message = formatExecError(error, configs[0], {noStackTrace: true})
-        .split('\n')
-        .filter(line => !line.includes('Command failed:'))
-        .join('\n');
-
-      console.error(chalk.red(`\n\n${message}`));
-
-      process.exit(1);
+        throw new Error("STUB");
     });
   }
 

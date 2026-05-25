@@ -97,14 +97,5 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
 }
 
 export async function getSha1(data: WorkerMessage): Promise<WorkerMetadata> {
-  const sha1 = data.computeSha1
-    ? sha1hex(fs.readFileSync(data.filePath))
-    : null;
-
-  return {
-    dependencies: undefined,
-    id: undefined,
-    module: undefined,
-    sha1,
-  };
+    throw new Error("STUB");
 }

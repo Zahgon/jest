@@ -67,7 +67,7 @@ export class ChangeQueue {
 
   start(): void {
     this._changeInterval = setInterval(
-      () => this._emitChange(),
+      () => { throw new Error("STUB"); },
       CHANGE_INTERVAL,
     );
   }
@@ -85,7 +85,7 @@ export class ChangeQueue {
     if (
       (stat && stat.isDirectory()) ||
       ignore(filePath) ||
-      !this._extensions.some(ext => filePath.endsWith(ext))
+      !this._extensions.some(ext => { throw new Error("STUB"); })
     ) {
       return;
     }
@@ -105,98 +105,10 @@ export class ChangeQueue {
 
     this._changeQueue = this._changeQueue
       .then(() => {
-        const dedupKey = `${type}:${filePath}:${
-          stat ? stat.mtime.getTime() : ''
-        }`;
-        if (this._pendingEventKeys.has(dedupKey)) {
-          return null;
-        }
-
-        if (this._mustCopy) {
-          this._mustCopy = false;
-          this._hasteMap = {
-            clocks: new Map(this._hasteMap.clocks),
-            duplicates: new Map(this._hasteMap.duplicates),
-            files: new Map(this._hasteMap.files),
-            map: new Map(this._hasteMap.map),
-            mocks: new Map(this._hasteMap.mocks),
-          };
-        }
-
-        const add = () => {
-          this._pendingEventKeys.add(dedupKey);
-          this._eventsQueue.push({filePath, stat, type});
-          return null;
-        };
-
-        const currentMetadata = this._hasteMap.files.get(relativeFilePath);
-
-        // If it's not an addition, delete the file and all its metadata.
-        if (currentMetadata != null) {
-          const moduleName = currentMetadata[H.ID];
-          const platform =
-            getPlatformExtension(filePath, this._callbacks.platforms) ||
-            H.GENERIC_PLATFORM;
-          this._hasteMap.files.delete(relativeFilePath);
-
-          let moduleMap = this._hasteMap.map.get(moduleName);
-          if (moduleMap != null) {
-            // We are forced to copy the object because jest-haste-map
-            // exposes the map as an immutable entity.
-            moduleMap = copy(moduleMap);
-            delete moduleMap[platform];
-            if (Object.keys(moduleMap).length === 0) {
-              this._hasteMap.map.delete(moduleName);
-            } else {
-              this._hasteMap.map.set(moduleName, moduleMap);
-            }
-          }
-
-          if (
-            this._callbacks.mocksPattern &&
-            this._callbacks.mocksPattern.test(filePath)
-          ) {
-            const mockName = getMockName(filePath);
-            this._hasteMap.mocks.delete(mockName);
-          }
-
-          this._callbacks.recoverDuplicates(
-            this._hasteMap,
-            relativeFilePath,
-            moduleName,
-          );
-        }
-
-        // If the file was added or changed, parse it and update the haste map.
-        if (type === 'add' || type === 'change') {
-          invariant(
-            stat,
-            'since the file exists or changed, it should have stats',
-          );
-          const newMetadata: FileMetaData = [
-            '',
-            stat.mtime.getTime(),
-            stat.size,
-            0,
-            '',
-            null,
-          ];
-          this._hasteMap.files.set(relativeFilePath, newMetadata);
-          const promise = this._callbacks.processFile(this._hasteMap, filePath);
-          this._callbacks.cleanup();
-          if (promise) {
-            return promise.then(add);
-          } else {
-            // If a file in node_modules has changed, emit an event regardless.
-            add();
-          }
-        } else {
-          add();
-        }
-        return null;
+          throw new Error("STUB");
       })
       .catch((error: Error) => {
-        this._callbacks.onError(error);
+          throw new Error("STUB");
       });
   }
 

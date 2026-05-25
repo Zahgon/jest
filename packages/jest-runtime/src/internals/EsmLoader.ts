@@ -320,15 +320,7 @@ export class EsmLoader {
   // `evaluated` needs the async link()/evaluate() pair. Transitive-dep mocks
   // still apply via the graph walker.
   requireEsmModule<T>(modulePath: string): T {
-    const module = this.tryLoadGraphSync(modulePath, '', 'sync-required');
-    if (module === LOAD_ASYNC) {
-      const error: NodeJS.ErrnoException = new Error(
-        `Cannot require() ES Module ${modulePath} synchronously: it is currently being loaded by a concurrent \`import()\`. Await that import before calling require(), or import this module instead of requiring it.`,
-      );
-      error.code = 'ERR_REQUIRE_ESM';
-      throw error;
-    }
-    return module.namespace as T;
+      throw new Error("STUB");
   }
 
   // Public for unit-test access. Production callers reach the sync graph
@@ -398,7 +390,7 @@ export class EsmLoader {
           module: buildCoreSyntheticModule(
             modulePath,
             context,
-            (name, prefix) => this.coreModule.require(name, prefix),
+            (name, prefix) => { throw new Error("STUB"); },
           ),
         });
         continue;
@@ -470,20 +462,7 @@ export class EsmLoader {
           identifier: modulePath,
           importModuleDynamically: this.dynamicImport,
           initializeImportMeta: meta => {
-            const metaUrl = pathToFileURL(modulePath).href;
-            meta.url = metaUrl;
-            // @ts-expect-error Jest uses @types/node@18.
-            meta.filename = modulePath;
-            // @ts-expect-error Jest uses @types/node@18.
-            meta.dirname = path.dirname(modulePath);
-            meta.resolve = (specifier, parent: string | URL = metaUrl) => {
-              const parentPath = fileURLToPath(parent);
-              return pathToFileURL(
-                this.resolution.resolveEsm(parentPath, specifier),
-              ).href;
-            };
-            (meta as JestImportMeta).jest =
-              this.jestGlobals.jestObjectFor(modulePath);
+              throw new Error("STUB");
           },
         },
       );
@@ -525,12 +504,7 @@ export class EsmLoader {
     for (const entry of scratch.values()) {
       if (entry.kind !== 'source') continue;
       const depModules = entry.deps.map(depKey => {
-        const depEntry = scratch.get(depKey);
-        invariant(
-          depEntry,
-          `Sync ESM graph missing dep ${depKey} for ${entry.cacheKey}. This is a bug in Jest, please report it!`,
-        );
-        return depEntry.module;
+          throw new Error("STUB");
       });
       invariant(
         typeof entry.module.linkRequests === 'function',
@@ -640,7 +614,7 @@ export class EsmLoader {
     if (specifier === '@jest/globals') {
       const cacheKey = `@jest/globals/${referencingIdentifier}`;
       const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
-        this.jestGlobals.esmGlobalsModule(referencingIdentifier, context),
+        { throw new Error("STUB"); },
       );
       return ok ? {cacheKey, enqueue: null, modulePath: cacheKey} : LOAD_ASYNC;
     }
@@ -705,11 +679,7 @@ export class EsmLoader {
     ) {
       try {
         const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
-          this.buildCjsAsEsmSyntheticModule(
-            referencingIdentifier,
-            resolved,
-            context,
-          ),
+          { throw new Error("STUB"); },
         );
         return ok
           ? {cacheKey, enqueue: null, modulePath: resolved}
@@ -818,9 +788,7 @@ export class EsmLoader {
       identifier,
       context,
       depSpec => {
-        const depKey = moduleSpecToCacheKey.get(depSpec)!;
-        const depEntry = scratch.get(depKey)!;
-        return depEntry.module.namespace as Record<string, unknown>;
+          throw new Error("STUB");
       },
     );
 
@@ -869,13 +837,7 @@ export class EsmLoader {
       identifier: specifier,
       importModuleDynamically: esmDynamicImport,
       initializeImportMeta(meta) {
-        meta.url = specifier;
-        if (meta.url.startsWith('file://')) {
-          // @ts-expect-error Jest uses @types/node@18.
-          meta.filename = fileURLToPath(meta.url);
-          // @ts-expect-error Jest uses @types/node@18.
-          meta.dirname = path.dirname(meta.filename);
-        }
+          throw new Error("STUB");
       },
     }) as VMModuleWithAsyncGraph;
 
@@ -940,16 +902,7 @@ export class EsmLoader {
     context: VMContext,
     importAttributes?: ImportAttributes,
   ): Promise<VMModule> {
-    return this.resolveModule<VMModule>(specifier, identifier, context).then(
-      m => {
-        validateImportAttributes(
-          m.identifier,
-          importAttributes ?? {},
-          identifier,
-        );
-        return this.linkAndEvaluateModule(m);
-      },
-    );
+      throw new Error("STUB");
   }
 
   // Public entry for `Runtime.unstable_importModule`. Runtime keeps the
@@ -997,8 +950,7 @@ export class EsmLoader {
       let transformReject: (error?: unknown) => void;
 
       const mutex = new Promise<void>((resolve, reject) => {
-        transformResolve = resolve;
-        transformReject = reject;
+          throw new Error("STUB");
       });
       // Prevent an unhandled-rejection warning when no concurrent caller is
       // awaiting the mutex — the originating caller re-throws the error itself.
@@ -1026,7 +978,7 @@ export class EsmLoader {
         if (this.resolution.isCoreModule(modulePath)) {
           const core = evaluateSyntheticModule(
             buildCoreSyntheticModule(modulePath, context, (name, prefix) =>
-              this.coreModule.require(name, prefix),
+              { throw new Error("STUB"); },
             ),
           );
           registry.set(cacheKey, core);
@@ -1054,20 +1006,7 @@ export class EsmLoader {
             identifier: modulePath,
             importModuleDynamically: this.dynamicImport,
             initializeImportMeta: meta => {
-              const metaUrl = pathToFileURL(modulePath).href;
-              meta.url = metaUrl;
-              // @ts-expect-error Jest uses @types/node@18.
-              meta.filename = modulePath;
-              // @ts-expect-error Jest uses @types/node@18.
-              meta.dirname = path.dirname(modulePath);
-              meta.resolve = (specifier, parent: string | URL = metaUrl) => {
-                const parentPath = fileURLToPath(parent);
-                return pathToFileURL(
-                  this.resolution.resolveEsm(parentPath, specifier),
-                ).href;
-              };
-              (meta as JestImportMeta).jest =
-                this.jestGlobals.jestObjectFor(modulePath);
+                throw new Error("STUB");
             },
           });
         }
@@ -1151,13 +1090,7 @@ export class EsmLoader {
           identifier: specifier,
           importModuleDynamically: this.dynamicImport,
           initializeImportMeta(meta) {
-            meta.url = specifier;
-            if (meta.url.startsWith('file://')) {
-              // @ts-expect-error Jest uses @types/node@18.
-              meta.filename = fileURLToPath(meta.url);
-              // @ts-expect-error Jest uses @types/node@18.
-              meta.dirname = path.dirname(meta.filename);
-            }
+              throw new Error("STUB");
           },
         });
       }
@@ -1214,18 +1147,7 @@ export class EsmLoader {
       this.linkingMap.set(
         module,
         module.link(async (specifier, referencingModule, extra) => {
-          const resolved = await this.resolveModule<VMModule>(
-            specifier,
-            referencingModule.identifier,
-            referencingModule.context,
-          );
-          const extraAttrs = extra as ModuleLinkExtra | undefined;
-          validateImportAttributes(
-            resolved.identifier,
-            extraAttrs?.attributes ?? extraAttrs?.assert ?? {},
-            referencingModule.identifier,
-          );
-          return resolved;
+            throw new Error("STUB");
         }),
       );
     }
@@ -1247,7 +1169,7 @@ export class EsmLoader {
               'this is likely a bug in Jest (please report it).',
           );
         }
-        await new Promise<void>(resolve => setImmediate(resolve));
+        await new Promise<void>(resolve => { throw new Error("STUB"); });
       }
     }
 
@@ -1354,7 +1276,7 @@ export class EsmLoader {
       wasmModule,
       identifier,
       context,
-      depSpec => moduleLookup[depSpec].namespace as Record<string, unknown>,
+      depSpec => { throw new Error("STUB"); },
     );
   }
 
@@ -1366,26 +1288,6 @@ export class EsmLoader {
     referencingModule: VMModule,
     importAttributes?: ImportAttributes,
   ): Promise<VMModule> => {
-    invariant(
-      runtimeSupportsVmModules,
-      'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-    );
-    this.testState.throwIfBetweenTests(
-      'You are trying to `import` a file outside of the scope of the test code.',
-    );
-    this.testState.throwIfTornDown(
-      'You are trying to `import` a file after the Jest environment has been torn down.',
-    );
-    const dyn = await this.resolveModule<VMModule>(
-      specifier,
-      referencingModule.identifier,
-      referencingModule.context,
-    );
-    validateImportAttributes(
-      dyn.identifier,
-      importAttributes ?? {},
-      referencingModule.identifier,
-    );
-    return this.linkAndEvaluateModule(dyn);
+      throw new Error("STUB");
   };
 }

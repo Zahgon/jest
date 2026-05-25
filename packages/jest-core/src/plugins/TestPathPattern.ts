@@ -42,24 +42,7 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
-      const testPathPatternPrompt = new TestPathPatternPrompt(
-        this._stdout,
-        this._prompt,
-      );
-
-      testPathPatternPrompt.run(
-        (value: string) => {
-          updateConfigAndRun({
-            mode: 'watch',
-            testPathPatterns: [value],
-          });
-          resolve();
-        },
-        reject,
-        {
-          header: activeFilters(globalConfig),
-        },
-      );
+        throw new Error("STUB");
     });
   }
 }

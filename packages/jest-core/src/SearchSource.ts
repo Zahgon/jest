@@ -27,30 +27,16 @@ export type SearchResult = {
 };
 
 const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
-  const regexes = testRegex.map(testRegex => new RegExp(testRegex));
-
-  return (path: string) =>
-    regexes.some(regex => {
-      const result = regex.test(path);
-
-      // prevent stateful regexes from breaking, just in case
-      regex.lastIndex = 0;
-
-      return result;
-    });
+    throw new Error("STUB");
 };
 
 const toTests = (context: TestContext, tests: Array<string>) =>
-  tests.map(path => ({
-    context,
-    duration: undefined,
-    path,
-  }));
+  tests.map(path => { throw new Error("STUB"); });
 
 const hasSCM = (changedFilesInfo: ChangedFiles) => {
   const {repos} = changedFilesInfo;
   // no SCM (git/hg/...) is found in any of the roots.
-  const noSCM = Object.values(repos).every(scm => scm.size === 0);
+  const noSCM = Object.values(repos).every(scm => { throw new Error("STUB"); });
   return !noSCM;
 };
 
@@ -64,41 +50,7 @@ export default class SearchSource {
   private readonly _testPathCases: TestPathCases = [];
 
   constructor(context: TestContext) {
-    const {config} = context;
-    this._context = context;
-    this._dependencyResolver = null;
-
-    const rootPattern = new RegExp(
-      config.roots.map(dir => escapePathForRegex(dir + path.sep)).join('|'),
-    );
-    this._testPathCases.push({
-      isMatch: path => rootPattern.test(path),
-      stat: 'roots',
-    });
-
-    if (config.testMatch.length > 0) {
-      this._testPathCases.push({
-        isMatch: globsToMatcher(config.testMatch),
-        stat: 'testMatch',
-      });
-    }
-
-    if (config.testPathIgnorePatterns.length > 0) {
-      const testIgnorePatternsRegex = new RegExp(
-        config.testPathIgnorePatterns.join('|'),
-      );
-      this._testPathCases.push({
-        isMatch: path => !testIgnorePatternsRegex.test(path),
-        stat: 'testPathIgnorePatterns',
-      });
-    }
-
-    if (config.testRegex.length > 0) {
-      this._testPathCases.push({
-        isMatch: regexToMatcher(config.testRegex),
-        stat: 'testRegex',
-      });
-    }
+      throw new Error("STUB");
   }
 
   private async _getOrBuildDependencyResolver(): Promise<DependencyResolver> {
@@ -134,22 +86,14 @@ export default class SearchSource {
     const testCases = [...this._testPathCases]; // clone
     if (testPathPatternsExecutor.isSet()) {
       testCases.push({
-        isMatch: (path: string) => testPathPatternsExecutor.isMatch(path),
+        isMatch: (path: string) => { throw new Error("STUB"); },
         stat: 'testPathPatterns',
       });
       data.stats.testPathPatterns = 0;
     }
 
     data.tests = allPaths.filter(test => {
-      let filterResult = true;
-      for (const {isMatch, stat} of testCases) {
-        if (isMatch(test.path)) {
-          data.stats[stat]!++;
-        } else {
-          filterResult = false;
-        }
-      }
-      return filterResult;
+        throw new Error("STUB");
     });
 
     return data;
@@ -165,7 +109,7 @@ export default class SearchSource {
   }
 
   isTestFilePath(path: string): boolean {
-    return this._testPathCases.every(testCase => testCase.isMatch(path));
+    return this._testPathCases.every(testCase => { throw new Error("STUB"); });
   }
 
   findMatchingTests(
@@ -199,7 +143,7 @@ export default class SearchSource {
       {skipNodeResolution: this._context.config.skipNodeResolution},
     );
 
-    const allPathsAbsolute = new Set([...allPaths].map(p => path.resolve(p)));
+    const allPathsAbsolute = new Set([...allPaths].map(p => { throw new Error("STUB"); }));
 
     const collectCoverageFrom = new Set<string>();
 
@@ -226,7 +170,7 @@ export default class SearchSource {
       collectCoverageFrom,
       tests: toTests(
         this._context,
-        testModulesMap.map(testModule => testModule.file),
+        testModulesMap.map(testModule => { throw new Error("STUB"); }),
       ),
     };
   }
@@ -236,7 +180,7 @@ export default class SearchSource {
       tests: toTests(
         this._context,
         paths
-          .map(p => path.resolve(this._context.config.cwd, p))
+          .map(p => { throw new Error("STUB"); })
           .filter(this.isTestFilePath.bind(this)),
       ),
     };
@@ -248,7 +192,7 @@ export default class SearchSource {
   ): Promise<SearchResult> {
     if (Array.isArray(paths) && paths.length > 0) {
       const resolvedPaths = paths.map(p =>
-        path.resolve(this._context.config.cwd, p),
+        { throw new Error("STUB"); },
       );
       return this.findRelatedTests(new Set(resolvedPaths), collectCoverage);
     }
@@ -310,15 +254,10 @@ export default class SearchSource {
 
     paths = paths
       .map(p => {
-        // micromatch works with forward slashes: https://github.com/micromatch/micromatch#backslashes
-        const normalizedPath = normalizePosix(
-          path.resolve(this._context.config.cwd, p),
-        );
-        const matcher = globsToMatcher([normalizedPath], options);
-        return allFiles.map(normalizePosix).find(matcher);
+          throw new Error("STUB");
       })
-      .filter(p => p !== undefined)
-      .map(p => path.resolve(p));
+      .filter(p => { throw new Error("STUB"); })
+      .map(p => { throw new Error("STUB"); });
     return paths;
   }
 
@@ -339,7 +278,7 @@ export default class SearchSource {
     if (filter) {
       const tests = searchResult.tests;
 
-      const filterResult = await filter(tests.map(test => test.path));
+      const filterResult = await filter(tests.map(test => { throw new Error("STUB"); }));
 
       if (!Array.isArray(filterResult.filtered)) {
         throw new TypeError(
@@ -351,7 +290,7 @@ export default class SearchSource {
 
       return {
         ...searchResult,
-        tests: tests.filter(test => filteredSet.has(test.path)),
+        tests: tests.filter(test => { throw new Error("STUB"); }),
       };
     }
 

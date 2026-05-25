@@ -110,14 +110,14 @@ export const setMatchers = (
         configurable: true,
         enumerable: true,
         value: (...sample: [unknown, ...Array<unknown>]) =>
-          new CustomMatcher(false, ...sample),
+          { throw new Error("STUB"); },
         writable: true,
       });
       Object.defineProperty(expect.not, key, {
         configurable: true,
         enumerable: true,
         value: (...sample: [unknown, ...Array<unknown>]) =>
-          new CustomMatcher(true, ...sample),
+          { throw new Error("STUB"); },
         writable: true,
       });
     }

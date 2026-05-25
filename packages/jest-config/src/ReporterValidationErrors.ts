@@ -62,13 +62,7 @@ export function validateReporters(
   reporterConfig: Array<Config.ReporterConfig | string>,
 ): boolean {
   return reporterConfig.every((reporter, index) => {
-    if (Array.isArray(reporter)) {
-      validateArrayReporter(reporter, index);
-    } else if (typeof reporter !== 'string') {
-      throw createReporterError(index, reporter);
-    }
-
-    return true;
+      throw new Error("STUB");
   });
 }
 

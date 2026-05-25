@@ -150,21 +150,7 @@ const indent = (
 
   return lines
     .map((line, index) => {
-      if (index === 0) {
-        // First line is either a 1-line snapshot or a blank line.
-        return line;
-      } else if (index === lines.length - 1) {
-        // The last line should be placed on the same level as the expect call.
-        return indentation.repeat(numIndents) + line;
-      } else {
-        // Do not indent empty lines.
-        if (line === '') {
-          return line;
-        }
-
-        // Not last line, indent one level deeper than expect call.
-        return indentation.repeat(numIndents + 1) + line;
-      }
+        throw new Error("STUB");
     })
     .join('\n');
 };
@@ -262,24 +248,8 @@ export const processInlineSnapshotsWithBabel = (
     // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
     sourceFileWithSnapshots: snapshots.reduceRight(
       (sourceSoFar, nextSnapshot) => {
-        const {node} = nextSnapshot;
-        if (
-          !node ||
-          typeof node.start !== 'number' ||
-          typeof node.end !== 'number'
-        ) {
-          throw new Error('Jest: no snapshot insert location found');
-        }
-
-        // A hack to prevent unexpected line breaks in the generated code
-        node.loc!.end.line = node.loc!.start.line;
-
-        return (
-          sourceSoFar.slice(0, node.start) +
-          generate(node, {retainLines: true}).code.trim() +
-          sourceSoFar.slice(node.end)
-        );
-      },
+            throw new Error("STUB");
+        },
       sourceFile,
     ),
   };
@@ -292,85 +262,19 @@ export const processPrettierAst = (
   keepNode?: boolean,
 ): void => {
   traverse(ast, (node: Node, ancestors: TraversalAncestors) => {
-    if (node.type !== 'CallExpression') return;
-
-    const {arguments: args, callee} = node;
-    if (
-      callee.type !== 'MemberExpression' ||
-      callee.property.type !== 'Identifier' ||
-      !snapshotMatcherNames.includes(callee.property.name) ||
-      !callee.loc ||
-      callee.computed
-    ) {
-      return;
-    }
-
-    let snapshotIndex: number | undefined;
-    let snapshot: string | undefined;
-    for (const [i, node] of args.entries()) {
-      if (node.type === 'TemplateLiteral') {
-        snapshotIndex = i;
-        snapshot = node.quasis[0].value.raw;
-      }
-    }
-    if (snapshot === undefined) {
-      return;
-    }
-
-    const parent = ancestors.at(-1)!.node;
-    const startColumn =
-      isAwaitExpression(parent) && parent.loc
-        ? parent.loc.start.column
-        : callee.loc.start.column;
-
-    const useSpaces = !options?.useTabs;
-    snapshot = indent(
-      snapshot,
-      Math.ceil(
-        useSpaces
-          ? startColumn / (options?.tabWidth ?? 1)
-          : // Each tab is 2 characters.
-            startColumn / 2,
-      ),
-      useSpaces ? ' '.repeat(options?.tabWidth ?? 1) : '\t',
-    );
-
-    if (keepNode) {
-      (args[snapshotIndex!] as TemplateLiteral).quasis[0].value.raw = snapshot;
-    } else {
-      const replacementNode = templateLiteral(
-        [
-          templateElement({
-            raw: snapshot,
-          }),
-        ],
-        [],
-      );
-      args[snapshotIndex!] = replacementNode;
-    }
+      throw new Error("STUB");
   });
 };
 
 const groupSnapshotsBy =
   (createKey: (inlineSnapshot: InlineSnapshot) => string) =>
   (snapshots: Array<InlineSnapshot>) =>
-    snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
-      (object, inlineSnapshot) => {
-        const key = createKey(inlineSnapshot);
-        return {
-          ...object,
-          [key]: [...(object[key] || []), inlineSnapshot],
-        };
-      },
-      {},
-    );
+    { throw new Error("STUB"); };
 
 const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
-  typeof line === 'number' && typeof column === 'number'
-    ? `${line}:${column - 1}`
-    : '',
+  { throw new Error("STUB"); },
 );
-export const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
+export const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => { throw new Error("STUB"); });
 
 const traverseAst = (
   snapshots: Array<InlineSnapshot>,
@@ -378,50 +282,10 @@ const traverseAst = (
   snapshotMatcherNames: Array<string>,
 ) => {
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
-  const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
+  const remainingSnapshots = new Set(snapshots.map(({snapshot}) => { throw new Error("STUB"); }));
 
   traverseFast(ast, (node: Node) => {
-    if (node.type !== 'CallExpression') return;
-
-    const {arguments: args, callee} = node;
-    if (
-      callee.type !== 'MemberExpression' ||
-      callee.property.type !== 'Identifier' ||
-      callee.property.loc == null
-    ) {
-      return;
-    }
-    const {line, column} = callee.property.loc.start;
-    const snapshotsForFrame = groupedSnapshots[`${line}:${column}`];
-    if (!snapshotsForFrame) {
-      return;
-    }
-    if (snapshotsForFrame.length > 1) {
-      throw new Error(
-        'Jest: Multiple inline snapshots for the same call are not supported.',
-      );
-    }
-    const inlineSnapshot = snapshotsForFrame[0];
-    inlineSnapshot.node = node;
-
-    snapshotMatcherNames.push(callee.property.name);
-
-    const snapshotIndex = args.findIndex(
-      ({type}) => type === 'TemplateLiteral' || type === 'StringLiteral',
-    );
-
-    const {snapshot} = inlineSnapshot;
-    remainingSnapshots.delete(snapshot);
-    const replacementNode = templateLiteral(
-      [templateElement({raw: escapeBacktickString(snapshot)})],
-      [],
-    );
-
-    if (snapshotIndex === -1) {
-      args.push(replacementNode);
-    } else {
-      args[snapshotIndex] = replacementNode;
-    }
+      throw new Error("STUB");
   });
 
   if (remainingSnapshots.size > 0) {

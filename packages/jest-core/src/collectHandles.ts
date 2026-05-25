@@ -37,7 +37,7 @@ function stackIsFromUser(stack: string) {
   return false;
 }
 
-const alwaysActive = () => true;
+const alwaysActive = () => { throw new Error("STUB"); };
 
 const hasWeakRef = typeof WeakRef === 'function';
 
@@ -68,8 +68,8 @@ export default function collectHandles(): HandleCollectionResult {
   >();
   const hook = asyncHooks.createHook({
     destroy(asyncId) {
-      activeHandles.delete(asyncId);
-    },
+          throw new Error("STUB");
+      },
     init: function initHook(
       asyncId,
       type,
@@ -77,91 +77,14 @@ export default function collectHandles(): HandleCollectionResult {
       // eslint-disable-next-line @typescript-eslint/no-empty-object-type
       resource: {} | NodeJS.Timeout,
     ) {
-      // Skip resources that should not generally prevent the process from
-      // exiting, not last a meaningfully long time, or otherwise shouldn't be
-      // tracked.
-      if (
-        [
-          'PROMISE',
-          'TIMERWRAP',
-          'ELDHISTOGRAM',
-          'PerformanceObserver',
-          'RANDOMBYTESREQUEST',
-          'DNSCHANNEL',
-          'ZLIB',
-          'SIGNREQUEST',
-          'TLSWRAP',
-          'TCPWRAP',
-        ].includes(type)
-      ) {
-        return;
-      }
-      const error = new ErrorWithStack(type, initHook, 100);
-      let fromUser = stackIsFromUser(error.stack || '');
-
-      // If the async resource was not directly created by user code, but was
-      // triggered by another async resource from user code, track it and use
-      // the original triggering resource's stack.
-      if (!fromUser) {
-        const triggeringHandle = activeHandles.get(triggerAsyncId);
-        if (triggeringHandle) {
-          fromUser = true;
-          error.stack = triggeringHandle.error.stack;
-        }
-      }
-
-      if (fromUser) {
-        let isActive: () => boolean;
-
-        // Handle that supports hasRef
-        if ('hasRef' in resource) {
-          if (hasWeakRef) {
-            const ref = new WeakRef(resource);
-            isActive = () => {
-              return ref.deref()?.hasRef() ?? false;
-            };
-          } else {
-            isActive = resource.hasRef.bind(resource);
-          }
-        } else {
-          // Handle that doesn't support hasRef
-          isActive = alwaysActive;
-        }
-
-        activeHandles.set(asyncId, {error, isActive});
-      }
+        throw new Error("STUB");
     },
   });
 
   hook.enable();
 
   return async () => {
-    // Wait briefly for any async resources that have been queued for
-    // destruction to actually be destroyed.
-    // For example, Node.js TCP Servers are not destroyed until *after* their
-    // `close` callback runs. If someone finishes a test from the `close`
-    // callback, we will not yet have seen the resource be destroyed here.
-    await asyncSleep(0);
-
-    if (activeHandles.size > 0) {
-      await asyncSleep(30);
-
-      if (activeHandles.size > 0) {
-        runGC();
-
-        await asyncSleep(0);
-      }
-    }
-
-    hook.disable();
-
-    // Get errors for every async resource still referenced at this moment
-    const result = [...activeHandles.values()]
-      .filter(({isActive}) => isActive())
-      .map(({error}) => error);
-
-    activeHandles.clear();
-    return result;
+      throw new Error("STUB");
   };
 }
 
@@ -207,6 +130,6 @@ export function formatHandleErrors(
   }
 
   return [...stacks.values()].map(({stack, names}) =>
-    stack.replace('%%OBJECT_NAME%%', [...names].join(',')),
+    { throw new Error("STUB"); },
   );
 }

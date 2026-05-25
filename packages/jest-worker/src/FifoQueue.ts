@@ -30,37 +30,11 @@ export default class FifoQueue implements TaskQueue {
   private readonly _sharedQueue = new InternalQueue<QueueChildMessage>();
 
   enqueue(task: QueueChildMessage, workerId?: number): void {
-    if (workerId == null) {
-      this._sharedQueue.enqueue(task);
-      return;
-    }
-
-    let workerQueue = this._workerQueues[workerId];
-    if (workerQueue == null) {
-      workerQueue = this._workerQueues[workerId] =
-        new InternalQueue<WorkerQueueValue>();
-    }
-
-    const sharedTop = this._sharedQueue.peekLast();
-    const item = {previousSharedTask: sharedTop, task};
-
-    workerQueue.enqueue(item);
+      throw new Error("STUB");
   }
 
   dequeue(workerId: number): QueueChildMessage | null {
-    const workerTop = this._workerQueues[workerId]?.peek();
-    const sharedTaskIsProcessed =
-      workerTop?.previousSharedTask?.request[1] ?? true;
-
-    // Process the top task from the shared queue if
-    // - there's no task in the worker specific queue or
-    // - if the non-worker-specific task after which this worker specific task
-    //   has been queued wasn't processed yet
-    if (workerTop != null && sharedTaskIsProcessed) {
-      return this._workerQueues[workerId]?.dequeue()?.task ?? null;
-    }
-
-    return this._sharedQueue.dequeue();
+      throw new Error("STUB");
   }
 }
 
@@ -77,37 +51,18 @@ class InternalQueue<TValue> {
   private _last: QueueItem<TValue> | null = null;
 
   enqueue(value: TValue): void {
-    const item = {next: null, value};
-
-    if (this._last == null) {
-      this._head = item;
-    } else {
-      this._last.next = item;
-    }
-
-    this._last = item;
+      throw new Error("STUB");
   }
 
   dequeue(): TValue | null {
-    if (this._head == null) {
-      return null;
-    }
-
-    const item = this._head;
-    this._head = item.next;
-
-    if (this._head == null) {
-      this._last = null;
-    }
-
-    return item.value;
+      throw new Error("STUB");
   }
 
   peek(): TValue | null {
-    return this._head?.value ?? null;
+      throw new Error("STUB");
   }
 
   peekLast(): TValue | null {
-    return this._last?.value ?? null;
+      throw new Error("STUB");
   }
 }

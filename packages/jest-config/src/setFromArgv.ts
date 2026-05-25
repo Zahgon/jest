@@ -16,42 +16,8 @@ export default function setFromArgv(
 ): Config.InitialOptions {
   const argvToOptions = Object.keys(argv).reduce(
     (options: Record<string, unknown>, key) => {
-      if (argv[key] === undefined || specialArgs.has(key)) {
-        return options;
-      }
-
-      switch (key) {
-        case 'coverage':
-          options.collectCoverage = argv[key];
-          break;
-        case 'json':
-          options.useStderr = argv[key];
-          break;
-        case 'watchAll':
-          options.watch = false;
-          options.watchAll = argv[key];
-          break;
-        case 'env':
-          options.testEnvironment = argv[key];
-          break;
-        case 'config':
-          break;
-        case 'coverageThreshold':
-        case 'globals':
-        case 'haste':
-        case 'moduleNameMapper':
-        case 'testEnvironmentOptions':
-        case 'transform':
-          const str = argv[key];
-          if (isJSONString(str)) {
-            options[key] = JSON.parse(str);
-          }
-          break;
-        default:
-          options[key] = argv[key];
-      }
-      return options;
-    },
+          throw new Error("STUB");
+      },
     {},
   );
 

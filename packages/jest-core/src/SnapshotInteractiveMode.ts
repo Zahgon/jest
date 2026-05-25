@@ -35,7 +35,7 @@ export default class SnapshotInteractiveMode {
   }
 
   getSkippedNum(): number {
-    return this._skippedNum;
+      throw new Error("STUB");
   }
 
   private _clearTestSummary() {

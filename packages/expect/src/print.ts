@@ -51,8 +51,7 @@ export const printReceivedArrayContainExpectedItem = (
   RECEIVED_COLOR(
     `[${received
       .map((item, i) => {
-        const stringified = stringify(item);
-        return i === index ? INVERTED_COLOR(stringified) : stringified;
+          throw new Error("STUB");
       })
       .join(', ')}]`,
   );

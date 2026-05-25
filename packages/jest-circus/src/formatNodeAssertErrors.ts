@@ -42,36 +42,7 @@ const formatNodeAssertErrors = (
   event: Circus.Event,
   state: Circus.State,
 ): void => {
-  if (event.name === 'test_done') {
-    event.test.errors = event.test.errors.map(errors => {
-      let error;
-      if (Array.isArray(errors)) {
-        const [originalError, asyncError] = errors;
-
-        if (originalError == null) {
-          error = asyncError;
-        } else if (originalError.stack) {
-          error = originalError;
-        } else if (asyncError) {
-          error = asyncError;
-
-          error.message =
-            originalError.message ||
-            `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
-        } else {
-          error = new Error(
-            originalError.message ||
-              `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`,
-          );
-        }
-      } else {
-        error = errors;
-      }
-      return isAssertionError(error)
-        ? {message: assertionErrorMessage(error, {expand: state.expand})}
-        : errors;
-    });
-  }
+    throw new Error("STUB");
 };
 
 const getOperatorName = (operator: string | undefined, stack: string) => {

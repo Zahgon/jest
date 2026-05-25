@@ -51,7 +51,7 @@ export const getObjectKeys = (object: object): Array<string | symbol> => {
   return [
     ...Object.keys(object),
     ...Object.getOwnPropertySymbols(object).filter(
-      s => Object.getOwnPropertyDescriptor(object, s)?.enumerable,
+      s => { throw new Error("STUB"); },
     ),
   ];
 };
@@ -124,7 +124,7 @@ export const getObjectSubset = (
     if (Array.isArray(subset) && subset.length === object.length) {
       // The map method returns correct subclass of subset.
       return subset.map((sub: any, i: number) =>
-        getObjectSubset(object[i], sub, customTesters),
+        { throw new Error("STUB"); },
       );
     }
   } else if (object instanceof Date) {
@@ -219,18 +219,12 @@ export const iterableEquality = (
   bStack.push(b);
 
   const iterableEqualityWithStack = (a: any, b: any) =>
-    iterableEquality(
-      a,
-      b,
-      [...filteredCustomTesters],
-      [...aStack],
-      [...bStack],
-    );
+    { throw new Error("STUB"); };
 
   // Replace any instance of iterableEquality with the new
   // iterableEqualityWithStack so we can do circular detection
   const filteredCustomTesters: Array<Tester> = [
-    ...customTesters.filter(t => t !== iterableEquality),
+    ...customTesters.filter(t => { throw new Error("STUB"); }),
     iterableEqualityWithStack,
   ];
 
@@ -355,8 +349,8 @@ const entries = (obj: any) => {
   if (!isObject(obj)) return [];
 
   const symbolProperties = Object.getOwnPropertySymbols(obj)
-    .filter(key => key !== Symbol.iterator)
-    .map(key => [key, obj[key]]);
+    .filter(key => { throw new Error("STUB"); })
+    .map(key => { throw new Error("STUB"); });
 
   return [...symbolProperties, ...Object.entries(obj)];
 };
@@ -376,47 +370,7 @@ export const subsetEquality = (
   subset: unknown,
   customTesters: Array<Tester> = [],
 ): boolean | undefined => {
-  const filteredCustomTesters = customTesters.filter(t => t !== subsetEquality);
-
-  // subsetEquality needs to keep track of the references
-  // it has already visited to avoid infinite loops in case
-  // there are circular references in the subset passed to it.
-  const subsetEqualityWithContext =
-    (seenReferences: WeakMap<object, boolean> = new WeakMap()) =>
-    (object: any, subset: any): boolean | undefined => {
-      if (!isObjectWithKeys(subset)) {
-        return undefined;
-      }
-
-      if (seenReferences.has(subset)) return undefined;
-      seenReferences.set(subset, true);
-
-      const matchResult = getObjectKeys(subset).every(key => {
-        if (isObjectWithKeys(subset[key])) {
-          if (seenReferences.has(subset[key])) {
-            return equals(object[key], subset[key], filteredCustomTesters);
-          }
-        }
-        const result =
-          object != null &&
-          hasPropertyInObject(object, key) &&
-          equals(object[key], subset[key], [
-            ...filteredCustomTesters,
-            subsetEqualityWithContext(seenReferences),
-          ]);
-        // The main goal of using seenReference is to avoid circular node on tree.
-        // It will only happen within a parent and its child, not a node and nodes next to it (same level)
-        // We should keep the reference for a parent and its child only
-        // Thus we should delete the reference immediately so that it doesn't interfere
-        // other nodes within the same level on tree.
-        seenReferences.delete(subset[key]);
-        return result;
-      });
-      seenReferences.delete(subset);
-      return matchResult;
-    };
-
-  return subsetEqualityWithContext()(object, subset);
+    throw new Error("STUB");
 };
 
 // Returns true if `fn` is a native function (its toString contains "[native code]").
@@ -429,69 +383,14 @@ function isNativeFunction(fn: unknown): boolean {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const typeEquality = (a: any, b: any): boolean | undefined => {
-  if (
-    a == null ||
-    b == null ||
-    a.constructor === b.constructor ||
-    // Since Jest globals are different from Node globals,
-    // constructors are different even between arrays when comparing properties of mock objects.
-    // Both of them should be able to compare correctly when they are array-to-array.
-    // https://github.com/jestjs/jest/issues/2549
-    (Array.isArray(a) && Array.isArray(b))
-  ) {
-    return undefined;
-  }
-
-  // structuredClone (and other cross-realm calls) return objects whose
-  // constructors come from a different VM context, so identity checks fail.
-  // Fall back to comparing constructor names for native built-ins only —
-  // user-defined classes still need identity equality.
-  // https://github.com/jestjs/jest/issues/14011
-  if (
-    a.constructor != null &&
-    b.constructor != null &&
-    a.constructor.name === b.constructor.name &&
-    isNativeFunction(a.constructor) &&
-    isNativeFunction(b.constructor)
-  ) {
-    return undefined;
-  }
-
-  return false;
+    throw new Error("STUB");
 };
 
 export const arrayBufferEquality = (
   a: unknown,
   b: unknown,
 ): boolean | undefined => {
-  let dataViewA = a;
-  let dataViewB = b;
-
-  if (isArrayBuffer(a) && isArrayBuffer(b)) {
-    dataViewA = new DataView(a);
-    dataViewB = new DataView(b);
-  } else if (ArrayBuffer.isView(a) && ArrayBuffer.isView(b)) {
-    dataViewA = new DataView(a.buffer, a.byteOffset, a.byteLength);
-    dataViewB = new DataView(b.buffer, b.byteOffset, b.byteLength);
-  }
-
-  if (!(dataViewA instanceof DataView && dataViewB instanceof DataView)) {
-    return undefined;
-  }
-
-  // Buffers are not equal when they do not have the same byte length
-  if (dataViewA.byteLength !== dataViewB.byteLength) {
-    return false;
-  }
-
-  // Check if every byte value is equal to each other
-  for (let i = 0; i < dataViewA.byteLength; i++) {
-    if (dataViewA.getUint8(i) !== dataViewB.getUint8(i)) {
-      return false;
-    }
-  }
-
-  return true;
+    throw new Error("STUB");
 };
 
 function isArrayBuffer(obj: unknown): obj is ArrayBuffer {
@@ -503,32 +402,14 @@ export const sparseArrayEquality = (
   b: unknown,
   customTesters: Array<Tester> = [],
 ): boolean | undefined => {
-  if (!Array.isArray(a) || !Array.isArray(b)) {
-    return undefined;
-  }
-
-  // A sparse array [, , 1] will have keys ["2"] whereas [undefined, undefined, 1] will have keys ["0", "1", "2"]
-  const aKeys = Object.keys(a);
-  const bKeys = Object.keys(b);
-  return (
-    equals(
-      a,
-      b,
-      customTesters.filter(t => t !== sparseArrayEquality),
-      true,
-    ) && equals(aKeys, bKeys)
-  );
+    throw new Error("STUB");
 };
 
 export const partition = <T>(
   items: Array<T>,
   predicate: (arg: T) => boolean,
 ): [Array<T>, Array<T>] => {
-  const result: [Array<T>, Array<T>] = [[], []];
-
-  for (const item of items) result[predicate(item) ? 0 : 1].push(item);
-
-  return result;
+    throw new Error("STUB");
 };
 
 export const pathAsArray = (propertyPath: string): Array<any> => {
@@ -548,8 +429,7 @@ export const pathAsArray = (propertyPath: string): Array<any> => {
   }
 
   propertyPath.replaceAll(pattern, match => {
-    properties.push(match);
-    return match;
+      throw new Error("STUB");
   });
 
   return properties;
@@ -568,12 +448,10 @@ export const isError = (value: unknown): value is Error => {
 };
 
 export function emptyObject(obj: unknown): boolean {
-  return obj && typeof obj === 'object' ? Object.keys(obj).length === 0 : false;
+    throw new Error("STUB");
 }
 
 const MULTILINE_REGEXP = /[\n\r]/;
 
 export const isOneline = (expected: unknown, received: unknown): boolean =>
-  typeof expected === 'string' &&
-  typeof received === 'string' &&
-  (!MULTILINE_REGEXP.test(expected) || !MULTILINE_REGEXP.test(received));
+  { throw new Error("STUB"); };

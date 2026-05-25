@@ -45,146 +45,30 @@ export default class Farm {
     method: string,
     ...args: Array<unknown>
   ): PromiseWithCustomMessage<unknown> {
-    const customMessageListeners = new Set<OnCustomMessage>();
-
-    const addCustomMessageListener = (listener: OnCustomMessage) => {
-      customMessageListeners.add(listener);
-      return () => {
-        customMessageListeners.delete(listener);
-      };
-    };
-
-    const onCustomMessage: OnCustomMessage = message => {
-      for (const listener of customMessageListeners) listener(message);
-    };
-
-    const promise: PromiseWithCustomMessage<unknown> = new Promise(
-      // Bind args to this function so it won't reference to the parent scope.
-      // This prevents a memory leak in v8, because otherwise the function will
-      // retain args for the closure.
-      ((
-        args: Array<unknown>,
-        resolve: (value: unknown) => void,
-        reject: (reason?: any) => void,
-      ) => {
-        const computeWorkerKey = this._computeWorkerKey;
-        const request: ChildMessage = [CHILD_MESSAGE_CALL, false, method, args];
-
-        let worker: WorkerInterface | null = null;
-        let hash: string | null = null;
-
-        if (computeWorkerKey) {
-          hash = computeWorkerKey.call(this, method, ...args);
-          worker = hash == null ? null : this._cacheKeys[hash];
-        }
-
-        const onStart: OnStart = (worker: WorkerInterface) => {
-          if (hash != null) {
-            this._cacheKeys[hash] = worker;
-          }
-        };
-
-        const onEnd: OnEnd = (error: Error | null, result: unknown) => {
-          customMessageListeners.clear();
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        };
-
-        const task = {onCustomMessage, onEnd, onStart, request};
-
-        if (worker) {
-          this._taskQueue.enqueue(task, worker.getWorkerId());
-          this._process(worker.getWorkerId());
-        } else {
-          this._push(task);
-        }
-      }).bind(null, args),
-    );
-
-    promise.UNSTABLE_onCustomMessage = addCustomMessageListener;
-
-    return promise;
+      throw new Error("STUB");
   }
 
   private _process(workerId: number): Farm {
-    if (this._isLocked(workerId)) {
-      return this;
-    }
-
-    const task = this._taskQueue.dequeue(workerId);
-
-    if (!task) {
-      return this;
-    }
-
-    if (task.request[1]) {
-      throw new Error('Queue implementation returned processed task');
-    }
-
-    // Reference the task object outside so it won't be retained by onEnd,
-    // and other properties of the task object, such as task.request can be
-    // garbage collected.
-    let taskOnEnd: OnEnd | null = task.onEnd;
-    const onEnd: OnEnd = (error, result) => {
-      if (taskOnEnd) {
-        taskOnEnd(error, result);
-      }
-      taskOnEnd = null;
-
-      this._unlock(workerId);
-      this._process(workerId);
-    };
-
-    task.request[1] = true;
-
-    this._lock(workerId);
-    this._callback(
-      workerId,
-      task.request,
-      task.onStart,
-      onEnd,
-      task.onCustomMessage,
-    );
-
-    return this;
+      throw new Error("STUB");
   }
 
   private _push(task: QueueChildMessage): Farm {
-    this._taskQueue.enqueue(task);
-
-    const offset = this._getNextWorkerOffset();
-    for (let i = 0; i < this._numOfWorkers; i++) {
-      this._process((offset + i) % this._numOfWorkers);
-
-      if (task.request[1]) {
-        break;
-      }
-    }
-
-    return this;
+      throw new Error("STUB");
   }
 
   private _getNextWorkerOffset(): number {
-    switch (this._workerSchedulingPolicy) {
-      case 'in-order':
-        return 0;
-      case 'round-robin':
-        return this._offset++;
-    }
+      throw new Error("STUB");
   }
 
   private _lock(workerId: number): void {
-    this._locks[workerId] = true;
+      throw new Error("STUB");
   }
 
   private _unlock(workerId: number): void {
-    this._locks[workerId] = false;
+      throw new Error("STUB");
   }
 
   private _isLocked(workerId: number): boolean {
-    return this._locks[workerId];
+      throw new Error("STUB");
   }
 }

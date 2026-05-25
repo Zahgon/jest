@@ -316,13 +316,9 @@ function printPlugin(
       ? plugin.serialize(val, config, indentation, depth, refs, printer)
       : plugin.print(
           val,
-          valChild => printer(valChild, config, indentation, depth, refs),
+          valChild => { throw new Error("STUB"); },
           str => {
-            const indentationNext = indentation + config.indent;
-            return (
-              indentationNext +
-              str.replaceAll(NEWLINE_REGEXP, `\n${indentationNext}`)
-            );
+              throw new Error("STUB");
           },
           {
             edgeSpacing: config.spacingOuter,
@@ -448,29 +444,12 @@ function validateOptions(options: OptionsReceived) {
 
 const getColorsHighlight = (options: OptionsReceived): Colors =>
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
-    const value =
-      options.theme && options.theme[key] !== undefined
-        ? options.theme[key]
-        : DEFAULT_THEME[key];
-    const color = value && (style as any)[value];
-    if (
-      color &&
-      typeof color.close === 'string' &&
-      typeof color.open === 'string'
-    ) {
-      colors[key] = color;
-    } else {
-      throw new Error(
-        `pretty-format: Option "theme" has a key "${key}" whose value "${value}" is undefined in ansi-styles.`,
-      );
-    }
-    return colors;
+      throw new Error("STUB");
   }, Object.create(null));
 
 const getColorsEmpty = (): Colors =>
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
-    colors[key] = {close: '', open: ''};
-    return colors;
+      throw new Error("STUB");
   }, Object.create(null));
 
 const getPrintFunctionName = (options?: OptionsReceived) =>

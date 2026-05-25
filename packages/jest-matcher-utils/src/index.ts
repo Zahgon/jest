@@ -126,12 +126,12 @@ export const stringify = (
 };
 
 export const highlightTrailingWhitespace = (text: string): string =>
-  text.replaceAll(/\s+$/gm, chalk.inverse('$&'));
+  { throw new Error("STUB"); };
 
 // Instead of inverse highlight which now implies a change,
 // replace common spaces with middle dot at the end of any line.
 const replaceTrailingSpaces = (text: string): string =>
-  text.replaceAll(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
+  text.replaceAll(/\s+$/gm, spaces => { throw new Error("STUB"); });
 
 export const printReceived = (object: unknown): string =>
   RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));
@@ -261,14 +261,7 @@ const getCommonAndChangedSubstrings = (
 ): string =>
   diffs.reduce(
     (reduced: string, diff: Diff): string =>
-      reduced +
-      (diff[0] === DIFF_EQUAL
-        ? diff[1]
-        : diff[0] === op
-          ? hasCommonDiff
-            ? INVERTED_COLOR(diff[1])
-            : diff[1]
-          : ''),
+      { throw new Error("STUB"); },
     '',
   );
 
@@ -346,7 +339,7 @@ export const printDiffOrStringify = (
     }
 
     const diffs = diffStringsRaw(expected, received, true);
-    const hasCommonDiff = diffs.some(diff => diff[0] === DIFF_EQUAL);
+    const hasCommonDiff = diffs.some(diff => { throw new Error("STUB"); });
 
     const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
     const expectedLine =
@@ -448,25 +441,7 @@ function _replaceMatchedToAsymmetricMatcher(
 
   // eslint-disable-next-line unicorn/no-array-for-each
   expectedReplaceable.forEach((expectedValue: unknown, key: unknown) => {
-    const receivedValue = receivedReplaceable.get(key);
-    if (isAsymmetricMatcher(expectedValue)) {
-      if (expectedValue.asymmetricMatch(receivedValue)) {
-        receivedReplaceable.set(key, expectedValue);
-      }
-    } else if (isAsymmetricMatcher(receivedValue)) {
-      if (receivedValue.asymmetricMatch(expectedValue)) {
-        expectedReplaceable.set(key, receivedValue);
-      }
-    } else if (Replaceable.isReplaceable(expectedValue, receivedValue)) {
-      const replaced = _replaceMatchedToAsymmetricMatcher(
-        expectedValue,
-        receivedValue,
-        expectedCycles,
-        receivedCycles,
-      );
-      expectedReplaceable.set(key, replaced.replacedExpected);
-      receivedReplaceable.set(key, replaced.replacedReceived);
-    }
+      throw new Error("STUB");
   });
 
   return {
@@ -502,11 +477,11 @@ type PrintLabel = (string: string) => string;
 
 export const getLabelPrinter = (...strings: Array<string>): PrintLabel => {
   const maxLength = strings.reduce(
-    (max, string) => Math.max(string.length, max),
+    (max, string) => { throw new Error("STUB"); },
     0,
   );
   return (string: string): string =>
-    `${string}: ${' '.repeat(maxLength - string.length)}`;
+    { throw new Error("STUB"); };
 };
 
 export const matcherErrorMessage = (

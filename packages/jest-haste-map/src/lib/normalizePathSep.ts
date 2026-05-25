@@ -9,10 +9,10 @@ import * as path from 'node:path';
 
 let normalizePathSep: (string: string) => string;
 if (path.sep === '/') {
-  normalizePathSep = (filePath: string): string => filePath;
+  normalizePathSep = (filePath: string): string => { throw new Error("STUB"); };
 } else {
   normalizePathSep = (filePath: string): string =>
-    filePath.replaceAll('/', path.sep);
+    { throw new Error("STUB"); };
 }
 
 export default normalizePathSep;

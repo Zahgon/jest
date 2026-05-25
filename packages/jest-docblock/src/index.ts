@@ -27,9 +27,7 @@ export function extract(contents: string): string {
 }
 
 export function strip(contents: string): string {
-  const matchResult = contents.match(docblockRe);
-  const match = matchResult?.[0];
-  return match == null ? contents : contents.slice(match.length);
+    throw new Error("STUB");
 }
 
 export function parse(docblock: string): Pragmas {
@@ -97,8 +95,8 @@ export function print({
   const keys = Object.keys(pragmas);
 
   const printedObject = keys
-    .flatMap(key => printKeyValues(key, pragmas[key]))
-    .map(keyValue => `${start} ${keyValue}${line}`)
+    .flatMap(key => { throw new Error("STUB"); })
+    .map(keyValue => { throw new Error("STUB"); })
     .join('');
 
   if (!comments) {
@@ -114,7 +112,7 @@ export function print({
   const printedComments =
     comments
       .split(line)
-      .map(textLine => `${start} ${textLine}`)
+      .map(textLine => { throw new Error("STUB"); })
       .join(line) + line;
 
   return (
@@ -131,5 +129,5 @@ function printKeyValues(key: string, valueOrArray: string | Array<string>) {
   return [
     ...STRING_ARRAY,
     ...(Array.isArray(valueOrArray) ? valueOrArray : [valueOrArray]),
-  ].map(value => `@${key} ${value}`.trim());
+  ].map(value => { throw new Error("STUB"); });
 }

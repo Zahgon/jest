@@ -32,40 +32,14 @@ export default abstract class WorkerAbstract
   protected _resolveWorkerReady: (() => void) | undefined;
 
   public get state(): WorkerStates {
-    return this.#state;
+      throw new Error("STUB");
   }
   protected set state(value: WorkerStates) {
-    if (this.#state !== value) {
-      const oldState = this.#state;
-      this.#state = value;
-
-      this.emit(WorkerEvents.STATE_CHANGE, value, oldState);
-    }
+      throw new Error("STUB");
   }
 
   constructor(options: WorkerOptions) {
-    super();
-
-    if (typeof options.on === 'object') {
-      for (const [event, handlers] of Object.entries(options.on)) {
-        // Can't do Array.isArray on a ReadonlyArray<T>.
-        // https://github.com/microsoft/TypeScript/issues/17002
-        if (typeof handlers === 'function') {
-          super.on(event, handlers);
-        } else {
-          for (const handler of handlers) {
-            super.on(event, handler);
-          }
-        }
-      }
-    }
-
-    this._exitPromise = new Promise(resolve => {
-      this._resolveExitPromise = resolve;
-    });
-    this._exitPromise.then(() => {
-      this.state = WorkerStates.SHUT_DOWN;
-    });
+      throw new Error("STUB");
   }
 
   /**
@@ -76,44 +50,7 @@ export default abstract class WorkerAbstract
   public waitForWorkerReady(): Promise<void> {
     if (!this._workerReadyPromise) {
       this._workerReadyPromise = new Promise((resolve, reject) => {
-        let settled = false;
-        let to: NodeJS.Timeout | undefined;
-
-        switch (this.state) {
-          case WorkerStates.OUT_OF_MEMORY:
-          case WorkerStates.SHUTTING_DOWN:
-          case WorkerStates.SHUT_DOWN:
-            settled = true;
-            reject(
-              new Error(
-                `Worker state means it will never be ready: ${this.state}`,
-              ),
-            );
-            break;
-          case WorkerStates.STARTING:
-          case WorkerStates.RESTARTING:
-            this._resolveWorkerReady = () => {
-              settled = true;
-              resolve();
-
-              if (to) {
-                clearTimeout(to);
-              }
-            };
-            break;
-          case WorkerStates.OK:
-            settled = true;
-            resolve();
-            break;
-        }
-
-        if (!settled) {
-          to = setTimeout(() => {
-            if (!settled) {
-              reject(new Error('Timeout starting worker'));
-            }
-          }, 500);
-        }
+          throw new Error("STUB");
       });
     }
 
@@ -125,15 +62,7 @@ export default abstract class WorkerAbstract
    * killed off.
    */
   protected _shutdown(): void {
-    this.state = WorkerStates.SHUT_DOWN;
-
-    // End the permanent stream so the merged stream end too
-    if (this._fakeStream) {
-      this._fakeStream.end();
-      this._fakeStream = null;
-    }
-
-    this._resolveExitPromise();
+      throw new Error("STUB");
   }
 
   protected _getFakeStream(): PassThrough {

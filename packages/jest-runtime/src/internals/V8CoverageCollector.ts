@@ -73,25 +73,14 @@ export class V8CoverageCollector {
     }
     const sources = this.sources;
     return this.result
-      .filter(res => res.url.startsWith('file://'))
-      .map(res => ({...res, url: fileURLToPath(res.url)}))
+      .filter(res => { throw new Error("STUB"); })
+      .map(res => { throw new Error("STUB"); })
       .filter(
         res =>
           // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
-          res.url.startsWith(
-            this.coverageOptions.globalRootDir ?? this.config.rootDir,
-          ) &&
-          shouldInstrument(
-            res.url,
-            this.coverageOptions,
-            this.config,
-            /* loadedFilenames */ [...sources.keys()],
-          ),
+          { throw new Error("STUB"); },
       )
-      .map(result => ({
-        codeTransformResult: sources.get(result.url),
-        result,
-      }));
+      .map(result => { throw new Error("STUB"); });
   }
 
   reset(): void {

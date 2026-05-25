@@ -53,38 +53,19 @@ const storageGlobals = new Set(['localStorage', 'sessionStorage']);
 
 const nodeGlobals = new Map(
   (Object.getOwnPropertyNames(globalThis) as GlobalProperties)
-    .filter(global => !denyList.has(global as string))
+    .filter(global => { throw new Error("STUB"); })
     .map(nodeGlobalsKey => {
-      const descriptor = Object.getOwnPropertyDescriptor(
-        globalThis,
-        nodeGlobalsKey,
-      );
-
-      if (!descriptor) {
-        throw new Error(
-          `No property descriptor for ${nodeGlobalsKey}, this is a bug in Jest.`,
-        );
-      }
-
-      return [nodeGlobalsKey, descriptor];
+        throw new Error("STUB");
     }),
 );
 
 function isString(value: unknown): value is string {
-  return typeof value === 'string';
+    throw new Error("STUB");
 }
 
-const timerIdToRef = (id: number) => ({
-  id,
-  ref() {
-    return this;
-  },
-  unref() {
-    return this;
-  },
-});
+const timerIdToRef = (id: number) => { throw new Error("STUB"); };
 
-const timerRefToId = (timer: Timer): number | undefined => timer?.id;
+const timerRefToId = (timer: Timer): number | undefined => { throw new Error("STUB"); };
 
 export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
@@ -98,140 +79,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
-    const {projectConfig} = config;
-
-    const globalsCleanupMode = readGlobalsCleanupConfig(projectConfig);
-    initializeGarbageCollectionUtils(globalThis, globalsCleanupMode);
-
-    this._globalProxy = new GlobalProxy();
-    this.context = createContext(this._globalProxy.proxy());
-    const global = runInContext(
-      'this',
-      Object.assign(this.context, projectConfig.testEnvironmentOptions),
-    ) as Global.Global;
-    this.global = global;
-
-    const contextGlobals = new Set(
-      Object.getOwnPropertyNames(global) as GlobalProperties,
-    );
-    for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
-      if (!storageGlobals.has(nodeGlobalsKey as string)) {
-        protectProperties(globalThis[nodeGlobalsKey]);
-      }
-      if (!contextGlobals.has(nodeGlobalsKey)) {
-        if (storageGlobals.has(nodeGlobalsKey as string)) {
-          Object.defineProperty(global, nodeGlobalsKey, {
-            configurable: true,
-            enumerable: descriptor.enumerable,
-            get: () => globalThis[nodeGlobalsKey],
-            set(value) {
-              Object.defineProperty(global, nodeGlobalsKey, {
-                configurable: true,
-                enumerable: descriptor.enumerable,
-                value,
-                writable: true,
-              });
-            },
-          });
-        } else if (descriptor.configurable) {
-          Object.defineProperty(global, nodeGlobalsKey, {
-            configurable: true,
-            enumerable: descriptor.enumerable,
-            get() {
-              const value = globalThis[nodeGlobalsKey];
-
-              // override lazy getter
-              Object.defineProperty(global, nodeGlobalsKey, {
-                configurable: true,
-                enumerable: descriptor.enumerable,
-                value,
-                writable: true,
-              });
-
-              return value;
-            },
-            set(value: unknown) {
-              // override lazy getter
-              Object.defineProperty(global, nodeGlobalsKey, {
-                configurable: true,
-                enumerable: descriptor.enumerable,
-                value,
-                writable: true,
-              });
-            },
-          });
-        } else if ('value' in descriptor) {
-          Object.defineProperty(global, nodeGlobalsKey, {
-            configurable: false,
-            enumerable: descriptor.enumerable,
-            value: descriptor.value,
-            writable: descriptor.writable,
-          });
-        } else {
-          Object.defineProperty(global, nodeGlobalsKey, {
-            configurable: false,
-            enumerable: descriptor.enumerable,
-            get: descriptor.get,
-            set: descriptor.set,
-          });
-        }
-      }
-    }
-
-    global.global = global;
-    global.Buffer = Buffer;
-    global.ArrayBuffer = ArrayBuffer;
-    // TextEncoder (global or via 'util') references a Uint8Array constructor
-    // different than the global one used by users in tests. This makes sure the
-    // same constructor is referenced by both.
-    global.Uint8Array = Uint8Array;
-
-    installCommonGlobals(global, projectConfig.globals, globalsCleanupMode);
-
-    if ('asyncDispose' in Symbol && !('asyncDispose' in global.Symbol)) {
-      const globalSymbol = global.Symbol as unknown as SymbolConstructor;
-      // @ts-expect-error - it's readonly - but we have checked above that it's not there
-      globalSymbol.asyncDispose = globalSymbol.for('nodejs.asyncDispose');
-      // @ts-expect-error - it's readonly - but we have checked above that it's not there
-      globalSymbol.dispose = globalSymbol.for('nodejs.dispose');
-    }
-
-    // Node's error-message stack size is limited at 10, but it's pretty useful
-    // to see more than that when a test fails.
-    global.Error.stackTraceLimit = 100;
-
-    if ('customExportConditions' in projectConfig.testEnvironmentOptions) {
-      const {customExportConditions} = projectConfig.testEnvironmentOptions;
-      if (
-        Array.isArray(customExportConditions) &&
-        customExportConditions.every(isString)
-      ) {
-        this._configuredExportConditions = customExportConditions;
-      } else {
-        throw new Error(
-          'Custom export conditions specified but they are not an array of strings',
-        );
-      }
-    }
-
-    this.moduleMocker = new ModuleMocker(global);
-
-    this.fakeTimers = new LegacyFakeTimers({
-      config: projectConfig,
-      global,
-      moduleMocker: this.moduleMocker,
-      timerConfig: {
-        idToRef: timerIdToRef,
-        refToId: timerRefToId,
-      },
-    });
-
-    this.fakeTimersModern = new ModernFakeTimers({
-      config: projectConfig,
-      global,
-    });
-
-    this._globalProxy.envSetupCompleted();
+      throw new Error("STUB");
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -251,7 +99,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   }
 
   exportConditions(): Array<string> {
-    return this._configuredExportConditions ?? this.customExportConditions;
+      throw new Error("STUB");
   }
 
   getVmContext(): Context | null {
@@ -282,7 +130,7 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
   }
 
   proxy(): typeof globalThis {
-    return this.globalProxy;
+      throw new Error("STUB");
   }
 
   /**
@@ -290,7 +138,7 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
    * the global object from now on should be deleted at teardown.
    */
   envSetupCompleted(): void {
-    this.isEnvSetup = true;
+      throw new Error("STUB");
   }
 
   /**
@@ -300,10 +148,7 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
    */
   clear(): void {
     for (const {value} of [
-      ...[...this.propertyToValue.entries()].map(([property, value]) => ({
-        property,
-        value,
-      })),
+      ...[...this.propertyToValue.entries()].map(([property, value]) => { throw new Error("STUB"); }),
       ...this.leftovers,
     ]) {
       deleteProperties(value);
@@ -325,9 +170,7 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
       const originalSet = newAttributes.set;
       const register = this.register;
       newAttributes.set = value => {
-        originalSet(value);
-        const newValue = Reflect.get(target, property);
-        register(property, newValue);
+          throw new Error("STUB");
       };
     }
 
@@ -371,22 +214,5 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
 function readGlobalsCleanupConfig(
   projectConfig: Config.ProjectConfig,
 ): DeletionMode {
-  const rawConfig = projectConfig.testEnvironmentOptions.globalsCleanup;
-  const config = rawConfig?.toString()?.toLowerCase();
-  switch (config) {
-    case 'off':
-    case 'on':
-    case 'soft':
-      return config;
-    default: {
-      if (config !== undefined) {
-        logValidationWarning(
-          'testEnvironmentOptions.globalsCleanup',
-          `Unknown value given: ${rawConfig}`,
-          'Available options are: [on, soft, off]',
-        );
-      }
-      return 'soft';
-    }
-  }
+    throw new Error("STUB");
 }

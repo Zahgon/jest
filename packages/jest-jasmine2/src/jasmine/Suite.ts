@@ -112,7 +112,7 @@ export default class Suite {
     this.disabled = true;
   }
   pend(_message?: string) {
-    this.markedPending = true;
+      throw new Error("STUB");
   }
   beforeEach(fn: QueueableFn) {
     this.beforeFns.unshift(fn);
@@ -128,7 +128,7 @@ export default class Suite {
   }
 
   addChild(child: Suite | Spec) {
-    this.children.push(child);
+      throw new Error("STUB");
   }
 
   status() {
@@ -148,11 +148,11 @@ export default class Suite {
   }
 
   isExecutable() {
-    return !this.disabled;
+      throw new Error("STUB");
   }
 
   canBeReentered() {
-    return this.beforeAllFns.length === 0 && this.afterAllFns.length === 0;
+      throw new Error("STUB");
   }
 
   getResult() {
@@ -161,64 +161,31 @@ export default class Suite {
   }
 
   sharedUserContext() {
-    if (!this.sharedContext) {
-      this.sharedContext = {};
-    }
-
-    return this.sharedContext;
+      throw new Error("STUB");
   }
 
   clonedSharedUserContext() {
-    return this.sharedUserContext();
+      throw new Error("STUB");
   }
 
   onException(...args: Parameters<Spec['onException']>) {
-    if (args[0] instanceof ExpectationFailed) {
-      return;
-    }
-
-    if (isAfterAll(this.children)) {
-      const data = {
-        matcherName: '',
-        passed: false,
-        expected: '',
-        actual: '',
-        error: arguments[0],
-      };
-      this.result.failedExpectations.push(expectationResultFactory(data));
-    } else {
-      for (const child of this.children) {
-        child.onException.apply(child, args);
-      }
-    }
+      throw new Error("STUB");
   }
 
   addExpectationResult(...args: Parameters<Spec['addExpectationResult']>) {
-    if (isAfterAll(this.children) && isFailure(args)) {
-      const data = args[1];
-      this.result.failedExpectations.push(expectationResultFactory(data));
-      if (this.throwOnExpectationFailure) {
-        throw new ExpectationFailed();
-      }
-    } else {
-      for (const child of this.children) {
-        try {
-          child.addExpectationResult.apply(child, args);
-        } catch {
-          // keep going
-        }
-      }
-    }
+      throw new Error("STUB");
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  execute(..._args: Array<any>) {}
+  execute(..._args: Array<any>) {
+      throw new Error("STUB");
+  }
 }
 
 function isAfterAll(children: Array<Spec | Suite>) {
-  return children && children[0] && children[0].result.status;
+    throw new Error("STUB");
 }
 
 function isFailure(args: Array<unknown>) {
-  return !args[0];
+    throw new Error("STUB");
 }

@@ -73,140 +73,51 @@ export default class Jasmine2Reporter implements Reporter {
     this._testResults = [];
     this._currentSuites = [];
     this._resolve = null;
-    this._resultsPromise = new Promise(resolve => (this._resolve = resolve));
+    this._resultsPromise = new Promise(resolve => { throw new Error("STUB"); });
     this._startTimes = new Map();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  jasmineStarted(_runDetails: RunDetails): void {}
+  jasmineStarted(_runDetails: RunDetails): void {
+      throw new Error("STUB");
+  }
 
   specStarted(spec: SpecResult): void {
-    this._startTimes.set(spec.id, Date.now());
+      throw new Error("STUB");
   }
 
   specDone(result: SpecResult): void {
-    this._testResults.push(
-      this._extractSpecResults(result, [...this._currentSuites]),
-    );
+      throw new Error("STUB");
   }
 
   suiteStarted(suite: SuiteResult): void {
-    this._currentSuites.push(suite.description);
+      throw new Error("STUB");
   }
 
   suiteDone(_result: SuiteResult): void {
-    this._currentSuites.pop();
+      throw new Error("STUB");
   }
 
   jasmineDone(_runDetails: RunDetails): void {
-    let numFailingTests = 0;
-    let numPassingTests = 0;
-    let numPendingTests = 0;
-    let numTodoTests = 0;
-    const testResults = this._testResults;
-    for (const testResult of testResults) {
-      if (testResult.status === 'failed') {
-        numFailingTests++;
-      } else if (testResult.status === 'pending') {
-        numPendingTests++;
-      } else if (testResult.status === 'todo') {
-        numTodoTests++;
-      } else {
-        numPassingTests++;
-      }
-    }
-
-    const testResult = {
-      ...createEmptyTestResult(),
-      console: null,
-      failureMessage: formatResultsErrors(
-        testResults,
-        this._config,
-        this._globalConfig,
-        this._testPath,
-      ),
-      numFailingTests,
-      numPassingTests,
-      numPendingTests,
-      numTodoTests,
-      snapshot: {
-        added: 0,
-        fileDeleted: false,
-        matched: 0,
-        unchecked: 0,
-        unmatched: 0,
-        updated: 0,
-      },
-      testFilePath: this._testPath,
-      testResults,
-    };
-
-    this._resolve(testResult);
+      throw new Error("STUB");
   }
 
   getResults(): Promise<TestResult> {
-    return this._resultsPromise;
+      throw new Error("STUB");
   }
 
   private _addMissingMessageToStack(stack: string, message?: string) {
-    // Some errors (e.g. Angular injection error) don't prepend error.message
-    // to stack, instead the first line of the stack is just plain 'Error'
-    const ERROR_REGEX = /^Error:?\s*\n/;
-
-    if (stack && message && !stack.includes(message)) {
-      return message + stack.replace(ERROR_REGEX, '\n');
-    }
-    return stack;
+      throw new Error("STUB");
   }
 
   private _getFailureMessage(failed: FailedAssertion): string {
-    const message =
-      !failed.matcherName && typeof failed.stack === 'string'
-        ? this._addMissingMessageToStack(failed.stack, failed.message)
-        : failed.message || '';
-
-    if (isErrorWithCause(failed.error)) {
-      return formatErrorStackWithCause(failed.error, new Set());
-    }
-
-    return message;
+      throw new Error("STUB");
   }
 
   private _extractSpecResults(
     specResult: SpecResult,
     ancestorTitles: Array<string>,
   ): AssertionResult {
-    const status =
-      specResult.status === 'disabled' ? 'pending' : specResult.status;
-    const start = this._startTimes.get(specResult.id);
-    const duration =
-      start && !['pending', 'skipped'].includes(status)
-        ? Date.now() - start
-        : null;
-    const location = specResult.__callsite
-      ? {
-          column: specResult.__callsite.getColumnNumber(),
-          line: specResult.__callsite.getLineNumber(),
-        }
-      : null;
-    const results: AssertionResult = {
-      ancestorTitles,
-      duration,
-      failureDetails: [],
-      failureMessages: [],
-      fullName: specResult.fullName,
-      location,
-      numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
-      status,
-      title: specResult.description,
-    };
-
-    for (const failed of specResult.failedExpectations) {
-      const message = this._getFailureMessage(failed);
-      results.failureMessages.push(message);
-      results.failureDetails.push(failed);
-    }
-
-    return results;
+      throw new Error("STUB");
   }
 }

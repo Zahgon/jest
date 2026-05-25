@@ -31,26 +31,7 @@ async function hasNativeFindSupport(
 
   try {
     return await new Promise(resolve => {
-      // Check the find binary supports the non-POSIX -iname parameter wrapped in parens.
-      const args = [
-        '.',
-        '-type',
-        'f',
-        '(',
-        '-iname',
-        '*.ts',
-        '-o',
-        '-iname',
-        '*.js',
-        ')',
-      ];
-      const child = spawn('find', args, {cwd: __dirname});
-      child.on('error', () => {
-        resolve(false);
-      });
-      child.on('exit', code => {
-        resolve(code === 0);
-      });
+        throw new Error("STUB");
     });
   } catch {
     return false;
@@ -80,18 +61,13 @@ function find(
         enableSymlinks,
         exclude: ignore,
         onEntry: (kind, filePath, stats) => {
-          if (kind === 'file' && extSet.has(path.extname(filePath).slice(1))) {
-            result.push([filePath, stats.mtime.getTime(), stats.size]);
-          }
+            throw new Error("STUB");
         },
         root,
         statCache,
       },
       () => {
-        remaining--;
-        if (remaining === 0) {
-          callback(result);
-        }
+          throw new Error("STUB");
       },
     );
   }
@@ -132,31 +108,10 @@ function findNative(
   }
   child.stdout.setEncoding('utf8');
   const chunks: Array<string> = [];
-  child.stdout.on('data', data => chunks.push(data));
+  child.stdout.on('data', data => { throw new Error("STUB"); });
 
   child.stdout.on('close', () => {
-    const lines = chunks
-      .join('')
-      .trim()
-      .split('\n')
-      .filter(x => x && !ignore(x));
-    const result: Result = [];
-    let count = lines.length;
-    if (count) {
-      for (const path of lines) {
-        fs.stat(path, (err, stat) => {
-          // Filter out symlinks that describe directories
-          if (!err && stat && !stat.isDirectory()) {
-            result.push([path, stat.mtime.getTime(), stat.size]);
-          }
-          if (--count === 0) {
-            callback(result);
-          }
-        });
-      }
-    } else {
-      callback([]);
-    }
+      throw new Error("STUB");
   });
 }
 
@@ -177,39 +132,6 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
   const useNativeFind = await hasNativeFindSupport(forceNodeFilesystemAPI);
 
   return new Promise(resolve => {
-    const callback = (list: Result) => {
-      const files = new Map();
-      const removedFiles = new Map(data.files);
-      for (const fileData of list) {
-        const [filePath, mtime, size] = fileData;
-        const relativeFilePath = fastPath.relative(rootDir, filePath);
-        const existingFile = data.files.get(relativeFilePath);
-        if (existingFile && existingFile[H.MTIME] === mtime) {
-          files.set(relativeFilePath, existingFile);
-        } else {
-          // See ../constants.js; SHA-1 will always be null and fulfilled later.
-          files.set(relativeFilePath, ['', mtime, size, 0, '', null]);
-        }
-        removedFiles.delete(relativeFilePath);
-      }
-      data.files = files;
-
-      resolve({
-        hasteMap: data,
-        removedFiles,
-      });
-    };
-
-    if (useNativeFind) {
-      // TODO: consider making forceNodeFilesystemAPI the default. find(1) does
-      // not receive the ignore predicate, so it traverses ignored directories
-      // (e.g. node_modules, .git) in full and discards results afterward.
-      // find() via fdir prunes those subtrees at readdir time. For a typical
-      // project where node_modules dwarfs source files, the wasted traversal
-      // likely outweighs find(1)'s native speed advantage.
-      findNative(roots, extensions, ignore, enableSymlinks, callback);
-    } else {
-      find(roots, extensions, ignore, enableSymlinks, callback);
-    }
+      throw new Error("STUB");
   });
 }

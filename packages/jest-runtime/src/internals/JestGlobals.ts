@@ -168,29 +168,22 @@ export class JestGlobals {
       return jestObject;
     };
     const unmock = (moduleName: string) => {
-      this.mockState.unmockCjs(from, moduleName);
-      return jestObject;
+        throw new Error("STUB");
     };
     const unmockModule = (moduleName: string) => {
-      this.mockState.unmockEsm(from, moduleName);
-      return jestObject;
+        throw new Error("STUB");
     };
     const deepUnmock = (moduleName: string) => {
       this.mockState.deepUnmock(from, moduleName);
       return jestObject;
     };
     const mock: Jest['mock'] = (moduleName, mockFactory, options) => {
-      if (mockFactory !== undefined) {
-        return setMockFactory(moduleName, mockFactory, options);
-      }
-      this.mockState.markExplicitCjsMock(from, moduleName);
-      return jestObject;
+        throw new Error("STUB");
     };
     const onGenerateMock: Jest['onGenerateMock'] = <T>(
       cb: (moduleName: string, moduleMock: T) => T,
     ) => {
-      this.mockState.addOnGenerateMock(cb);
-      return jestObject;
+        throw new Error("STUB");
     };
     const setMockFactory = (
       moduleName: string,
@@ -205,14 +198,7 @@ export class JestGlobals {
       mockFactory,
       options,
     ) => {
-      if (typeof mockFactory !== 'function') {
-        throw new TypeError(
-          '`unstable_mockModule` must be passed a mock factory',
-        );
-      }
-
-      this.setModuleMockBridge(from, moduleName, mockFactory, options);
-      return jestObject;
+        throw new Error("STUB");
     };
     const clearAllMocks = () => {
       this.clearAllMocksBridge();
@@ -264,8 +250,7 @@ export class JestGlobals {
       return jestObject;
     };
     const isolateModules = (fn: () => void) => {
-      this.isolateModulesBridge(fn);
-      return jestObject;
+        throw new Error("STUB");
     };
     const isolateModulesAsync = this.isolateModulesAsyncBridge;
     const fn = this.moduleMocker.fn.bind(this.moduleMocker);
@@ -276,63 +261,32 @@ export class JestGlobals {
     );
 
     const setTimeout: Jest['setTimeout'] = timeout => {
-      this.environment.global[testTimeoutSymbol] = timeout;
-      return jestObject;
+        throw new Error("STUB");
     };
 
     const retryTimes: Jest['retryTimes'] = (numTestRetries, options) => {
-      this.environment.global[retryTimesSymbol] = numTestRetries;
-      this.environment.global[logErrorsBeforeRetrySymbol] =
-        options?.logErrorsBeforeRetry;
-      this.environment.global[waitBeforeRetrySymbol] = options?.waitBeforeRetry;
-      this.environment.global[retryImmediatelySymbol] =
-        options?.retryImmediately;
-
-      return jestObject;
+        throw new Error("STUB");
     };
 
     const jestObject: Jest = {
       advanceTimersByTime: msToRun =>
-        _getFakeTimers().advanceTimersByTime(msToRun),
+        { throw new Error("STUB"); },
       advanceTimersByTimeAsync: async msToRun => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this.environment.fakeTimersModern) {
-          await fakeTimers.advanceTimersByTimeAsync(msToRun);
-        } else {
-          throw new TypeError(
-            '`jest.advanceTimersByTimeAsync()` is not available when using legacy fake timers.',
-          );
-        }
+          throw new Error("STUB");
       },
       advanceTimersToNextFrame: () => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this.environment.fakeTimersModern) {
-          return fakeTimers.advanceTimersToNextFrame();
-        }
-        throw new TypeError(
-          '`jest.advanceTimersToNextFrame()` is not available when using legacy fake timers.',
-        );
+          throw new Error("STUB");
       },
       advanceTimersToNextTimer: steps =>
-        _getFakeTimers().advanceTimersToNextTimer(steps),
+        { throw new Error("STUB"); },
       advanceTimersToNextTimerAsync: async steps => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this.environment.fakeTimersModern) {
-          await fakeTimers.advanceTimersToNextTimerAsync(steps);
-        } else {
-          throw new TypeError(
-            '`jest.advanceTimersToNextTimerAsync()` is not available when using legacy fake timers.',
-          );
-        }
+          throw new Error("STUB");
       },
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,
-      clearAllTimers: () => _getFakeTimers().clearAllTimers(),
-      createMockFromModule: moduleName => this.generateMock(from, moduleName),
+      clearAllTimers: () => { throw new Error("STUB"); },
+      createMockFromModule: moduleName => { throw new Error("STUB"); },
       deepUnmock,
       disableAutomock,
       doMock: mock,
@@ -340,80 +294,40 @@ export class JestGlobals {
       enableAutomock,
       fn,
       getRealSystemTime: () => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this.environment.fakeTimersModern) {
-          return fakeTimers.getRealSystemTime();
-        } else {
-          throw new TypeError(
-            '`jest.getRealSystemTime()` is not available when using legacy fake timers.',
-          );
-        }
+          throw new Error("STUB");
       },
-      getSeed: () => this.globalConfig.seed,
-      getTimerCount: () => _getFakeTimers().getTimerCount(),
-      isEnvironmentTornDown: () => this.testState.isTornDown(),
+      getSeed: () => { throw new Error("STUB"); },
+      getTimerCount: () => { throw new Error("STUB"); },
+      isEnvironmentTornDown: () => { throw new Error("STUB"); },
       isMockFunction: this.moduleMocker.isMockFunction,
       isolateModules,
       isolateModulesAsync,
       mock,
       mocked,
-      now: () => _getFakeTimers().now(),
+      now: () => { throw new Error("STUB"); },
       onGenerateMock,
       replaceProperty,
-      requireActual: moduleName => this.requireActualBridge(from, moduleName),
-      requireMock: moduleName => this.requireMockBridge(from, moduleName),
+      requireActual: moduleName => { throw new Error("STUB"); },
+      requireMock: moduleName => { throw new Error("STUB"); },
       resetAllMocks,
       resetModules,
       restoreAllMocks,
       retryTimes,
       runAllImmediates: () => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this.environment.fakeTimers) {
-          fakeTimers.runAllImmediates();
-        } else {
-          throw new TypeError(
-            '`jest.runAllImmediates()` is only available when using legacy fake timers.',
-          );
-        }
+          throw new Error("STUB");
       },
-      runAllTicks: () => _getFakeTimers().runAllTicks(),
-      runAllTimers: () => _getFakeTimers().runAllTimers(),
+      runAllTicks: () => { throw new Error("STUB"); },
+      runAllTimers: () => { throw new Error("STUB"); },
       runAllTimersAsync: async () => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this.environment.fakeTimersModern) {
-          await fakeTimers.runAllTimersAsync();
-        } else {
-          throw new TypeError(
-            '`jest.runAllTimersAsync()` is not available when using legacy fake timers.',
-          );
-        }
+          throw new Error("STUB");
       },
-      runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
+      runOnlyPendingTimers: () => { throw new Error("STUB"); },
       runOnlyPendingTimersAsync: async () => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this.environment.fakeTimersModern) {
-          await fakeTimers.runOnlyPendingTimersAsync();
-        } else {
-          throw new TypeError(
-            '`jest.runOnlyPendingTimersAsync()` is not available when using legacy fake timers.',
-          );
-        }
+          throw new Error("STUB");
       },
-      setMock: (moduleName, mock) => setMockFactory(moduleName, () => mock),
+      setMock: (moduleName, mock) => { throw new Error("STUB"); },
       setSystemTime: now => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this.environment.fakeTimersModern) {
-          fakeTimers.setSystemTime(now);
-        } else {
-          throw new TypeError(
-            '`jest.setSystemTime()` is not available when using legacy fake timers.',
-          );
-        }
+          throw new Error("STUB");
       },
       setTimeout,
       setTimerTickMode: (
@@ -421,15 +335,7 @@ export class JestGlobals {
           | {mode: 'manual' | 'nextAsync'}
           | {mode: 'interval'; delta?: number},
       ) => {
-        const fakeTimers = _getFakeTimers();
-        if (fakeTimers === this.environment.fakeTimersModern) {
-          fakeTimers.setTimerTickMode(mode);
-        } else {
-          throw new TypeError(
-            '`jest.setTimerTickMode()` is not available when using legacy fake timers.',
-          );
-        }
-        return jestObject;
+          throw new Error("STUB");
       },
       spyOn,
       unmock,

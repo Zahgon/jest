@@ -24,28 +24,7 @@ export default class LeakDetector {
   private readonly _finalizationRegistry?: FinalizationRegistry<undefined>;
 
   constructor(value: unknown, opt?: LeakDetectorOptions) {
-    if (isPrimitive(value)) {
-      throw new TypeError(
-        [
-          'Primitives cannot leak memory.',
-          `You passed a ${typeof value}: <${prettyFormat(value)}>`,
-        ].join(' '),
-      );
-    }
-
-    // When `_finalizationRegistry` is GCed the callback we set will no longer be called,
-    this._finalizationRegistry = new FinalizationRegistry(() => {
-      this._isReferenceBeingHeld = false;
-    });
-    this._finalizationRegistry.register(value as object, undefined);
-
-    this._isReferenceBeingHeld = true;
-
-    this._shouldGenerateV8HeapSnapshot =
-      opt?.shouldGenerateV8HeapSnapshot ?? true;
-
-    // Ensure value is not leaked by the closure created by the "weak" callback.
-    value = null;
+      throw new Error("STUB");
   }
 
   async isLeaking(): Promise<boolean> {

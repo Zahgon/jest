@@ -671,9 +671,9 @@ const findSubsequences = (
       const {foundSubsequence, isCommon} = callbacks[0];
       callbacks[1] = {
         foundSubsequence: (nCommon, bCommon, aCommon) => {
-          foundSubsequence(nCommon, aCommon, bCommon);
-        },
-        isCommon: (bIndex, aIndex) => isCommon(aIndex, bIndex),
+              throw new Error("STUB");
+          },
+        isCommon: (bIndex, aIndex) => { throw new Error("STUB"); },
       };
     }
 
@@ -757,22 +757,11 @@ const findSubsequences = (
 };
 
 const validateLength = (name: string, arg: unknown) => {
-  if (typeof arg !== 'number') {
-    throw new TypeError(`${pkg}: ${name} typeof ${typeof arg} is not a number`);
-  }
-  if (!Number.isSafeInteger(arg)) {
-    throw new RangeError(`${pkg}: ${name} value ${arg} is not a safe integer`);
-  }
-  if (arg < 0) {
-    throw new RangeError(`${pkg}: ${name} value ${arg} is a negative integer`);
-  }
+    throw new Error("STUB");
 };
 
 const validateCallback = (name: string, arg: unknown) => {
-  const type = typeof arg;
-  if (type !== 'function') {
-    throw new TypeError(`${pkg}: ${name} typeof ${type} is not a function`);
-  }
+    throw new Error("STUB");
 };
 
 // Compare items in two sequences to find a longest common subsequence.
@@ -785,88 +774,5 @@ export default function diffSequence(
   isCommon: IsCommon,
   foundSubsequence: FoundSubsequence,
 ): void {
-  validateLength('aLength', aLength);
-  validateLength('bLength', bLength);
-  validateCallback('isCommon', isCommon);
-  validateCallback('foundSubsequence', foundSubsequence);
-
-  // Count common items from the start in the forward direction.
-  const nCommonF = countCommonItemsF(0, aLength, 0, bLength, isCommon);
-
-  if (nCommonF !== 0) {
-    foundSubsequence(nCommonF, 0, 0);
-  }
-
-  // Unless both sequences consist of common items only,
-  // find common items in the half-trimmed index intervals.
-  if (aLength !== nCommonF || bLength !== nCommonF) {
-    // Invariant: intervals do not have common items at the start.
-    // The start of an index interval is closed like array slice method.
-    const aStart = nCommonF;
-    const bStart = nCommonF;
-
-    // Count common items from the end in the reverse direction.
-    const nCommonR = countCommonItemsR(
-      aStart,
-      aLength - 1,
-      bStart,
-      bLength - 1,
-      isCommon,
-    );
-
-    // Invariant: intervals do not have common items at the end.
-    // The end of an index interval is open like array slice method.
-    const aEnd = aLength - nCommonR;
-    const bEnd = bLength - nCommonR;
-
-    // Unless one sequence consists of common items only,
-    // therefore the other trimmed index interval consists of changes only,
-    // find common items in the trimmed index intervals.
-    const nCommonFR = nCommonF + nCommonR;
-    if (aLength !== nCommonFR && bLength !== nCommonFR) {
-      const nChange = 0; // number of change items is not yet known
-      const transposed = false; // call the original unwrapped functions
-      const callbacks = [{foundSubsequence, isCommon}];
-
-      // Indexes in sequence a of last points in furthest reaching paths
-      // from outside the start at top left in the forward direction:
-      const aIndexesF = [NOT_YET_SET];
-      // from the end at bottom right in the reverse direction:
-      const aIndexesR = [NOT_YET_SET];
-
-      // Initialize one object as output of all calls to divide function.
-      const division = {
-        aCommonFollowing: NOT_YET_SET,
-        aCommonPreceding: NOT_YET_SET,
-        aEndPreceding: NOT_YET_SET,
-        aStartFollowing: NOT_YET_SET,
-        bCommonFollowing: NOT_YET_SET,
-        bCommonPreceding: NOT_YET_SET,
-        bEndPreceding: NOT_YET_SET,
-        bStartFollowing: NOT_YET_SET,
-        nChangeFollowing: NOT_YET_SET,
-        nChangePreceding: NOT_YET_SET,
-        nCommonFollowing: NOT_YET_SET,
-        nCommonPreceding: NOT_YET_SET,
-      };
-
-      // Find and return common subsequences in the trimmed index intervals.
-      findSubsequences(
-        nChange,
-        aStart,
-        aEnd,
-        bStart,
-        bEnd,
-        transposed,
-        callbacks,
-        aIndexesF,
-        aIndexesR,
-        division,
-      );
-    }
-
-    if (nCommonR !== 0) {
-      foundSubsequence(nCommonR, aEnd, bEnd);
-    }
-  }
+    throw new Error("STUB");
 }

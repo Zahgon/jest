@@ -231,59 +231,13 @@ export const createTransformer: TransformerCreator<
       );
     },
     async getCacheKeyAsync(sourceText, sourcePath, transformOptions) {
-      const babelOptions = await loadBabelConfigAsync(
-        transformOptions.config.cwd,
-        sourcePath,
-        mergeBabelTransformOptions(sourcePath, transformOptions),
-      );
-
-      return getCacheKeyFromConfig(
-        sourceText,
-        sourcePath,
-        babelOptions,
-        transformOptions,
-      );
+        throw new Error("STUB");
     },
     process(sourceText, sourcePath, transformOptions) {
-      const babelOptions = loadBabelOptions(
-        transformOptions.config.cwd,
-        sourcePath,
-        mergeBabelTransformOptions(sourcePath, transformOptions),
-        transformOptions,
-      );
-
-      const transformResult = babelTransform(sourceText, babelOptions);
-
-      if (transformResult) {
-        const {code, map} = transformResult;
-        if (typeof code === 'string') {
-          return {code, map};
-        }
-      }
-
-      return {code: sourceText};
+        throw new Error("STUB");
     },
     async processAsync(sourceText, sourcePath, transformOptions) {
-      const babelOptions = await loadBabelOptionsAsync(
-        transformOptions.config.cwd,
-        sourcePath,
-        mergeBabelTransformOptions(sourcePath, transformOptions),
-        transformOptions,
-      );
-
-      const transformResult = await babelTransformAsync(
-        sourceText,
-        babelOptions,
-      );
-
-      if (transformResult) {
-        const {code, map} = transformResult;
-        if (typeof code === 'string') {
-          return {code, map};
-        }
-      }
-
-      return {code: sourceText};
+        throw new Error("STUB");
     },
   };
 };

@@ -27,11 +27,7 @@ export async function crawl(
           `  ${retryError}`,
       );
       return nodeCrawl(crawlerOptions).catch(error => {
-        throw new Error(
-          'Crawler retry failed:\n' +
-            `  Original error: ${retryError.message}\n` +
-            `  Retry error: ${error.message}\n`,
-        );
+          throw new Error("STUB");
       });
     }
 

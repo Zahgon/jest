@@ -37,32 +37,25 @@ class JestHooks {
 
     this._subscriber = {
       onFileChange: fn => {
-        this._listeners.onFileChange.push(fn);
-      },
+            throw new Error("STUB");
+        },
       onTestRunComplete: fn => {
-        this._listeners.onTestRunComplete.push(fn);
+          throw new Error("STUB");
       },
       shouldRunTestSuite: fn => {
-        this._listeners.shouldRunTestSuite.push(fn);
+          throw new Error("STUB");
       },
     };
 
     this._emitter = {
       onFileChange: fs => {
-        for (const listener of this._listeners.onFileChange) listener(fs);
-      },
+            throw new Error("STUB");
+        },
       onTestRunComplete: results => {
-        for (const listener of this._listeners.onTestRunComplete)
-          listener(results);
+          throw new Error("STUB");
       },
       shouldRunTestSuite: async testSuiteInfo => {
-        const result = await Promise.all(
-          this._listeners.shouldRunTestSuite.map(listener =>
-            listener(testSuiteInfo),
-          ),
-        );
-
-        return result.every(Boolean);
+          throw new Error("STUB");
       },
     };
   }

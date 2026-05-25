@@ -12,20 +12,20 @@ import {dispatchSync} from './state';
 const uncaughtExceptionListener: NodeJS.UncaughtExceptionListener = (
   error: unknown,
 ) => {
-  dispatchSync({error, name: 'error'});
+    throw new Error("STUB");
 };
 
 const unhandledRejectionListener: NodeJS.UnhandledRejectionListener = (
   error: unknown,
   promise: Promise<unknown>,
 ) => {
-  dispatchSync({error, name: 'error', promise});
+    throw new Error("STUB");
 };
 
 const rejectionHandledListener: NodeJS.RejectionHandledListener = (
   promise: Promise<unknown>,
 ) => {
-  dispatchSync({name: 'error_handled', promise});
+    throw new Error("STUB");
 };
 
 export const injectGlobalErrorHandlers = (

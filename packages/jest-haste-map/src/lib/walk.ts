@@ -47,7 +47,7 @@ export function walk(
 
   // Wrap exclude to strip fdir's trailing path separator before delegating.
   const normalizedExclude = exclude
-    ? (p: string) => exclude(p.replace(TRAILING_SEP_RE, ''))
+    ? (p: string) => { throw new Error("STUB"); }
     : undefined;
 
   const builder = new Fdir({
@@ -56,14 +56,14 @@ export function walk(
     // fdir calls exclude(dirName, dirPath) — dirName is the basename and dirPath
     // is the full path, so dirName is unused (it's a subset of dirPath).
     exclude: normalizedExclude
-      ? (_dirName: string, dirPath: string) => normalizedExclude(dirPath)
+      ? (_dirName: string, dirPath: string) => { throw new Error("STUB"); }
       : undefined,
     excludeSymlinks: !enableSymlinks,
     // Also used as an output filter so ignored paths never enter the stat pool.
     // Applies to both file and dir entries (dirs also have a trailing sep, hence
     // the shared normalizedExclude that strips it). fdir includes entries where
     // the filter returns true, so we negate: include when NOT excluded.
-    filters: normalizedExclude ? [path => !normalizedExclude(path)] : [],
+    filters: normalizedExclude ? [path => { throw new Error("STUB"); }] : [],
     fs,
     includeBasePath: true,
     // resolveSymlinks: false — `fdir`'s resolveSymlinks calls realpath and emits
@@ -79,55 +79,6 @@ export function walk(
   const statFn = enableSymlinks ? fs.stat : fs.lstat;
 
   builder.crawl(root).withCallback((crawlErr, rawPaths) => {
-    // suppressErrors: true means crawlErr is always null, but keep the guard
-    // as a safety net in case fdir's default changes.
-    /* c8 ignore next 4 */
-    if (crawlErr != null) {
-      done(crawlErr);
-      return;
-    }
-
-    // Two-phase design (readdir-all via fdir, then stat-all here): fdir does not
-    // stat during the crawl. Pipelining lstat with readdir would not improve
-    // throughput on large repos anyway — both share libuv's thread pool, which
-    // the concurrent readdir calls already saturate.
-    let index = 0;
-    let inflight = 0;
-    // Prevent done() being called twice: once from the last stat callback and
-    // once from the post-while guard when concurrency > remaining paths.
-    let finished = false;
-
-    function pump() {
-      while (inflight < concurrency && index < rawPaths.length) {
-        const filePath = rawPaths[index++].replace(TRAILING_SEP_RE, '');
-        const cached = statCache?.get(filePath);
-        if (cached != null) {
-          onEntry(cached.isDirectory() ? 'dir' : 'file', filePath, cached);
-          continue;
-        }
-        inflight++;
-        statFn(filePath, (err, stats) => {
-          inflight--;
-          if (err) {
-            onError?.(err);
-          } else {
-            statCache?.set(filePath, stats);
-            onEntry(stats.isDirectory() ? 'dir' : 'file', filePath, stats);
-          }
-          if (index < rawPaths.length) {
-            pump();
-          } else if (inflight === 0 && !finished) {
-            finished = true;
-            done(null);
-          }
-        });
-      }
-      if (inflight === 0 && !finished) {
-        finished = true;
-        done(null);
-      }
-    }
-
-    pump();
+      throw new Error("STUB");
   });
 }

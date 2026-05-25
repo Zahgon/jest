@@ -15,54 +15,12 @@ const addSourceMapConsumer = (
   callsite: callsites.CallSite,
   tracer: TraceMap,
 ) => {
-  const getLineNumber = callsite.getLineNumber.bind(callsite);
-  const getColumnNumber = callsite.getColumnNumber.bind(callsite);
-  let position: ReturnType<typeof originalPositionFor> | null = null;
-
-  function getPosition() {
-    position ??= originalPositionFor(tracer, {
-      column: getColumnNumber() ?? -1,
-      line: getLineNumber() ?? -1,
-    });
-
-    return position;
-  }
-
-  Object.defineProperties(callsite, {
-    getColumnNumber: {
-      value() {
-        const value = getPosition().column;
-        return value == null || value === 0 ? getColumnNumber() : value;
-      },
-      writable: false,
-    },
-    getLineNumber: {
-      value() {
-        const value = getPosition().line;
-
-        return value == null || value === 0 ? getLineNumber() : value;
-      },
-      writable: false,
-    },
-  });
+    throw new Error("STUB");
 };
 
 export default function getCallsite(
   level: number,
   sourceMaps?: SourceMapRegistry | null,
 ): callsites.CallSite {
-  const levelAfterThisCall = level + 1;
-  const stack = callsites()[levelAfterThisCall];
-  const sourceMapFileName = sourceMaps?.get(stack.getFileName() ?? '');
-
-  if (sourceMapFileName != null && sourceMapFileName !== '') {
-    try {
-      const sourceMap = readFileSync(sourceMapFileName, 'utf8');
-      addSourceMapConsumer(stack, new TraceMap(sourceMap));
-    } catch {
-      // ignore
-    }
-  }
-
-  return stack;
+    throw new Error("STUB");
 }

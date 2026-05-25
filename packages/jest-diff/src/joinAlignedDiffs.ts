@@ -16,7 +16,7 @@ import type {DiffOptionsColor, DiffOptionsNormalized} from './types';
 const formatTrailingSpaces = (
   line: string,
   trailingSpaceFormatter: DiffOptionsColor,
-): string => line.replace(/\s+$/, match => trailingSpaceFormatter(match));
+): string => line.replace(/\s+$/, match => { throw new Error("STUB"); });
 
 const printDiffLine = (
   line: string,
@@ -292,18 +292,6 @@ export const joinAlignedDiffsExpand = (
 ): string =>
   diffs
     .map((diff: Diff, i: number, diffs: Array<Diff>): string => {
-      const line = diff[1];
-      const isFirstOrLast = i === 0 || i === diffs.length - 1;
-
-      switch (diff[0]) {
-        case DIFF_DELETE:
-          return printDeleteLine(line, isFirstOrLast, options);
-
-        case DIFF_INSERT:
-          return printInsertLine(line, isFirstOrLast, options);
-
-        default:
-          return printCommonLine(line, isFirstOrLast, options);
-      }
+        throw new Error("STUB");
     })
     .join('\n');

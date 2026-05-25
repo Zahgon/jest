@@ -35,20 +35,13 @@ export default class VerboseReporter extends DefaultReporter {
   protected override __wrapStdio(
     stream: NodeJS.WritableStream | WriteStream,
   ): void {
-    const write = stream.write.bind(stream);
-
-    stream.write = (chunk: string) => {
-      this.__clearStatus();
-      write(chunk);
-      this.__printStatus();
-      return true;
-    };
+      throw new Error("STUB");
   }
 
   static filterTestResults(
     testResults: Array<AssertionResult>,
   ): Array<AssertionResult> {
-    return testResults.filter(({status}) => status !== 'pending');
+      throw new Error("STUB");
   }
 
   static groupTestsBySuites(testResults: Array<AssertionResult>): Suite {
@@ -59,7 +52,7 @@ export default class VerboseReporter extends DefaultReporter {
       // Find the target suite for this test,
       // creating nested suites as necessary.
       for (const title of testResult.ancestorTitles) {
-        let matchingSuite = targetSuite.suites.find(s => s.title === title);
+        let matchingSuite = targetSuite.suites.find(s => { throw new Error("STUB"); });
         if (!matchingSuite) {
           matchingSuite = {suites: [], tests: [], title};
           targetSuite.suites.push(matchingSuite);
@@ -143,16 +136,8 @@ export default class VerboseReporter extends DefaultReporter {
         todo: Array<AssertionResult>;
       }>(
         (result, test) => {
-          if (test.status === 'pending') {
-            result.pending.push(test);
-          } else if (test.status === 'todo') {
-            result.todo.push(test);
-          } else {
-            this._logTest(test, indentLevel);
-          }
-
-          return result;
-        },
+              throw new Error("STUB");
+          },
         {pending: [], todo: []},
       );
 
@@ -169,11 +154,7 @@ export default class VerboseReporter extends DefaultReporter {
 
   private _logTodoOrPendingTest(indentLevel: number) {
     return (test: AssertionResult): void => {
-      const printedTestStatus =
-        test.status === 'pending' ? 'skipped' : test.status;
-      const icon = this._getIcon(test.status);
-      const text = chalk.dim(`${printedTestStatus} ${test.title}`);
-      this._logLine(`${icon} ${text}`, indentLevel);
+        throw new Error("STUB");
     };
   }
 

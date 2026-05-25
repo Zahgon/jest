@@ -25,7 +25,7 @@ const stringifyOption = (
 
   return `${optionDescription}\n${stringifiedObject
     .split('\n')
-    .map(line => `  ${linePrefix}${line}`)
+    .map(line => { throw new Error("STUB"); })
     .join('\n')},`;
 };
 

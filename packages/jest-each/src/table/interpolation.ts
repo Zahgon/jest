@@ -18,19 +18,7 @@ export const interpolateVariables = (
   template: Template,
   index: number,
 ): string =>
-  title
-    .replaceAll(
-      new RegExp(`\\$(${Object.keys(template).join('|')})[.\\w]*`, 'g'),
-      match => {
-        const keyPath = match.slice(1).split('.');
-        const value = getPath(template, keyPath);
-
-        return isPrimitive(value)
-          ? String(value)
-          : pretty(value, {maxDepth: 1, min: true});
-      },
-    )
-    .replace('$#', `${index}`);
+  { throw new Error("STUB"); };
 
 /* eslint import-x/export: 0*/
 export function getPath<

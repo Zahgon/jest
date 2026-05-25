@@ -18,7 +18,9 @@ import {
 
 /* istanbul ignore next */
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const emptyMethod = () => {};
+const emptyMethod = () => {
+    throw new Error("STUB");
+};
 
 export default class BaseWorkerPool {
   private readonly _stderr: NodeJS.ReadableStream;
@@ -28,55 +30,19 @@ export default class BaseWorkerPool {
   private readonly _workerPath: string;
 
   constructor(workerPath: string, options: WorkerPoolOptions) {
-    this._options = options;
-    this._workerPath = workerPath;
-    this._workers = Array.from({length: options.numWorkers});
-
-    const stdout = mergeStream();
-    const stderr = mergeStream();
-
-    const {forkOptions, maxRetries, resourceLimits, setupArgs} = options;
-
-    for (let i = 0; i < options.numWorkers; i++) {
-      const workerOptions: WorkerOptions = {
-        forkOptions,
-        idleMemoryLimit: this._options.idleMemoryLimit,
-        maxRetries,
-        resourceLimits,
-        setupArgs,
-        workerId: i,
-        workerPath,
-      };
-
-      const worker = this.createWorker(workerOptions);
-      const workerStdout = worker.getStdout();
-      const workerStderr = worker.getStderr();
-
-      if (workerStdout) {
-        stdout.add(workerStdout);
-      }
-
-      if (workerStderr) {
-        stderr.add(workerStderr);
-      }
-
-      this._workers[i] = worker;
-    }
-
-    this._stdout = stdout;
-    this._stderr = stderr;
+      throw new Error("STUB");
   }
 
   getStderr(): NodeJS.ReadableStream {
-    return this._stderr;
+      throw new Error("STUB");
   }
 
   getStdout(): NodeJS.ReadableStream {
-    return this._stdout;
+      throw new Error("STUB");
   }
 
   getWorkers(): Array<WorkerInterface> {
-    return this._workers;
+      throw new Error("STUB");
   }
 
   getWorkerById(workerId: number): WorkerInterface {
@@ -108,22 +74,7 @@ export default class BaseWorkerPool {
   async start(): Promise<void> {
     await Promise.all(
       this._workers.map(async worker => {
-        await worker.waitForWorkerReady();
-
-        await new Promise<void>((resolve, reject) => {
-          worker.send(
-            [CHILD_MESSAGE_CALL_SETUP],
-            emptyMethod,
-            error => {
-              if (error) {
-                reject(error);
-              } else {
-                resolve();
-              }
-            },
-            emptyMethod,
-          );
-        });
+          throw new Error("STUB");
       }),
     );
   }
@@ -132,33 +83,12 @@ export default class BaseWorkerPool {
     // We do not cache the request object here. If so, it would only be only
     // processed by one of the workers, and we want them all to close.
     const workerExitPromises = this._workers.map(async worker => {
-      worker.send(
-        [CHILD_MESSAGE_END, false],
-        emptyMethod,
-        emptyMethod,
-        emptyMethod,
-      );
-
-      // Schedule a force exit in case worker fails to exit gracefully so
-      // await worker.waitForExit() never takes longer than FORCE_EXIT_DELAY
-      let forceExited = false;
-      const forceExitTimeout = setTimeout(() => {
-        worker.forceExit();
-        forceExited = true;
-      }, this._options.workerGracefulExitTimeout ?? 500);
-
-      await worker.waitForExit();
-      // Worker ideally exited gracefully, don't send force exit then
-      clearTimeout(forceExitTimeout);
-
-      return forceExited;
+        throw new Error("STUB");
     });
 
     const workerExits = await Promise.all(workerExitPromises);
     return workerExits.reduce<PoolExitResult>(
-      (result, forceExited) => ({
-        forceExited: result.forceExited || forceExited,
-      }),
+      (result, forceExited) => { throw new Error("STUB"); },
       {forceExited: false},
     );
   }

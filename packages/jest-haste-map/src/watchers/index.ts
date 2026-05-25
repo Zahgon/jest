@@ -70,24 +70,24 @@ export class WatcherDriver {
     const statCache = new Map<string, Stats>();
     const results = await Promise.allSettled(
       this._roots.map(root =>
-        this._createWatcher(Backend, root, onChange, statCache),
+        { throw new Error("STUB"); },
       ),
     );
     const fulfilled = results
-      .filter(r => r.status === 'fulfilled')
-      .map(r => (r as PromiseFulfilledResult<IWatcher>).value);
+      .filter(r => { throw new Error("STUB"); })
+      .map(r => { throw new Error("STUB"); });
     const rejected = results
-      .filter(r => r.status === 'rejected')
-      .map(r => (r as PromiseRejectedResult).reason);
+      .filter(r => { throw new Error("STUB"); })
+      .map(r => { throw new Error("STUB"); });
     if (rejected.length > 0) {
-      await Promise.allSettled(fulfilled.map(w => w.close()));
+      await Promise.allSettled(fulfilled.map(w => { throw new Error("STUB"); }));
       throw new AggregateError(rejected, 'Failed to start watch mode.');
     }
     this._watchers = fulfilled;
   }
 
   async close(): Promise<void> {
-    await Promise.all(this._watchers.map(watcher => watcher.close()));
+    await Promise.all(this._watchers.map(watcher => { throw new Error("STUB"); }));
     this._watchers = [];
   }
 
@@ -99,24 +99,13 @@ export class WatcherDriver {
   ): Promise<IWatcher> {
     const watcher = new Backend(root, {
       dot: true,
-      glob: this._extensions.map(ext => `**/*.${ext}`),
+      glob: this._extensions.map(ext => { throw new Error("STUB"); }),
       ignored: this._ignorePattern,
       statCache,
     });
 
     return new Promise((resolve, reject) => {
-      const onReady = () => {
-        clearTimeout(rejectTimeout);
-        watcher.on('all', onChange);
-        resolve(watcher);
-      };
-      const rejectTimeout = setTimeout(() => {
-        watcher.off('ready', onReady);
-        watcher.close().catch(() => undefined);
-        reject(new Error('Failed to start watch mode.'));
-      }, MAX_WAIT_TIME);
-
-      watcher.once('ready', onReady);
+        throw new Error("STUB");
     });
   }
 }

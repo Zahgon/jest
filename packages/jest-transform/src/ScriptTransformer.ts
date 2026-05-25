@@ -94,21 +94,7 @@ class ScriptTransformer {
     private readonly _config: Config.ProjectConfig,
     private readonly _cacheFS: StringMap,
   ) {
-    const configString = stableStringify(this._config);
-    let projectCache = projectCaches.get(configString);
-
-    if (!projectCache) {
-      projectCache = {
-        configString,
-        ignorePatternsRegExp: calcIgnorePatternRegExp(this._config),
-        transformRegExp: calcTransformRegExp(this._config),
-        transformedFiles: new Map(),
-      };
-
-      projectCaches.set(configString, projectCache);
-    }
-
-    this._cache = projectCache;
+      throw new Error("STUB");
   }
 
   private _buildCacheKeyFromFileInfo(
@@ -277,30 +263,8 @@ class ScriptTransformer {
     await Promise.all(
       this._config.transform.map(
         async ([transformPattern, transformPath, transformerConfig], i) => {
-          let transformer: Transformer | TransformerFactory<Transformer> =
-            await requireOrImportModule(transformPath);
-
-          if (transformer == null) {
-            throw new Error(makeInvalidTransformerError(transformPath));
-          }
-          if (isTransformerFactory(transformer)) {
-            transformer =
-              await transformer.createTransformer(transformerConfig);
-          }
-          if (
-            typeof transformer.process !== 'function' &&
-            typeof transformer.processAsync !== 'function'
-          ) {
-            throw new TypeError(makeInvalidTransformerError(transformPath));
-          }
-          const res = {transformer, transformerConfig};
-          const transformCacheKey = this._buildTransformCacheKey(
-            this._cache.transformRegExp?.[i]?.[0].source ??
-              new RegExp(transformPattern).source,
-            transformPath,
-          );
-          this._transformCache.set(transformCacheKey, res);
-        },
+              throw new Error("STUB");
+          },
       ),
     );
 
@@ -787,27 +751,16 @@ class ScriptTransformer {
     const {applyInteropRequireDefault, ...transformOptions} = options;
     const revertHook = addHook(
       (code, filename) => {
-        try {
-          transforming = true;
-          return (
-            this.transformSource(filename, code, transformOptions).code || code
-          );
-        } finally {
-          transforming = false;
-        }
-      },
+            throw new Error("STUB");
+        },
       {
         // Exclude `mjs` extension when addHook because pirates don't support hijack es module
         exts: this._config.moduleFileExtensions
-          .filter(ext => ext !== 'mjs')
-          .map(ext => `.${ext}`),
+          .filter(ext => { throw new Error("STUB"); })
+          .map(ext => { throw new Error("STUB"); }),
         ignoreNodeModules: false,
         matcher: filename => {
-          if (transforming) {
-            // Don't transform any dependency required by the transformer itself
-            return false;
-          }
-          return this.shouldTransform(filename);
+            throw new Error("STUB");
         },
       },
     );
@@ -827,7 +780,7 @@ class ScriptTransformer {
 
       if (isPromise(cbResult)) {
         return await waitForPromiseWithCleanup(cbResult, revertHook).then(
-          () => module,
+          () => { throw new Error("STUB"); },
         );
       }
 
@@ -863,22 +816,7 @@ export async function createTranspilingRequire(config: Config.ProjectConfig) {
     resolverPath: string,
     applyInteropRequireDefault = false,
   ): Promise<TModuleType> {
-    const transpiledModule =
-      await transformer.requireAndTranspileModule<TModuleType>(
-        resolverPath,
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        () => {},
-        {
-          applyInteropRequireDefault,
-          instrument: false,
-          supportsDynamicImport: false, // this might be true, depending on node version.
-          supportsExportNamespaceFrom: false,
-          supportsStaticESM: false,
-          supportsTopLevelAwait: false,
-        },
-      );
-
-    return transpiledModule;
+      throw new Error("STUB");
   };
 }
 
@@ -1003,27 +941,11 @@ const getScriptCacheKey = (filename: string, instrument: boolean) => {
 };
 
 const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
-  if (
-    config.transformIgnorePatterns == null ||
-    config.transformIgnorePatterns.length === 0
-  ) {
-    return undefined;
-  }
-
-  return new RegExp(config.transformIgnorePatterns.join('|'));
+    throw new Error("STUB");
 };
 
 const calcTransformRegExp = (config: Config.ProjectConfig) => {
-  if (config.transform.length === 0) {
-    return undefined;
-  }
-
-  const transformRegexp: Array<[RegExp, string, Record<string, unknown>]> = [];
-  for (const item of config.transform) {
-    transformRegexp.push([new RegExp(item[0]), item[1], item[2]]);
-  }
-
-  return transformRegexp;
+    throw new Error("STUB");
 };
 
 function assertSyncTransformer(

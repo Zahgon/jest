@@ -17,7 +17,7 @@ export default function getProjectNamesMissingWarning(
   },
 ): string | undefined {
   const numberOfProjectsWithoutAName = projectConfigs.filter(
-    config => !getProjectDisplayName(config),
+    config => { throw new Error("STUB"); },
   ).length;
   if (numberOfProjectsWithoutAName === 0) {
     return undefined;

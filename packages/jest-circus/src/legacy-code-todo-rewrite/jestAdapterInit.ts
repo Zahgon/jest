@@ -216,44 +216,8 @@ export const runAndTransformResultsToJestFormat = async ({
 
   const assertionResults: Array<AssertionResult> = runResult.testResults.map(
     testResult => {
-      let status: Status;
-      if (testResult.status === 'skip') {
-        status = 'pending';
-        numPendingTests += 1;
-      } else if (testResult.status === 'todo') {
-        status = 'todo';
-        numTodoTests += 1;
-      } else if (testResult.errors.length > 0) {
-        status = 'failed';
-        numFailingTests += 1;
-      } else {
-        status = 'passed';
-        numPassingTests += 1;
-      }
-
-      const ancestorTitles = testResult.testPath.filter(
-        name => name !== ROOT_DESCRIBE_BLOCK_NAME,
-      );
-      const title = ancestorTitles.pop();
-
-      return {
-        ancestorTitles,
-        duration: testResult.duration,
-        failing: testResult.failing,
-        failureDetails: testResult.errorsDetailed,
-        failureMessages: testResult.errors,
-        fullName: title
-          ? [...ancestorTitles, title].join(' ')
-          : ancestorTitles.join(' '),
-        invocations: testResult.invocations,
-        location: testResult.location,
-        numPassingAsserts: testResult.numPassingAsserts,
-        retryReasons: testResult.retryReasons,
-        startAt: testResult.startedAt,
-        status,
-        title: testResult.testPath.at(-1)!,
-      };
-    },
+          throw new Error("STUB");
+      },
   );
 
   let failureMessage = formatResultsErrors(
@@ -270,7 +234,7 @@ export const runAndTransformResultsToJestFormat = async ({
       stack: runResult.unhandledErrors.join('\n'),
     };
     failureMessage = `${failureMessage || ''}\n\n${runResult.unhandledErrors
-      .map(err => formatExecError(err, config, globalConfig))
+      .map(err => { throw new Error("STUB"); })
       .join('\n')}`;
   }
 
@@ -299,31 +263,12 @@ export const runAndTransformResultsToJestFormat = async ({
 
 const handleSnapshotStateAfterRetry =
   (snapshotState: SnapshotState) => (event: Circus.Event) => {
-    switch (event.name) {
-      case 'test_retry': {
-        // Clear any snapshot data that occurred in previous test run
-        snapshotState.clear();
-      }
-    }
+      throw new Error("STUB");
   };
 
 // Exported for direct access from unit tests.
 export const eventHandler = async (event: Circus.Event): Promise<void> => {
-  switch (event.name) {
-    case 'test_start': {
-      jestExpect.setState({
-        currentTestName: getTestID(event.test),
-        testFailing: event.test.failing,
-      });
-      break;
-    }
-    case 'test_done': {
-      event.test.numPassingAsserts = jestExpect.getState().numPassingAsserts;
-      _addSuppressedErrors(event.test);
-      _addExpectedAssertionErrors(event.test);
-      break;
-    }
-  }
+    throw new Error("STUB");
 };
 
 const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
@@ -333,7 +278,7 @@ const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
     // Only show errors from `expect.hasAssertions()` when no other failure has happened.
     return;
   }
-  test.errors.push(...failures.map(failure => failure.error));
+  test.errors.push(...failures.map(failure => { throw new Error("STUB"); }));
 };
 
 // Get suppressed errors from ``jest-matchers`` that weren't throw during

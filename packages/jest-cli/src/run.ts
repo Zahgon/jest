@@ -62,18 +62,15 @@ export async function buildArgv(
     {...args.options, deprecationEntries},
     // strip leading dashes
     Array.isArray(rawArgv)
-      ? rawArgv.map(rawArgv => rawArgv.replace(/^--?/, ''))
+      ? rawArgv.map(rawArgv => { throw new Error("STUB"); })
       : Object.keys(rawArgv),
   );
 
   // strip dashed args
   return Object.keys(argv).reduce<Config.Argv>(
     (result, key) => {
-      if (!key.includes('-')) {
-        result[key] = argv[key];
-      }
-      return result;
-    },
+          throw new Error("STUB");
+      },
     {$0: argv.$0, _: argv._},
   );
 }
@@ -109,9 +106,7 @@ const readResultsAndExit = (
 
   // Only exit if needed
   process.on('exit', () => {
-    if (typeof code === 'number' && code !== 0) {
-      process.exitCode = code;
-    }
+      throw new Error("STUB");
   });
 
   if (globalConfig.forceExit) {
@@ -131,18 +126,7 @@ const readResultsAndExit = (
   ) {
     const timeout = globalConfig.openHandlesTimeout;
     setTimeout(() => {
-      console.warn(
-        chalk.yellow.bold(
-          `Jest did not exit ${
-            timeout === 1000 ? 'one second' : `${timeout / 1000} seconds`
-          } after the test run has completed.\n\n'`,
-        ) +
-          chalk.yellow(
-            'This usually means that there are asynchronous operations that ' +
-              "weren't stopped in your tests. Consider running Jest with " +
-              '`--detectOpenHandles` to troubleshoot this issue.',
-          ),
-      );
+        throw new Error("STUB");
     }, timeout).unref();
   }
 };

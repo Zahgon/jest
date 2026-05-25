@@ -30,9 +30,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 const defaultNow = (function (Date) {
-  return function () {
-    return Date.now();
-  };
+    throw new Error("STUB");
 })(Date);
 
 export default class Timer {
@@ -40,17 +38,6 @@ export default class Timer {
   elapsed: () => number;
 
   constructor(options?: {now?: () => number}) {
-    options = options || {};
-
-    const now = options.now || defaultNow;
-    let startTime: number;
-
-    this.start = function () {
-      startTime = now();
-    };
-
-    this.elapsed = function () {
-      return now() - startTime;
-    };
+      throw new Error("STUB");
   }
 }

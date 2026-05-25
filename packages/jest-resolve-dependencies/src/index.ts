@@ -42,63 +42,7 @@ export class DependencyResolver {
     }
 
     return dependencies.reduce<Array<string>>((acc, dependency) => {
-      if (this._resolver.isCoreModule(dependency)) {
-        return acc;
-      }
-
-      let resolvedDependency;
-      let resolvedMockDependency;
-      try {
-        resolvedDependency = this._resolver.resolveModule(
-          file,
-          dependency,
-          options ?? fallbackOptions,
-        );
-      } catch {
-        try {
-          resolvedDependency = this._resolver.getMockModule(
-            file,
-            dependency,
-            options ?? fallbackOptions,
-          );
-        } catch {
-          // leave resolvedDependency as undefined if nothing can be found
-        }
-      }
-
-      if (resolvedDependency == null) {
-        return acc;
-      }
-
-      acc.push(resolvedDependency);
-
-      // If we resolve a dependency, then look for a mock dependency
-      // of the same name in that dependency's directory.
-      try {
-        resolvedMockDependency = this._resolver.getMockModule(
-          resolvedDependency,
-          path.basename(dependency),
-          options ?? fallbackOptions,
-        );
-      } catch {
-        // leave resolvedMockDependency as undefined if nothing can be found
-      }
-
-      if (resolvedMockDependency != null) {
-        const dependencyMockDir = path.resolve(
-          path.dirname(resolvedDependency),
-          '__mocks__',
-        );
-
-        resolvedMockDependency = path.resolve(resolvedMockDependency);
-
-        // make sure mock is in the correct directory
-        if (dependencyMockDir === path.dirname(resolvedMockDependency)) {
-          acc.push(resolvedMockDependency);
-        }
-      }
-
-      return acc;
+        throw new Error("STUB");
     }, []);
   }
 
@@ -121,27 +65,13 @@ export class DependencyResolver {
       while (changed.size > 0) {
         changed = new Set(
           moduleMap.reduce<Array<string>>((acc, module) => {
-            if (
-              visitedModules.has(module.file) ||
-              !module.dependencies.some(dep => changed.has(dep))
-            ) {
-              return acc;
-            }
-
-            const file = module.file;
-            if (filter(file)) {
-              result.push(module);
-              related.delete(file);
-            }
-            visitedModules.add(file);
-            acc.push(file);
-            return acc;
+              throw new Error("STUB");
           }, []),
         );
       }
       return [
         ...result,
-        ...[...related].map(file => ({dependencies: [], file})),
+        ...[...related].map(file => { throw new Error("STUB"); }),
       ];
     };
 
@@ -174,7 +104,7 @@ export class DependencyResolver {
     options?: ResolveModuleConfig,
   ): Array<string> {
     return this.resolveInverseModuleMap(paths, filter, options).map(
-      module => module.file,
+      module => { throw new Error("STUB"); },
     );
   }
 }

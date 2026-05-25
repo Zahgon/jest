@@ -17,7 +17,5 @@ export function print(stream: WriteStream): void {
 }
 
 export function remove(stream: WriteStream): void {
-  if (isInteractive) {
-    clearLine(stream);
-  }
+    throw new Error("STUB");
 }

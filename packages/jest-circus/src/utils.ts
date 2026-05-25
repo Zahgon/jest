@@ -95,13 +95,7 @@ export const makeTest = (
 const hasEnabledTest = (describeBlock: Circus.DescribeBlock): boolean => {
   const {hasFocusedTests, testNamePattern} = getState();
   return describeBlock.children.some(child =>
-    child.type === 'describeBlock'
-      ? hasEnabledTest(child)
-      : !(
-          child.mode === 'skip' ||
-          (hasFocusedTests && child.mode !== 'only') ||
-          (testNamePattern && !testNamePattern.test(getTestID(child)))
-        ),
+    { throw new Error("STUB"); },
   );
 };
 
@@ -171,7 +165,7 @@ export const describeBlockHasTests = (
   describe: Circus.DescribeBlock,
 ): boolean =>
   describe.children.some(
-    child => child.type === 'test' || describeBlockHasTests(child),
+    child => { throw new Error("STUB"); },
   );
 
 const _makeTimeoutMessage = (
@@ -205,109 +199,9 @@ export const callAsyncCircusFn = (
   const doneCallback = takesDoneCallback(fn);
 
   return new Promise<void>((resolve, reject) => {
-    timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, isHook, doneCallback)),
-      timeout,
-    );
-
-    // If this fn accepts `done` callback we return a promise that fulfills as
-    // soon as `done` called.
-    if (doneCallback) {
-      let returnedValue: unknown = undefined;
-
-      const done = (reason?: Error | string): void => {
-        // We need to keep a stack here before the promise tick
-        const errorAtDone = new ErrorWithStack(undefined, done);
-
-        if (!completed && testOrHook.seenDone) {
-          errorAtDone.message =
-            'Expected done to be called once, but it was called multiple times.';
-
-          if (reason) {
-            errorAtDone.message += ` Reason: ${prettyFormat(reason, {
-              maxDepth: 3,
-            })}`;
-          }
-          reject(errorAtDone);
-          throw errorAtDone;
-        } else {
-          testOrHook.seenDone = true;
-        }
-
-        // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
-        Promise.resolve().then(() => {
-          if (returnedValue !== undefined) {
-            asyncError.message = dedent`
-              Test functions cannot both take a 'done' callback and return something. Either use a 'done' callback, or return a promise.
-              Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
-            `;
-            return reject(asyncError);
-          }
-
-          let errorAsErrorObject: Error;
-          if (checkIsError(reason)) {
-            errorAsErrorObject = reason;
-          } else {
-            errorAsErrorObject = errorAtDone;
-            errorAtDone.message = `Failed: ${prettyFormat(reason, {
-              maxDepth: 3,
-            })}`;
-          }
-
-          // Consider always throwing, regardless if `reason` is set or not
-          if (completed && reason) {
-            errorAsErrorObject.message = `Caught error after test environment was torn down\n\n${errorAsErrorObject.message}`;
-
-            throw errorAsErrorObject;
-          }
-
-          return reason ? reject(errorAsErrorObject) : resolve();
-        });
-      };
-
-      returnedValue = fn.call(testContext, done);
-
-      return;
-    }
-
-    let returnedValue: Global.TestReturnValue;
-    if (isGeneratorFunction(fn)) {
-      returnedValue = co.wrap(fn).call({});
-    } else {
-      try {
-        returnedValue = fn.call(testContext);
-      } catch (error) {
-        reject(error);
-        return;
-      }
-    }
-
-    if (isPromise(returnedValue)) {
-      returnedValue.then(() => resolve(), reject);
-      return;
-    }
-
-    if (!isHook && returnedValue !== undefined) {
-      reject(
-        new Error(
-          dedent`
-            test functions can only return Promise or undefined.
-            Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
-          `,
-        ),
-      );
-      return;
-    }
-
-    // Otherwise this test is synchronous, and if it didn't throw it means
-    // it passed.
-    resolve();
+      throw new Error("STUB");
   }).finally(() => {
-    completed = true;
-    // If timeout is not cleared/unrefed the node process won't exit until
-    // it's resolved.
-    timeoutID.unref?.();
-    clearTimeout(timeoutID);
+      throw new Error("STUB");
   });
 };
 
@@ -418,28 +312,7 @@ export const getTestID = (test: Circus.TestEntry): string => {
 const _getError = (
   errors?: Circus.Exception | [Circus.Exception | undefined, Circus.Exception],
 ): Error => {
-  let error;
-  let asyncError;
-
-  if (Array.isArray(errors)) {
-    error = errors[0];
-    asyncError = errors[1];
-  } else {
-    error = errors;
-    // eslint-disable-next-line unicorn/error-message
-    asyncError = new Error();
-  }
-
-  if (error && (typeof error.stack === 'string' || error.message)) {
-    return error;
-  }
-
-  if (asyncError) {
-    asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
-    return asyncError;
-  }
-
-  return new Error(`thrown: ${prettyFormat(error, {maxDepth: 3})}`);
+    throw new Error("STUB");
 };
 
 const isErrorOrStackWithCause = (
@@ -475,7 +348,7 @@ const formatErrorStackWithCause = (error: Error, seen: Set<Error>): string => {
 };
 
 const getErrorStack = (error: Error): string =>
-  formatErrorStackWithCause(error, new Set());
+  { throw new Error("STUB"); };
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
@@ -504,7 +377,7 @@ const resolveTestCaseStartInfo = (
   testNamesPath: Circus.TestNamesPath,
 ): TestDescription => {
   const ancestorTitles = testNamesPath.filter(
-    name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+    name => { throw new Error("STUB"); },
   );
   const fullName = ancestorTitles.join(' ');
   const title = testNamesPath.at(-1)!;

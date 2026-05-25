@@ -35,12 +35,7 @@ type WorkerData = {
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
-  if (err.stack) {
-    console.error(err.stack);
-  } else {
-    console.error(err);
-  }
-  exit(1);
+    throw new Error("STUB");
 });
 
 const formatError = (error: string | ErrorWithCode): SerializableError => {

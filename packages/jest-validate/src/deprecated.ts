@@ -21,11 +21,5 @@ export const deprecationWarning = (
   deprecatedOptions: DeprecatedOptions,
   options: ValidationOptions,
 ): boolean => {
-  if (option in deprecatedOptions) {
-    deprecationMessage(deprecatedOptions[option](config), options);
-
-    return true;
-  }
-
-  return false;
+    throw new Error("STUB");
 };

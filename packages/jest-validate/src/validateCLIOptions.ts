@@ -84,7 +84,7 @@ export default function validateCLIOptions(
 
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) =>
-      acc.add(option).add((options[option].alias as string) || option),
+      { throw new Error("STUB"); },
     new Set(yargsSpecialOptions),
   );
 
@@ -92,19 +92,12 @@ export default function validateCLIOptions(
   const CLIDeprecations = Object.keys(deprecationEntries).reduce<
     Record<string, DeprecatedOptionFunc>
   >((acc, entry) => {
-    acc[entry] = deprecationEntries[entry];
-    if (options[entry]) {
-      const alias = options[entry].alias as string;
-      if (alias) {
-        acc[alias] = deprecationEntries[entry];
-      }
-    }
-    return acc;
+      throw new Error("STUB");
   }, {});
   const deprecations = new Set(Object.keys(CLIDeprecations));
   const deprecatedOptions = Object.keys(argv)
-    .filter(arg => deprecations.has(arg) && argv[arg] != null)
-    .map(arg => ({fatal: !allowedOptions.has(arg), name: arg}));
+    .filter(arg => { throw new Error("STUB"); })
+    .map(arg => { throw new Error("STUB"); });
 
   if (deprecatedOptions.length > 0) {
     validateDeprecatedOptions(deprecatedOptions, CLIDeprecations, argv);
@@ -112,9 +105,7 @@ export default function validateCLIOptions(
 
   const unrecognizedOptions = Object.keys(argv).filter(
     arg =>
-      !allowedOptions.has(camelcase(arg, {locale: 'en-US'})) &&
-      !allowedOptions.has(arg) &&
-      (rawArgv.length === 0 || rawArgv.includes(arg)),
+      { throw new Error("STUB"); },
   );
 
   if (unrecognizedOptions.length > 0) {

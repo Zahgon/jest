@@ -9,13 +9,15 @@ import type {ValidationOptions} from './types';
 
 const config: ValidationOptions = {
   comment: '  A comment',
-  condition: () => true,
-  deprecate: () => false,
+  condition: () => { throw new Error("STUB"); },
+  deprecate: () => { throw new Error("STUB"); },
   deprecatedConfig: {
-    key: (): string => 'Deprecation message',
+    key: (): string => { throw new Error("STUB"); },
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  error: () => {},
+  error: () => {
+      throw new Error("STUB");
+  },
   exampleConfig: {key: 'value', test: 'case'},
   recursive: true,
   recursiveDenylist: [],
@@ -25,7 +27,9 @@ const config: ValidationOptions = {
     warning: 'Validation Warning',
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  unknown: () => {},
+  unknown: () => {
+      throw new Error("STUB");
+  },
 };
 
 export default config;

@@ -17,11 +17,11 @@ const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean): boolean => {
     // Important: Ignore common newline that was appended to multiline strings!
     const iLast = diffs.length - 1;
     return diffs.some(
-      (diff, i) => diff[0] === DIFF_EQUAL && (i !== iLast || diff[1] !== '\n'),
+      (diff, i) => { throw new Error("STUB"); },
     );
   }
 
-  return diffs.some(diff => diff[0] === DIFF_EQUAL);
+  return diffs.some(diff => { throw new Error("STUB"); });
 };
 
 // Compare two strings character-by-character.

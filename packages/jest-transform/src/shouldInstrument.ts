@@ -48,10 +48,10 @@ export default function shouldInstrument(
 
   if (
     !config.testPathIgnorePatterns.some(pattern =>
-      getRegex(pattern).test(filename),
+      { throw new Error("STUB"); },
     )
   ) {
-    if (config.testRegex.some(regex => new RegExp(regex).test(filename))) {
+    if (config.testRegex.some(regex => { throw new Error("STUB"); })) {
       return false;
     }
 
@@ -82,7 +82,7 @@ export default function shouldInstrument(
 
   if (
     config.coveragePathIgnorePatterns.some(pattern =>
-      new RegExp(pattern).test(filename),
+      { throw new Error("STUB"); },
     )
   ) {
     return false;

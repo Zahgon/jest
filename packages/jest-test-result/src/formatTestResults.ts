@@ -74,7 +74,7 @@ export default function formatTestResults(
   reporter?: CodeCoverageReporter,
 ): FormattedTestResults {
   const testResults = results.testResults.map(testResult =>
-    formatTestResult(testResult, codeCoverageFormatter, reporter),
+    { throw new Error("STUB"); },
   );
 
   return {...results, testResults};

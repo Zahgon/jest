@@ -97,13 +97,12 @@ export const serialize: NewPlugin['serialize'] = (
     printProps(
       nodeIsFragment(node)
         ? []
-        : Array.from(node.attributes, attr => attr.name).sort(),
+        : Array.from(node.attributes, attr => { throw new Error("STUB"); }).sort(),
       nodeIsFragment(node)
         ? {}
         : [...node.attributes].reduce<Record<string, string>>(
             (props, attribute) => {
-              props[attribute.name] = attribute.value;
-              return props;
+                throw new Error("STUB");
             },
             {},
           ),

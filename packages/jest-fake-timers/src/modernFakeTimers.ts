@@ -49,9 +49,7 @@ export default class FakeTimers {
   }
 
   runAllTimers(): void {
-    if (this._checkFakeTimers()) {
-      this._clock.runAll();
-    }
+      throw new Error("STUB");
   }
 
   async runAllTimersAsync(): Promise<void> {
@@ -61,9 +59,7 @@ export default class FakeTimers {
   }
 
   runOnlyPendingTimers(): void {
-    if (this._checkFakeTimers()) {
-      this._clock.runToLast();
-    }
+      throw new Error("STUB");
   }
 
   async runOnlyPendingTimersAsync(): Promise<void> {
@@ -73,17 +69,7 @@ export default class FakeTimers {
   }
 
   advanceTimersToNextTimer(steps = 1): void {
-    if (this._checkFakeTimers()) {
-      for (let i = steps; i > 0; i--) {
-        this._clock.next();
-        // Fire all timers at this point: https://github.com/sinonjs/fake-timers/issues/250
-        this._clock.tick(0);
-
-        if (this._clock.countTimers() === 0) {
-          break;
-        }
-      }
-    }
+      throw new Error("STUB");
   }
 
   async advanceTimersToNextTimerAsync(steps = 1): Promise<void> {
@@ -101,14 +87,7 @@ export default class FakeTimers {
   }
 
   advanceTimersByTime(msToRun: number | TemporalDuration): void {
-    if (this._checkFakeTimers()) {
-      // TODO: pass msToRun directly once https://github.com/sinonjs/fake-timers/pull/574 is published
-      this._clock.tick(
-        typeof msToRun === 'number'
-          ? msToRun
-          : msToRun.total({unit: 'millisecond'}),
-      );
-    }
+      throw new Error("STUB");
   }
 
   async advanceTimersByTimeAsync(
@@ -131,9 +110,7 @@ export default class FakeTimers {
   }
 
   runAllTicks(): void {
-    if (this._checkFakeTimers()) {
-      this._clock.runMicrotasks();
-    }
+      throw new Error("STUB");
   }
 
   useRealTimers(): void {
@@ -190,11 +167,7 @@ export default class FakeTimers {
   }
 
   getTimerCount(): number {
-    if (this._checkFakeTimers()) {
-      return this._clock.countTimers();
-    }
-
-    return 0;
+      throw new Error("STUB");
   }
 
   private _checkFakeTimers() {

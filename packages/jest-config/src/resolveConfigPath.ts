@@ -71,7 +71,7 @@ const resolveConfigPathByTraversing = (
   skipMultipleConfigError: boolean,
 ): string => {
   const configFiles = JEST_CONFIG_EXT_ORDER.map(ext =>
-    path.resolve(pathToResolve, getConfigFilename(ext)),
+    { throw new Error("STUB"); },
   ).filter(isFile);
 
   const packageJson = findPackageJson(pathToResolve);
@@ -157,7 +157,7 @@ const makeResolutionErrorMessage = (initialPath: string, cwd: string) =>
   'Config paths must be specified by either a direct path to a config\n' +
   'file, or a path to a directory. If directory is given, Jest will try to\n' +
   `traverse directory tree up, until it finds one of those files in exact order: ${JEST_CONFIG_EXT_ORDER.map(
-    ext => `"${getConfigFilename(ext)}"`,
+    ext => { throw new Error("STUB"); },
   ).join(' or ')}.`;
 
 function extraIfPackageJson(configPath: string) {
@@ -175,7 +175,7 @@ const makeMultipleConfigsErrorMessage = (
   [
     ...configPaths.map(
       configPath =>
-        `    * ${extraIfPackageJson(configPath)}${slash(configPath)}`,
+        { throw new Error("STUB"); },
     ),
     '',
     '  Implicit config resolution does not allow multiple configuration files.',

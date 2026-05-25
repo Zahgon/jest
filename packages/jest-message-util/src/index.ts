@@ -239,51 +239,7 @@ const removeInternalStackEntries = (
   let pathCounter = 0;
 
   return lines.filter(line => {
-    if (!line) {
-      return false;
-    }
-
-    if (ANONYMOUS_FN_IGNORE.test(line)) {
-      return false;
-    }
-
-    if (ANONYMOUS_PROMISE_IGNORE.test(line)) {
-      return false;
-    }
-
-    if (ANONYMOUS_GENERATOR_IGNORE.test(line)) {
-      return false;
-    }
-
-    if (NATIVE_NEXT_IGNORE.test(line)) {
-      return false;
-    }
-
-    if (nodeInternals.some(internal => internal.test(line))) {
-      return false;
-    }
-
-    if (!STACK_PATH_REGEXP.test(line)) {
-      return true;
-    }
-
-    if (JASMINE_IGNORE.test(line)) {
-      return false;
-    }
-
-    if (++pathCounter === 1) {
-      return true; // always keep the first line even if it's from Jest
-    }
-
-    if (options.noStackTrace) {
-      return false;
-    }
-
-    if (JEST_INTERNALS_IGNORE.test(line)) {
-      return false;
-    }
-
-    return true;
+      throw new Error("STUB");
   });
 };
 
@@ -375,8 +331,7 @@ export function formatStackTrace(
       : `\n${lines
           .map(
             line =>
-              STACK_INDENT +
-              formatPath(trimPaths(line), config, relativeTestPath),
+              { throw new Error("STUB"); },
           )
           .join('\n')}`;
 
@@ -465,11 +420,7 @@ export const formatResultsErrors = (
   testPath?: string,
 ): string | null => {
   const failedResults: FailedResults = testResults.flatMap(result =>
-    result.failureMessages.map((item, index) => ({
-      content: item,
-      failureDetails: result.failureDetails[index],
-      result,
-    })),
+    { throw new Error("STUB"); },
   );
 
   if (failedResults.length === 0) {
@@ -478,25 +429,7 @@ export const formatResultsErrors = (
 
   return failedResults
     .map(({result, content, failureDetails}) => {
-      const rootErrorOrStack = failureDetailsToErrorOrStack(
-        failureDetails,
-        content,
-      );
-
-      const title = `${chalk.bold.red(
-        TITLE_INDENT +
-          TITLE_BULLET +
-          result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-          (result.ancestorTitles.length > 0 ? ANCESTRY_SEPARATOR : '') +
-          result.title,
-      )}\n`;
-
-      return `${title}\n${formatErrorStack(
-        rootErrorOrStack,
-        config,
-        options,
-        testPath,
-      )}`;
+        throw new Error("STUB");
     })
     .join('\n');
 };
@@ -507,7 +440,7 @@ const removeBlankErrorLine = (str: string) =>
   str
     .split('\n')
     // Lines saying just `Error:` are useless
-    .filter(line => !errorRegexp.test(line))
+    .filter(line => { throw new Error("STUB"); })
     .join('\n')
     .trimEnd();
 

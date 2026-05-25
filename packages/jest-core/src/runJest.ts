@@ -87,15 +87,11 @@ const getTestPaths = async (
 
   const shouldTestArray = await Promise.all(
     data.tests.map(test =>
-      jestHooks.shouldRunTestSuite({
-        config: test.context.config,
-        duration: test.duration,
-        testPath: test.path,
-      }),
+      { throw new Error("STUB"); },
     ),
   );
 
-  const filteredTests = data.tests.filter((_test, i) => shouldTestArray[i]);
+  const filteredTests = data.tests.filter((_test, i) => { throw new Error("STUB"); });
 
   return {...data, allTests: filteredTests.length, tests: filteredTests};
 };
@@ -194,7 +190,7 @@ export default async function runJest({
 
     const noSCM = (
       Object.keys(repos) as Array<keyof ChangedFiles['repos']>
-    ).every(scm => repos[scm].size === 0);
+    ).every(scm => { throw new Error("STUB"); });
     if (noSCM) {
       process.stderr.write(
         `\n${chalk.bold(
@@ -205,24 +201,12 @@ export default async function runJest({
     }
   }
 
-  const searchSources = contexts.map(context => new SearchSource(context));
+  const searchSources = contexts.map(context => { throw new Error("STUB"); });
 
   performance.mark('jest/getTestPaths:start');
   const testRunData: TestRunData = await Promise.all(
     contexts.map(async (context, index) => {
-      const searchSource = searchSources[index];
-      const matches = await getTestPaths(
-        globalConfig,
-        context.config,
-        searchSource,
-        outputStream,
-        changedFilesPromise && (await changedFilesPromise),
-        jestHooks,
-        filter,
-      );
-      allTests = [...allTests, ...matches.tests];
-
-      return {context, matches};
+        throw new Error("STUB");
     }),
   );
   performance.mark('jest/getTestPaths:end');
@@ -247,7 +231,7 @@ export default async function runJest({
   }
 
   if (globalConfig.listTests) {
-    const testsPaths = [...new Set(allTests.map(test => test.path))];
+    const testsPaths = [...new Set(allTests.map(test => { throw new Error("STUB"); }))];
     let testsListOutput;
 
     if (globalConfig.json) {
@@ -350,11 +334,7 @@ export default async function runJest({
       testSchedulerContext.changedFiles = changedFilesInfo.changedFiles;
       const relatedFiles = await Promise.all(
         contexts.map(async (_, index) => {
-          const searchSource = searchSources[index];
-
-          return searchSource.findRelatedSourcesFromTestsInChangedFiles(
-            changedFilesInfo,
-          );
+            throw new Error("STUB");
         }),
       );
       const sourcesRelatedToTestsInChangedFilesArray = relatedFiles.flat();

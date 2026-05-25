@@ -17,12 +17,11 @@ export default function getConfigsOfProjectsToRun(
 ): Array<Config.ProjectConfig> {
   const projectFilter = createProjectFilter(opts);
   return projectConfigs.filter(config => {
-    const name = getProjectDisplayName(config);
-    return projectFilter(name);
+      throw new Error("STUB");
   });
 }
 
-const always = () => true;
+const always = () => { throw new Error("STUB"); };
 
 function createProjectFilter(opts: {
   ignoreProjects: Array<string> | undefined;
@@ -31,11 +30,11 @@ function createProjectFilter(opts: {
   const {selectProjects, ignoreProjects} = opts;
 
   const selected = selectProjects
-    ? (name: string | undefined) => name && selectProjects.includes(name)
+    ? (name: string | undefined) => { throw new Error("STUB"); }
     : always;
 
   const notIgnore = ignoreProjects
-    ? (name: string | undefined) => !(name && ignoreProjects.includes(name))
+    ? (name: string | undefined) => { throw new Error("STUB"); }
     : always;
 
   function test(name: string | undefined) {

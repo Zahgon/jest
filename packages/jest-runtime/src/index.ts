@@ -88,10 +88,7 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
     Array.isArray(config.moduleNameMapper) &&
     config.moduleNameMapper.length > 0
   ) {
-    return config.moduleNameMapper.map(([regex, moduleName]) => ({
-      moduleName,
-      regex: new RegExp(regex),
-    }));
+    return config.moduleNameMapper.map(([regex, moduleName]) => { throw new Error("STUB"); });
   }
   return null;
 };
@@ -129,145 +126,7 @@ export default class Runtime {
     testPath: string,
     globalConfig: Config.GlobalConfig,
   ) {
-    this.fileCache = new FileCache(cacheFS);
-    this._config = config;
-    this._coverageOptions = coverageOptions;
-    this._environment = environment;
-    this.registries = new ModuleRegistries();
-    invariant(
-      this._environment.moduleMocker,
-      '`moduleMocker` must be set on an environment when created',
-    );
-    this._moduleMocker = this._environment.moduleMocker;
-    this._testPath = testPath;
-    this.testState = new TestState(msg =>
-      this._logFormattedReferenceError(msg),
-    );
-    this.transformCache = new TransformCache(
-      transformer,
-      this.fileCache,
-      options => this._getFullTransformationOptions(options),
-    );
-    this.v8Coverage = new V8CoverageCollector(
-      coverageOptions,
-      config,
-      this.transformCache,
-    );
-    this._resolution = new Resolution(
-      resolver,
-      this._environment.exportConditions?.() ?? [],
-      config.extensionsToTreatAsEsm,
-    );
-    this.mockState = new MockState(this._resolution, config);
-    this.cjsExportsCache = new CjsExportsCache({
-      fileCache: this.fileCache,
-      loadCoreReexport: (from, coreName) => this.requireModule(from, coreName),
-      loadNativeAddon: (from, modulePath) =>
-        this.requireModuleOrMock(from, modulePath),
-      resolution: this._resolution,
-      transformCache: this.transformCache,
-    });
-    // Construction is a DAG: testMainModule → requireBuilder → {coreModule,
-    // executor} → cjsLoader. The two lambdas inside `requireBuilder`'s deps
-    // close over `cjsLoader` (built last) and `this.requireModuleOrMock`,
-    // but those callbacks aren't invoked until user code runs, so the
-    // forward references are safe.
-    this.testMainModule = new TestMainModule();
-    this.requireBuilder = new RequireBuilder({
-      registries: this.registries,
-      requireDispatch: (from, moduleName) =>
-        this.requireModuleOrMock(from, moduleName),
-      requireInternal: (from, moduleName) =>
-        this.requireInternalModule(from, moduleName),
-      resolution: this._resolution,
-      testMainModule: this.testMainModule,
-    });
-    this.coreModule = new CoreModuleProvider({
-      environment: this._environment,
-      requireBuilder: this.requireBuilder,
-      resolution: this._resolution,
-    });
-    this.jestGlobals = new JestGlobals({
-      clearAllMocks: () => this.clearAllMocks(),
-      config,
-      environment: this._environment,
-      generateMock: (from, moduleName) => this._generateMock(from, moduleName),
-      globalConfig,
-      isolateModules: fn => this.isolateModules(fn),
-      isolateModulesAsync: fn => this.isolateModulesAsync(fn),
-      logFormattedReferenceError: msg => this._logFormattedReferenceError(msg),
-      mockState: this.mockState,
-      moduleMocker: this._moduleMocker,
-      requireActual: (from, moduleName) => this.requireActual(from, moduleName),
-      requireMock: (from, moduleName) => this.requireMock(from, moduleName),
-      resetAllMocks: () => this.resetAllMocks(),
-      resetModules: () => this.resetModules(),
-      restoreAllMocks: () => this.restoreAllMocks(),
-      setMock: (from, moduleName, mockFactory, options) =>
-        this.setMock(from, moduleName, mockFactory, options),
-      setModuleMock: (from, moduleName, mockFactory, options) =>
-        this.setModuleMock(from, moduleName, mockFactory, options),
-      testState: this.testState,
-    });
-    this.esmLoader = new EsmLoader({
-      cjsExportsCache: this.cjsExportsCache,
-      coreModule: this.coreModule,
-      environment: this._environment,
-      fileCache: this.fileCache,
-      jestGlobals: this.jestGlobals,
-      mockState: this.mockState,
-      registries: this.registries,
-      requireModuleOrMock: (from, moduleName) =>
-        this.requireModuleOrMock(from, moduleName),
-      resolution: this._resolution,
-      shouldLoadAsEsm: modulePath => this.unstable_shouldLoadAsEsm(modulePath),
-      testState: this.testState,
-      transformCache: this.transformCache,
-    });
-    this.executor = new ModuleExecutor({
-      config,
-      dynamicImport: (specifier, identifier, context, importAttributes) =>
-        this.esmLoader.dynamicImportFromCjs(
-          specifier,
-          identifier,
-          context,
-          importAttributes,
-        ),
-      environment: this._environment,
-      jestGlobals: this.jestGlobals,
-      requireBuilder: this.requireBuilder,
-      resolution: this._resolution,
-      testMainModule: this.testMainModule,
-      testPath,
-      transformCache: this.transformCache,
-    });
-    this.cjsLoader = new CjsLoader({
-      coreModule: this.coreModule,
-      environment: this._environment,
-      executor: this.executor,
-      logFormattedReferenceError: msg => this._logFormattedReferenceError(msg),
-      mockState: this.mockState,
-      registries: this.registries,
-      requireEsm: <T>(modulePath: string) =>
-        this.esmLoader.requireEsmModule<T>(modulePath),
-      resolution: this._resolution,
-      testState: this.testState,
-      transformCache: this.transformCache,
-    });
-
-    if (config.automock) {
-      for (const filePath of config.setupFiles) {
-        if (filePath.includes(NODE_MODULES)) {
-          // shouldn't really matter, but in theory this will make sure the caching is correct
-          const moduleID = this.unstable_shouldLoadAsEsm(filePath)
-            ? this._resolution.getEsmModuleId(new Map(), filePath)
-            : this._resolution.getCjsModuleId(new Map(), filePath);
-          this.mockState.markTransitive(moduleID, false);
-        }
-      }
-    }
-
-    this.resetModules();
+      throw new Error("STUB");
   }
 
   static shouldInstrument = shouldInstrument;
@@ -346,7 +205,7 @@ export default class Runtime {
   ): Resolver {
     return new Resolver(moduleMap, {
       defaultPlatform: config.haste.defaultPlatform,
-      extensions: config.moduleFileExtensions.map(extension => `.${extension}`),
+      extensions: config.moduleFileExtensions.map(extension => { throw new Error("STUB"); }),
       hasCoreModules: true,
       moduleDirectories: config.moduleDirectories,
       moduleNameMapper: getModuleNameMapper(config),
@@ -405,18 +264,11 @@ export default class Runtime {
   }
 
   requireActual<T = unknown>(from: string, moduleName: string): T {
-    if (FRAMEWORK_SINGLETON_MODULES.has(moduleName)) {
-      return this.requireInternalModule<T>(from, moduleName);
-    }
-    return this.requireModule<T>(from, moduleName, undefined, true);
+      throw new Error("STUB");
   }
 
   requireMock<T = unknown>(from: string, moduleName: string): T {
-    return this._requireMockWithId<T>(
-      from,
-      moduleName,
-      this.mockState.getCjsModuleId(from, moduleName),
-    );
+      throw new Error("STUB");
   }
 
   private _requireMockWithId<T>(
@@ -471,7 +323,7 @@ export default class Runtime {
   private _getFullTransformationOptions(
     options: TransformOptions = defaultTransformOptions,
   ): TransformationOptions {
-    return {...options, ...this._coverageOptions};
+      throw new Error("STUB");
   }
 
   requireModuleOrMock<T = unknown>(from: string, moduleName: string): T {
@@ -526,21 +378,11 @@ export default class Runtime {
   }
 
   isolateModules(fn: () => void): void {
-    this.registries.enterIsolated('isolateModules');
-    try {
-      fn();
-    } finally {
-      this.registries.exitIsolated();
-    }
+      throw new Error("STUB");
   }
 
   async isolateModulesAsync(fn: () => Promise<void>): Promise<void> {
-    this.registries.enterIsolated('isolateModulesAsync');
-    try {
-      await fn();
-    } finally {
-      this.registries.exitIsolated();
-    }
+      throw new Error("STUB");
   }
 
   resetModules(): void {
@@ -590,7 +432,7 @@ export default class Runtime {
     mockFactory: () => unknown,
     options?: {virtual?: boolean},
   ): void {
-    this.mockState.setMock(from, moduleName, mockFactory, options);
+      throw new Error("STUB");
   }
 
   private setModuleMock(
@@ -646,33 +488,13 @@ export default class Runtime {
       mockState: this.mockState,
       moduleMocker: this._moduleMocker,
       registries: this.registries,
-      requireModule: (from, moduleName) => this.requireModule(from, moduleName),
+      requireModule: (from, moduleName) => { throw new Error("STUB"); },
       resolution: this._resolution,
     });
   }
 
   private _logFormattedReferenceError(errorMessage: string) {
-    const testPath = this._testPath
-      ? ` From ${slash(path.relative(this._config.rootDir, this._testPath))}.`
-      : '';
-    const originalStack = new ReferenceError(`${errorMessage}${testPath}`)
-      .stack!.split('\n')
-      // Remove this file from the stack (jest-message-utils will keep one line)
-      .filter(line => !line.includes(__filename))
-      .join('\n');
-
-    const {message, stack} = separateMessageFromStack(originalStack);
-
-    const stackTrace = formatStackTrace(stack, this._config, {
-      noStackTrace: false,
-    });
-    const formattedMessage = `\n${message}${
-      stackTrace ? `\n${stackTrace}` : ''
-    }`;
-    if (!this.loggedReferenceErrors.has(formattedMessage)) {
-      console.error(formattedMessage);
-      this.loggedReferenceErrors.add(formattedMessage);
-    }
+      throw new Error("STUB");
   }
 
   setGlobalsForRuntime(globals: EnvironmentGlobals): void {

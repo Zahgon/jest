@@ -155,55 +155,7 @@ export default class CoverageReporter extends BaseReporter {
     }
 
     const instrumentation = files.map(async fileObj => {
-      const filename = fileObj.path;
-      const config = fileObj.config;
-
-      const hasCoverageData = this._v8CoverageResults.some(v8Res =>
-        v8Res.some(innerRes => innerRes.result.url === filename),
-      );
-
-      if (
-        !hasCoverageData &&
-        !this._coverageMap.data[filename] &&
-        'worker' in worker
-      ) {
-        try {
-          const result = await worker.worker({
-            config,
-            context: {
-              changedFiles: this._context.changedFiles && [
-                ...this._context.changedFiles,
-              ],
-              sourcesRelatedToTestsInChangedFiles: this._context
-                .sourcesRelatedToTestsInChangedFiles && [
-                ...this._context.sourcesRelatedToTestsInChangedFiles,
-              ],
-            },
-            globalConfig: this._globalConfig,
-            path: filename,
-          });
-
-          if (result) {
-            if (result.kind === 'V8Coverage') {
-              this._v8CoverageResults.push([
-                {codeTransformResult: undefined, result: result.result},
-              ]);
-            } else {
-              this._coverageMap.addFileCoverage(result.coverage);
-            }
-          }
-        } catch (error: any) {
-          console.error(
-            chalk.red(
-              [
-                `Failed to collect coverage from ${filename}`,
-                `ERROR: ${error.message}`,
-                `STACK: ${error.stack}`,
-              ].join('\n'),
-            ),
-          );
-        }
-      }
+        throw new Error("STUB");
     });
 
     try {
@@ -235,25 +187,7 @@ export default class CoverageReporter extends BaseReporter {
             keyof istanbulCoverage.CoverageSummaryData
           >
         ).reduce<Array<string>>((errors, key) => {
-          const actual = actuals[key].pct;
-          const actualUncovered = actuals[key].total - actuals[key].covered;
-          const threshold = thresholds[key];
-
-          if (threshold !== undefined) {
-            if (threshold < 0) {
-              if (threshold * -1 < actualUncovered) {
-                errors.push(
-                  `Jest: Uncovered count for ${key} (${actualUncovered}) ` +
-                    `exceeds ${name} threshold (${-1 * threshold})`,
-                );
-              }
-            } else if (actual < threshold) {
-              errors.push(
-                `Jest: Coverage for ${key} (${actual}%) does not meet "${name}" threshold (${threshold}%)`,
-              );
-            }
-          }
-          return errors;
+            throw new Error("STUB");
         }, []);
       }
 
@@ -270,72 +204,7 @@ export default class CoverageReporter extends BaseReporter {
       const coveredFilesSortedIntoThresholdGroup = coveredFiles.reduce<
         Array<[string, string | undefined]>
       >((files, file) => {
-        const pathOrGlobMatches = thresholdGroups.reduce<
-          Array<[string, string]>
-        >((agg, thresholdGroup) => {
-          // Skip 'global' here as it will be handled separately for all files
-          if (thresholdGroup === THRESHOLD_GROUP_TYPES.GLOBAL) {
-            return agg;
-          }
-
-          // Preserve trailing slash, but not required if root dir
-          // See https://github.com/jestjs/jest/issues/12703
-          const resolvedThresholdGroup = path.resolve(thresholdGroup);
-          const suffix =
-            (thresholdGroup.endsWith(path.sep) ||
-              (process.platform === 'win32' && thresholdGroup.endsWith('/'))) &&
-            !resolvedThresholdGroup.endsWith(path.sep)
-              ? path.sep
-              : '';
-          const absoluteThresholdGroup = `${resolvedThresholdGroup}${suffix}`;
-
-          // The threshold group might be a path:
-
-          if (file.indexOf(absoluteThresholdGroup) === 0) {
-            groupTypeByThresholdGroup[thresholdGroup] =
-              THRESHOLD_GROUP_TYPES.PATH;
-            agg.push([file, thresholdGroup]);
-            return agg;
-          }
-
-          // If the threshold group is not a path it might be a glob:
-
-          // Note: glob.sync is slow. By memoizing the files matching each glob
-          // (rather than recalculating it for each covered file) we save a tonne
-          // of execution time.
-          if (filesByGlob[absoluteThresholdGroup] === undefined) {
-            filesByGlob[absoluteThresholdGroup] = glob
-              .sync(absoluteThresholdGroup, {windowsPathsNoEscape: true})
-              .map(filePath => path.resolve(filePath));
-          }
-
-          if (filesByGlob[absoluteThresholdGroup].includes(file)) {
-            groupTypeByThresholdGroup[thresholdGroup] =
-              THRESHOLD_GROUP_TYPES.GLOB;
-            agg.push([file, thresholdGroup]);
-            return agg;
-          }
-
-          return agg;
-        }, []);
-
-        if (pathOrGlobMatches.length > 0) {
-          files.push(...pathOrGlobMatches);
-          return files;
-        }
-
-        // Neither a glob or a path? Toss it in global if there's a global threshold:
-        if (thresholdGroups.includes(THRESHOLD_GROUP_TYPES.GLOBAL)) {
-          groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
-            THRESHOLD_GROUP_TYPES.GLOBAL;
-          files.push([file, THRESHOLD_GROUP_TYPES.GLOBAL]);
-          return files;
-        }
-
-        // A covered file that doesn't have a threshold:
-        files.push([file, undefined]);
-
-        return files;
+          throw new Error("STUB");
       }, []);
 
       // Mark global threshold group if it exists
@@ -346,12 +215,12 @@ export default class CoverageReporter extends BaseReporter {
 
       const getFilesInThresholdGroup = (thresholdGroup: string) =>
         coveredFilesSortedIntoThresholdGroup
-          .filter(fileAndGroup => fileAndGroup[1] === thresholdGroup)
-          .map(fileAndGroup => fileAndGroup[0]);
+          .filter(fileAndGroup => { throw new Error("STUB"); })
+          .map(fileAndGroup => { throw new Error("STUB"); });
 
       function combineCoverage(filePaths: Array<string>) {
         return filePaths
-          .map(filePath => map.fileCoverageFor(filePath))
+          .map(filePath => { throw new Error("STUB"); })
           .reduce(
             (
               combinedCoverage:
@@ -360,11 +229,8 @@ export default class CoverageReporter extends BaseReporter {
                 | undefined,
               nextFileCoverage: istanbulCoverage.FileCoverage,
             ) => {
-              if (combinedCoverage === undefined || combinedCoverage === null) {
-                return nextFileCoverage.toSummary();
-              }
-              return combinedCoverage.merge(nextFileCoverage.toSummary());
-            },
+                  throw new Error("STUB");
+              },
             undefined,
           );
       }
@@ -438,7 +304,7 @@ export default class CoverageReporter extends BaseReporter {
       }
 
       errors = errors.filter(
-        err => err !== undefined && err !== null && err.length > 0,
+        err => { throw new Error("STUB"); },
       );
 
       if (errors.length > 0) {
@@ -454,7 +320,7 @@ export default class CoverageReporter extends BaseReporter {
   }> {
     if (this._globalConfig.coverageProvider === 'v8') {
       const mergedCoverages = mergeProcessCovs(
-        this._v8CoverageResults.map(cov => ({result: cov.map(r => r.result)})),
+        this._v8CoverageResults.map(cov => { throw new Error("STUB"); }),
       );
 
       const fileTransforms = new Map<string, RuntimeTransformResult>();
@@ -468,40 +334,7 @@ export default class CoverageReporter extends BaseReporter {
 
       const transformedCoverage = await Promise.all(
         mergedCoverages.result.map(async res => {
-          const fileTransform = fileTransforms.get(res.url);
-
-          let sourcemapContent: EncodedSourceMap | undefined = undefined;
-
-          if (
-            fileTransform?.sourceMapPath &&
-            fs.existsSync(fileTransform.sourceMapPath)
-          ) {
-            sourcemapContent = JSON.parse(
-              fs.readFileSync(fileTransform.sourceMapPath, 'utf8'),
-            );
-          }
-
-          const converter = v8toIstanbul(
-            res.url,
-            0,
-            fileTransform && sourcemapContent
-              ? {
-                  originalSource: fileTransform.originalCode,
-                  source: fileTransform.code,
-                  sourceMap: {
-                    sourcemap: {file: res.url, ...sourcemapContent},
-                  },
-                }
-              : {source: fs.readFileSync(res.url, 'utf8')},
-          );
-
-          await converter.load();
-
-          converter.applyCoverage(res.functions);
-
-          const istanbulData = converter.toIstanbul();
-
-          return istanbulData;
+            throw new Error("STUB");
         }),
       );
 

@@ -90,7 +90,7 @@ const getPropKeys = (element: any) => {
   const {props} = element;
 
   return Object.keys(props)
-    .filter(key => key !== 'children' && props[key] !== undefined)
+    .filter(key => { throw new Error("STUB"); })
     .sort();
 };
 

@@ -21,11 +21,7 @@ export default class Replaceable {
   type: string;
 
   constructor(object: any) {
-    this.object = object;
-    this.type = getType(object);
-    if (!supportTypes.has(this.type)) {
-      throw new Error(`Type ${this.type} is not support in Replaceable!`);
-    }
+      throw new Error("STUB");
   }
 
   static isReplaceable(obj1: unknown, obj2: unknown): boolean {
@@ -43,7 +39,7 @@ export default class Replaceable {
       ]
         //@ts-expect-error because typescript do not support symbol key in object
         //https://github.com/microsoft/TypeScript/issues/1863
-        .filter(key => descriptors[key].enumerable)) {
+        .filter(key => { throw new Error("STUB"); })) {
         cb(this.object[key], key, this.object);
       }
     } else {

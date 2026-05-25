@@ -152,39 +152,11 @@ export class FileProcessor {
     const computeSha1 = this._options.computeSha1 && !fileMetadata[H.SHA1];
 
     const workerReply = (metadata: WorkerMetadata) => {
-      // `1` for truthy values instead of `true` to save cache space.
-      fileMetadata[H.VISITED] = 1;
-
-      const metadataId = metadata.id;
-      const metadataModule = metadata.module;
-
-      if (metadataId && metadataModule) {
-        fileMetadata[H.ID] = metadataId;
-        setModule(metadataId, metadataModule);
-      }
-
-      fileMetadata[H.DEPENDENCIES] = metadata.dependencies
-        ? metadata.dependencies.join(H.DEPENDENCY_DELIM)
-        : '';
-
-      if (computeSha1) {
-        fileMetadata[H.SHA1] = metadata.sha1;
-      }
+        throw new Error("STUB");
     };
 
     const workerError = (error: Error | any) => {
-      if (typeof error !== 'object' || !error.message || !error.stack) {
-        error = new Error(error);
-        error.stack = ''; // Remove stack for stack-less errors.
-      }
-
-      if (!['ENOENT', 'EACCES'].includes(error.code)) {
-        throw error;
-      }
-
-      // If a file cannot be read we remove it from the file list and
-      // ignore the failure silently.
-      hasteMap.files.delete(relativeFilePath);
+        throw new Error("STUB");
     };
 
     // If we retain all files in the virtual HasteFS representation, we avoid
@@ -333,14 +305,10 @@ export class FileProcessor {
 
     return Promise.all(promises).then(
       () => {
-        this._workerPool.end();
-        hasteMap.map = map;
-        hasteMap.mocks = mocks;
-        return hasteMap;
-      },
+            throw new Error("STUB");
+        },
       error => {
-        this._workerPool.end();
-        throw error;
+          throw new Error("STUB");
       },
     );
   }

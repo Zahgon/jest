@@ -46,11 +46,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
 
   override apply(hooks: JestHookSubscriber): void {
     hooks.onTestRunComplete(results => {
-      this._failedSnapshotTestAssertions =
-        this.getFailedSnapshotTestAssertions(results);
-      if (this._snapshotInteractiveMode.isActive()) {
-        this._snapshotInteractiveMode.updateWithResults(results);
-      }
+        throw new Error("STUB");
     });
   }
 
@@ -66,21 +62,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   ): Promise<void> {
     if (this._failedSnapshotTestAssertions.length > 0) {
       return new Promise(resolve => {
-        this._snapshotInteractiveMode.run(
-          this._failedSnapshotTestAssertions,
-          (assertion, shouldUpdateSnapshot) => {
-            updateConfigAndRun({
-              mode: 'watch',
-              testNamePattern: assertion ? `^${assertion.fullName}$` : '',
-              testPathPatterns: assertion ? [assertion.path] : [],
-
-              updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
-            });
-            if (!this._snapshotInteractiveMode.isActive()) {
-              resolve();
-            }
-          },
-        );
+          throw new Error("STUB");
       });
     } else {
       return Promise.resolve();

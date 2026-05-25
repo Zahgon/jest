@@ -21,16 +21,7 @@ export default function serializeToJSON(
   return JSON.stringify(
     value,
     (_, value) => {
-      // There might be more in Error, but pulling out just the message, name,
-      // and stack should be good enough
-      if (isError(value)) {
-        return {
-          message: value.message,
-          name: value.name,
-          stack: value.stack,
-        };
-      }
-      return value;
+        throw new Error("STUB");
     },
     space,
   );

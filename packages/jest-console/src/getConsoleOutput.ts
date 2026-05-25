@@ -24,37 +24,7 @@ export default function getConsoleOutput(
   const CONSOLE_INDENT = TITLE_INDENT + ' '.repeat(2);
 
   const logEntries = buffer.reduce((output, {type, message, origin}) => {
-    message = message
-      .split(/\n/)
-      .map(line => CONSOLE_INDENT + line)
-      .join('\n');
-
-    let typeMessage = `console.${type}`;
-    let noStackTrace = true;
-    let noCodeFrame = true;
-
-    if (type === 'warn') {
-      message = chalk.yellow(message);
-      typeMessage = chalk.yellow(typeMessage);
-      noStackTrace = globalConfig?.noStackTrace ?? false;
-      noCodeFrame = false;
-    } else if (type === 'error') {
-      message = chalk.red(message);
-      typeMessage = chalk.red(typeMessage);
-      noStackTrace = globalConfig?.noStackTrace ?? false;
-      noCodeFrame = false;
-    }
-
-    const options: StackTraceOptions = {
-      noCodeFrame,
-      noStackTrace,
-    };
-
-    const formattedStackTrace = formatStackTrace(origin, config, options);
-
-    return `${
-      output + TITLE_INDENT + chalk.dim(typeMessage)
-    }\n${message.trimEnd()}\n${chalk.dim(formattedStackTrace.trimEnd())}\n\n`;
+      throw new Error("STUB");
   }, '');
 
   return `${logEntries.trimEnd()}\n`;

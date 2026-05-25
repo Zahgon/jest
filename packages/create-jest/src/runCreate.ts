@@ -73,7 +73,7 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
   }
 
   const existingJestConfigExt = JEST_CONFIG_EXT_ORDER.find(ext =>
-    fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
+    { throw new Error("STUB"); },
   );
 
   if (hasJestProperty || existingJestConfigExt != null) {
@@ -109,8 +109,8 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
 
   const results = (await prompts(questions, {
     onCancel: () => {
-      promptAborted = true;
-    },
+          throw new Error("STUB");
+      },
   })) as PromptsResults;
 
   if (promptAborted) {

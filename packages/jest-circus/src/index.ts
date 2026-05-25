@@ -26,22 +26,7 @@ type DescribeFn = (
 ) => void;
 
 const describe = (() => {
-  const describe = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
-    _dispatchDescribe(blockFn, blockName, describe);
-  const only = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
-    _dispatchDescribe(blockFn, blockName, only, 'only');
-  const skip = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
-    _dispatchDescribe(blockFn, blockName, skip, 'skip');
-
-  describe.each = bindEach(describe, false);
-
-  only.each = bindEach(only, false);
-  skip.each = bindEach(skip, false);
-
-  describe.only = only;
-  describe.skip = skip;
-
-  return describe;
+    throw new Error("STUB");
 })();
 
 const _dispatchDescribe = (
@@ -119,132 +104,7 @@ const afterAll: THook = (fn, timeout) =>
   _addHook(fn, 'afterAll', afterAll, timeout);
 
 const test: Global.It = (() => {
-  const test = (
-    testName: Circus.TestNameLike,
-    fn: Circus.TestFn,
-    timeout?: number,
-  ): void => _addTest(testName, undefined, false, fn, test, timeout);
-  const skip = (
-    testName: Circus.TestNameLike,
-    fn?: Circus.TestFn,
-    timeout?: number,
-  ): void => _addTest(testName, 'skip', false, fn, skip, timeout);
-  const only = (
-    testName: Circus.TestNameLike,
-    fn: Circus.TestFn,
-    timeout?: number,
-  ): void => _addTest(testName, 'only', false, fn, test.only, timeout);
-  const concurrentTest = (
-    testName: Circus.TestNameLike,
-    fn: Circus.TestFn,
-    timeout?: number,
-  ): void => _addTest(testName, undefined, true, fn, concurrentTest, timeout);
-  const concurrentOnly = (
-    testName: Circus.TestNameLike,
-    fn: Circus.TestFn,
-    timeout?: number,
-  ): void => _addTest(testName, 'only', true, fn, concurrentOnly, timeout);
-
-  const bindFailing = (concurrent: boolean, mode: Circus.TestMode) => {
-    type FailingReturn = typeof concurrent extends true
-      ? Global.ConcurrentTestFn
-      : Global.TestFn;
-    const failing: Global.Failing<FailingReturn> = (
-      testName: Circus.TestNameLike,
-      fn?: Circus.TestFn,
-      timeout?: number,
-      eachError?: Error,
-    ): void =>
-      _addTest(
-        testName,
-        mode,
-        concurrent,
-        fn,
-        failing,
-        timeout,
-        true,
-        eachError,
-      );
-    failing.each = bindEach(failing, false, true);
-    return failing;
-  };
-
-  test.todo = (testName: Circus.TestNameLike, ...rest: Array<any>): void => {
-    if (rest.length > 0 || typeof testName !== 'string') {
-      throw new ErrorWithStack(
-        'Todo must be called with only a description.',
-        test.todo,
-      );
-    }
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return _addTest(testName, 'todo', false, () => {}, test.todo);
-  };
-
-  const _addTest = (
-    testName: Circus.TestNameLike,
-    mode: Circus.TestMode,
-    concurrent: boolean,
-    fn: Circus.TestFn | undefined,
-    testFn: (
-      testName: Circus.TestNameLike,
-      fn: Circus.TestFn,
-      timeout?: number,
-    ) => void,
-    timeout?: number,
-    failing?: boolean,
-    asyncError: Error = new ErrorWithStack(undefined, testFn),
-  ) => {
-    try {
-      testName = convertDescriptorToString(testName);
-    } catch (error) {
-      asyncError.message = (error as Error).message;
-      throw asyncError;
-    }
-
-    if (fn === undefined) {
-      asyncError.message =
-        'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.';
-
-      throw asyncError;
-    }
-    if (typeof fn !== 'function') {
-      asyncError.message = `Invalid second argument, ${fn}. It must be a callback function.`;
-
-      throw asyncError;
-    }
-
-    return dispatchSync({
-      asyncError,
-      concurrent,
-      failing: failing === undefined ? false : failing,
-      fn,
-      mode,
-      name: 'add_test',
-      testName,
-      timeout,
-    });
-  };
-
-  test.each = bindEach(test);
-  only.each = bindEach(only);
-  skip.each = bindEach(skip);
-
-  concurrentTest.each = bindEach(concurrentTest, false);
-  concurrentOnly.each = bindEach(concurrentOnly, false);
-
-  only.failing = bindFailing(false, 'only');
-  skip.failing = bindFailing(false, 'skip');
-
-  test.failing = bindFailing(false);
-  test.only = only;
-  test.skip = skip;
-  test.concurrent = concurrentTest;
-  concurrentTest.only = concurrentOnly;
-  concurrentTest.skip = skip;
-  concurrentTest.failing = bindFailing(true);
-  concurrentOnly.failing = bindFailing(true, 'only');
-
-  return test;
+    throw new Error("STUB");
 })();
 
 const it: Global.It = test;

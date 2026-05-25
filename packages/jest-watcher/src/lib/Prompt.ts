@@ -24,14 +24,20 @@ export default class Prompt {
     this._promptLength = 0;
 
     /* eslint-disable @typescript-eslint/no-empty-function */
-    this._onChange = () => {};
-    this._onSuccess = () => {};
-    this._onCancel = () => {};
+    this._onChange = () => {
+        throw new Error("STUB");
+    };
+    this._onSuccess = () => {
+        throw new Error("STUB");
+    };
+    this._onCancel = () => {
+        throw new Error("STUB");
+    };
     /* eslint-enable */
   }
 
   private readonly _onResize = (): void => {
-    this._onChange();
+      throw new Error("STUB");
   };
 
   enter(
@@ -47,10 +53,7 @@ export default class Prompt {
     this._offset = -1;
     this._promptLength = 0;
     this._onChange = () =>
-      onChange(this._value, {
-        max: 10,
-        offset: this._offset,
-      });
+      { throw new Error("STUB"); };
 
     this._onChange();
 
@@ -58,11 +61,11 @@ export default class Prompt {
   }
 
   setPromptLength(length: number): void {
-    this._promptLength = length;
+      throw new Error("STUB");
   }
 
   setPromptSelection(selected: string): void {
-    this._selection = selected;
+      throw new Error("STUB");
   }
 
   put(key: string): void {
@@ -111,6 +114,6 @@ export default class Prompt {
   }
 
   isEntering(): boolean {
-    return this._entering;
+      throw new Error("STUB");
   }
 }

@@ -53,17 +53,7 @@ export default function nodeModulesPaths(
   }
 
   const dirs = paths.reduce<Array<string>>((dirs, aPath) => {
-    for (const moduleDir of modules) {
-      if (path.isAbsolute(moduleDir)) {
-        if (aPath === basedirAbs && moduleDir) {
-          dirs.push(moduleDir);
-        }
-      } else {
-        dirs.push(path.join(prefix, aPath, moduleDir));
-      }
-    }
-
-    return dirs;
+      throw new Error("STUB");
   }, []);
 
   if (options.paths) {

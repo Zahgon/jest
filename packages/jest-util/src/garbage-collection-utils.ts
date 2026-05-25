@@ -36,20 +36,7 @@ export function initializeGarbageCollectionUtils(
   globalObject: typeof globalThis,
   deletionMode: DeletionMode,
 ): void {
-  const currentMode = Reflect.get(globalObject, DELETION_MODE_SYMBOL);
-  if (currentMode && currentMode !== deletionMode) {
-    console.warn(
-      chalk.yellow(
-        [
-          '[jest-util] garbage collection deletion mode already initialized, ignoring new mode',
-          `  Current: '${currentMode}'`,
-          `  Given: '${deletionMode}'`,
-        ].join('\n'),
-      ),
-    );
-    return;
-  }
-  Reflect.set(globalObject, DELETION_MODE_SYMBOL, deletionMode);
+    throw new Error("STUB");
 }
 
 /**
@@ -97,7 +84,9 @@ export function protectProperties<T>(
 
   try {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    process.emitWarning = () => {};
+    process.emitWarning = () => {
+        throw new Error("STUB");
+    };
     if (
       depth >= 0 &&
       canDeleteProperties(value) &&
@@ -161,9 +150,9 @@ function deleteProperty(obj: object, key: string | symbol): boolean {
     return Reflect.deleteProperty(obj, key);
   }
 
-  const originalGetter = descriptor.get ?? (() => descriptor.value);
+  const originalGetter = descriptor.get ?? (() => { throw new Error("STUB"); });
   const originalSetter =
-    descriptor.set ?? (value => Reflect.set(obj, key, value));
+    descriptor.set ?? (value => { throw new Error("STUB"); });
 
   return Reflect.defineProperty(obj, key, {
     configurable: true,
@@ -202,7 +191,7 @@ function emitAccessWarning(obj: object, key: string | symbol): void {
         'In future versions of Jest, this behavior will change to "on", which will likely fail tests.',
         'You can change the behavior in your test configuration now to reduce memory usage.',
       ]
-        .map(s => `  ${s}`)
+        .map(s => { throw new Error("STUB"); })
         .join('\n'),
       type: 'DeprecationWarning',
     },
@@ -219,5 +208,5 @@ function getProtectedKeys<T extends object>(
   }
   const protectedKeys =
     properties.length > 0 ? properties : Reflect.ownKeys(value);
-  return protectedKeys.filter(key => PROTECT_SYMBOL !== key);
+  return protectedKeys.filter(key => { throw new Error("STUB"); });
 }

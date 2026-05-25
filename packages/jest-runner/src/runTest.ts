@@ -45,25 +45,7 @@ function freezeConsole(
     _type: LogType,
     message: LogMessage,
   ) {
-    const error = new ErrorWithStack(
-      `${chalk.red(
-        `${chalk.bold(
-          'Cannot log after tests are done.',
-        )} Did you forget to wait for something async in your test?`,
-      )}\nAttempted to log "${message}".`,
-      fakeConsolePush,
-    );
-
-    const formattedError = formatExecError(
-      error,
-      config,
-      {noStackTrace: false},
-      undefined,
-      true,
-    );
-
-    process.stderr.write(`\n${formattedError}\n`);
-    process.exitCode = 1;
+      throw new Error("STUB");
   };
 }
 
@@ -102,7 +84,7 @@ async function runTestInternal(
     testEnvironment = resolveTestEnvironment({
       ...projectConfig,
       // we wanna avoid webpack trying to be clever
-      requireResolveFunction: module => require.resolve(module),
+      requireResolveFunction: module => { throw new Error("STUB"); },
       testEnvironment: customEnvironment,
     });
   }
@@ -126,12 +108,7 @@ async function runTestInternal(
 
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type: LogType, message: LogMessage) =>
-    getConsoleOutput(
-      // 4 = the console call is buried 4 stack frames deep
-      BufferedConsole.write([], type, message, 4),
-      projectConfig,
-      globalConfig,
-    );
+    { throw new Error("STUB"); };
 
   let testConsole;
 
@@ -247,17 +224,7 @@ async function runTestInternal(
     environment: 'node',
     handleUncaughtExceptions: false,
     retrieveSourceMap: source => {
-      const sourceMapSource = runtime.getSourceMaps()?.get(source);
-
-      if (sourceMapSource) {
-        try {
-          return {
-            map: JSON.parse(fs.readFileSync(sourceMapSource, 'utf8')),
-            url: source,
-          };
-        } catch {}
-      }
-      return null;
+        throw new Error("STUB");
     },
   };
 
@@ -279,22 +246,7 @@ async function runTestInternal(
     const realExit = environment.global.process.exit;
 
     environment.global.process.exit = function exit(...args: Array<any>) {
-      const error = new ErrorWithStack(
-        `process.exit called with "${args.join(', ')}"`,
-        exit,
-      );
-
-      const formattedError = formatExecError(
-        error,
-        projectConfig,
-        {noStackTrace: false},
-        undefined,
-        true,
-      );
-
-      process.stderr.write(formattedError);
-
-      return realExit(...args);
+        throw new Error("STUB");
     };
   }
 
@@ -391,7 +343,7 @@ async function runTestInternal(
 
     // Delay the resolution to allow log messages to be output.
     return await new Promise(resolve => {
-      setImmediate(() => resolve({leakDetector, result}));
+        throw new Error("STUB");
     });
   } finally {
     await tearDownEnv();
@@ -417,7 +369,7 @@ export default async function runTest(
 
   if (leakDetector) {
     // We wanna allow a tiny but time to pass to allow last-minute cleanup
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => { throw new Error("STUB"); });
 
     // Resolve leak detector, outside the "runTestInternal" closure.
     result.leaks = await leakDetector.isLeaking();

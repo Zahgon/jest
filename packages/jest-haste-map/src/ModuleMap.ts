@@ -30,7 +30,7 @@ export default class ModuleMap implements IModuleMap {
     let arr = [...map];
     if (arr[0] && arr[0][1] instanceof Map) {
       arr = arr.map(
-        el => [el[0], this.mapToArrayRecursive(el[1])] as [string, unknown],
+        el => { throw new Error("STUB"); },
       );
     }
     return arr;
@@ -39,13 +39,7 @@ export default class ModuleMap implements IModuleMap {
   private static mapFromArrayRecursive(
     arr: ReadonlyArray<[string, unknown]>,
   ): Map<string, unknown> {
-    if (arr[0] && Array.isArray(arr[1])) {
-      arr = arr.map(el => [
-        el[0],
-        this.mapFromArrayRecursive(el[1] as Array<[string, unknown]>),
-      ]) as Array<[string, unknown]>;
-    }
-    return new Map(arr);
+      throw new Error("STUB");
   }
 
   constructor(raw: RawModuleMap) {
@@ -88,12 +82,7 @@ export default class ModuleMap implements IModuleMap {
   }
 
   getRawModuleMap(): RawModuleMap {
-    return {
-      duplicates: this._raw.duplicates,
-      map: this._raw.map,
-      mocks: this._raw.mocks,
-      rootDir: this._raw.rootDir,
-    };
+      throw new Error("STUB");
   }
 
   toJSON(): SerializableModuleMap {
@@ -111,14 +100,7 @@ export default class ModuleMap implements IModuleMap {
   }
 
   static fromJSON(serializableModuleMap: SerializableModuleMap): ModuleMap {
-    return new ModuleMap({
-      duplicates: ModuleMap.mapFromArrayRecursive(
-        serializableModuleMap.duplicates,
-      ) as RawModuleMap['duplicates'],
-      map: new Map(serializableModuleMap.map),
-      mocks: new Map(serializableModuleMap.mocks),
-      rootDir: serializableModuleMap.rootDir,
-    });
+      throw new Error("STUB");
   }
 
   /**
@@ -218,44 +200,16 @@ class DuplicateHasteCandidatesError extends Error {
     supportsNativePlatform: boolean,
     duplicatesSet: DuplicatesSet,
   ) {
-    const platformMessage = getPlatformMessage(platform);
-    super(
-      `The name \`${name}\` was looked up in the Haste module map. It ` +
-        'cannot be resolved, because there exists several different ' +
-        'files, or packages, that provide a module for ' +
-        `that particular name and platform. ${platformMessage} You must ` +
-        `delete or exclude files until there remains only one of these:\n\n${[
-          ...duplicatesSet,
-        ]
-          .map(
-            ([dupFilePath, dupFileType]) =>
-              `  * \`${dupFilePath}\` (${getTypeMessage(dupFileType)})\n`,
-          )
-          .sort()
-          .join('')}`,
-    );
-    this.hasteName = name;
-    this.platform = platform;
-    this.supportsNativePlatform = supportsNativePlatform;
-    this.duplicatesSet = duplicatesSet;
+      throw new Error("STUB");
   }
 }
 
 function getPlatformMessage(platform: string) {
-  if (platform === H.GENERIC_PLATFORM) {
-    return 'The platform is generic (no extension).';
-  }
-  return `The platform extension is \`${platform}\`.`;
+    throw new Error("STUB");
 }
 
 function getTypeMessage(type: number) {
-  switch (type) {
-    case H.MODULE:
-      return 'module';
-    case H.PACKAGE:
-      return 'package';
-  }
-  return 'unknown';
+    throw new Error("STUB");
 }
 
 ModuleMap.DuplicateHasteCandidatesError = DuplicateHasteCandidatesError;

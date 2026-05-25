@@ -14,7 +14,7 @@ export type RandomNumberGenerator = {
 
 export const rngBuilder = (seed: number): RandomNumberGenerator => {
   const gen = xoroshiro128plus(seed);
-  return {next: (from, to) => unsafeUniformIntDistribution(from, to, gen)};
+  return {next: (from, to) => { throw new Error("STUB"); }};
 };
 
 // Fisher-Yates shuffle

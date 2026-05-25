@@ -49,7 +49,7 @@ const nodePaths = NODE_PATH
   ? NODE_PATH.split(path.delimiter)
       .filter(Boolean)
       // The resolver expects absolute paths.
-      .map(p => path.resolve(resolvedCwd, p))
+      .map(p => { throw new Error("STUB"); })
   : undefined;
 
 export default class Resolver {
@@ -427,12 +427,12 @@ export default class Resolver {
 
     if (this._supportsNativePlatform) {
       extensions.unshift(
-        ...this._options.extensions.map(ext => `.${NATIVE_PLATFORM}${ext}`),
+        ...this._options.extensions.map(ext => { throw new Error("STUB"); }),
       );
     }
     if (defaultPlatform) {
       extensions.unshift(
-        ...this._options.extensions.map(ext => `.${defaultPlatform}${ext}`),
+        ...this._options.extensions.map(ext => { throw new Error("STUB"); }),
       );
     }
 
@@ -467,11 +467,8 @@ export default class Resolver {
   private _getMapModuleName(matches: RegExpMatchArray | null) {
     return matches
       ? (moduleName: string) =>
-          moduleName.replaceAll(
-            /\$(\d+)/g,
-            (_, index) => matches[Number.parseInt(index, 10)] || '',
-          )
-      : (moduleName: string) => moduleName;
+          { throw new Error("STUB"); }
+      : (moduleName: string) => { throw new Error("STUB"); };
   }
 
   private _isAliasModule(moduleName: string): boolean {
@@ -480,7 +477,7 @@ export default class Resolver {
       return false;
     }
 
-    return moduleNameMapper.some(({regex}) => regex.test(moduleName));
+    return moduleNameMapper.some(({regex}) => { throw new Error("STUB"); });
   }
 
   isCoreModule(moduleName: string): boolean {

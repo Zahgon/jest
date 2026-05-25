@@ -70,7 +70,9 @@ export abstract class AsymmetricMatcher<
     return {
       customTesters: getCustomEqualityTesters(),
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      dontThrow: () => {},
+      dontThrow: () => {
+          throw new Error("STUB");
+      },
       ...getState<MatcherState>(),
       equals,
       isNot: this.inverse,
@@ -86,13 +88,7 @@ export abstract class AsymmetricMatcher<
 
 class Any extends AsymmetricMatcher<any> {
   constructor(sample: unknown) {
-    if (sample === undefined) {
-      throw new TypeError(
-        'any() expects to be passed a constructor function. ' +
-          'Please pass one or use anything() to match any object.',
-      );
-    }
-    super(sample);
+      throw new Error("STUB");
   }
 
   asymmetricMatch(other: unknown) {
@@ -208,9 +204,7 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
       this.sample.length === 0 ||
       (Array.isArray(other) &&
         this.sample.every(item =>
-          other.some(another =>
-            equals(item, another, matcherContext.customTesters),
-          ),
+          { throw new Error("STUB"); },
         ));
 
     return this.inverse ? !result : result;
@@ -231,7 +225,7 @@ class ArrayOf extends AsymmetricMatcher<unknown> {
     const result =
       Array.isArray(other) &&
       other.every(item =>
-        equals(this.sample, item, matcherContext.customTesters),
+        { throw new Error("STUB"); },
       );
 
     return this.inverse ? !result : result;
@@ -299,10 +293,7 @@ class ObjectContaining extends AsymmetricMatcher<
 
 class StringContaining extends AsymmetricMatcher<string> {
   constructor(sample: string, inverse = false) {
-    if (!isA('String', sample)) {
-      throw new Error('Expected is not a string');
-    }
-    super(sample, inverse);
+      throw new Error("STUB");
   }
 
   asymmetricMatch(other: unknown) {
@@ -322,10 +313,7 @@ class StringContaining extends AsymmetricMatcher<string> {
 
 class StringMatching extends AsymmetricMatcher<RegExp> {
   constructor(sample: string | RegExp, inverse = false) {
-    if (!isA('String', sample) && !isA('RegExp', sample)) {
-      throw new Error('Expected is not a String or a RegExp');
-    }
-    super(new RegExp(sample), inverse);
+      throw new Error("STUB");
   }
 
   asymmetricMatch(other: unknown) {
@@ -347,17 +335,7 @@ class CloseTo extends AsymmetricMatcher<number> {
   private readonly precision: number;
 
   constructor(sample: number, precision = 2, inverse = false) {
-    if (!isA('Number', sample)) {
-      throw new Error('Expected is not a Number');
-    }
-
-    if (!isA('Number', precision)) {
-      throw new Error('Precision is not a Number');
-    }
-
-    super(sample);
-    this.inverse = inverse;
-    this.precision = precision;
+      throw new Error("STUB");
   }
 
   asymmetricMatch(other: unknown) {
@@ -399,30 +377,30 @@ class CloseTo extends AsymmetricMatcher<number> {
   }
 }
 
-export const any = (expectedObject: unknown): Any => new Any(expectedObject);
-export const anything = (): Anything => new Anything();
+export const any = (expectedObject: unknown): Any => { throw new Error("STUB"); };
+export const anything = (): Anything => { throw new Error("STUB"); };
 export const arrayContaining = (sample: Array<unknown>): ArrayContaining =>
-  new ArrayContaining(sample);
+  { throw new Error("STUB"); };
 export const arrayNotContaining = (sample: Array<unknown>): ArrayContaining =>
-  new ArrayContaining(sample, true);
-export const arrayOf = (sample: unknown): ArrayOf => new ArrayOf(sample);
+  { throw new Error("STUB"); };
+export const arrayOf = (sample: unknown): ArrayOf => { throw new Error("STUB"); };
 export const notArrayOf = (sample: unknown): ArrayOf =>
-  new ArrayOf(sample, true);
+  { throw new Error("STUB"); };
 export const objectContaining = (
   sample: Record<string, unknown>,
-): ObjectContaining => new ObjectContaining(sample);
+): ObjectContaining => { throw new Error("STUB"); };
 export const objectNotContaining = (
   sample: Record<string, unknown>,
-): ObjectContaining => new ObjectContaining(sample, true);
+): ObjectContaining => { throw new Error("STUB"); };
 export const stringContaining = (expected: string): StringContaining =>
-  new StringContaining(expected);
+  { throw new Error("STUB"); };
 export const stringNotContaining = (expected: string): StringContaining =>
-  new StringContaining(expected, true);
+  { throw new Error("STUB"); };
 export const stringMatching = (expected: string | RegExp): StringMatching =>
-  new StringMatching(expected);
+  { throw new Error("STUB"); };
 export const stringNotMatching = (expected: string | RegExp): StringMatching =>
-  new StringMatching(expected, true);
+  { throw new Error("STUB"); };
 export const closeTo = (expected: number, precision?: number): CloseTo =>
-  new CloseTo(expected, precision);
+  { throw new Error("STUB"); };
 export const notCloseTo = (expected: number, precision?: number): CloseTo =>
-  new CloseTo(expected, precision, true);
+  { throw new Error("STUB"); };

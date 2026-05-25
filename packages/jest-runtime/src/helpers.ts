@@ -44,15 +44,7 @@ export const findSiblingsWithFileExtension = (
       const matches = glob
         .sync(`${pathToModule}.*`, {windowsPathsNoEscape: true})
         .map(match => {
-          const slashedMap = slash(match);
-          const relativePath = path.posix.relative(slashedDirname, slashedMap);
-
-          const slashedPath =
-            path.posix.dirname(slashedMap) === slashedDirname
-              ? `./${relativePath}`
-              : relativePath;
-
-          return `\t'${slashedPath}'`;
+            throw new Error("STUB");
         })
         .join('\n');
 
@@ -60,7 +52,7 @@ export const findSiblingsWithFileExtension = (
         const foundMessage = `\n\nHowever, Jest was able to find:\n${matches}`;
 
         const mappedModuleFileExtensions = moduleFileExtensions
-          .map(ext => `'${ext}'`)
+          .map(ext => { throw new Error("STUB"); })
           .join(', ');
 
         return (
@@ -75,5 +67,5 @@ export const findSiblingsWithFileExtension = (
 };
 
 export function noop(): void {
-  // empty
+    throw new Error("STUB");
 }

@@ -39,40 +39,7 @@ const disabledJasmineMethods: Record<DisabledJasmineMethodsKeys, string> = {
 };
 
 export function installErrorOnPrivate(global: Global.Global): void {
-  const jasmine = global.jasmine;
-
-  for (const functionName of Object.keys(
-    disabledGlobals,
-  ) as Array<DisabledGlobalKeys>) {
-    global[functionName] = () => {
-      throwAtFunction(disabledGlobals[functionName], global[functionName]);
-    };
-  }
-
-  for (const methodName of Object.keys(
-    disabledJasmineMethods,
-  ) as Array<DisabledJasmineMethodsKeys>) {
-    // @ts-expect-error - void unallowd, but it throws 🤷
-    jasmine[methodName] = () => {
-      throwAtFunction(disabledJasmineMethods[methodName], jasmine[methodName]);
-    };
-  }
-
-  function set() {
-    throwAtFunction(
-      'Illegal usage of `jasmine.DEFAULT_TIMEOUT_INTERVAL`, prefer `jest.setTimeout`.',
-      set,
-    );
-  }
-
-  const original = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-
-  Object.defineProperty(jasmine, 'DEFAULT_TIMEOUT_INTERVAL', {
-    configurable: true,
-    enumerable: true,
-    get: () => original,
-    set,
-  });
+    throw new Error("STUB");
 }
 
 function throwAtFunction(

@@ -21,9 +21,7 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
 
   override apply(hooks: JestHookSubscriber): void {
     hooks.onTestRunComplete(results => {
-      this._failedTestAssertions = this.getFailedTestAssertions(results);
-
-      if (this._manager.isActive()) this._manager.updateWithResults(results);
+        throw new Error("STUB");
     });
   }
 
@@ -46,25 +44,7 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void> {
     return new Promise(resolve => {
-      if (
-        !this._failedTestAssertions ||
-        this._failedTestAssertions.length === 0
-      ) {
-        resolve();
-        return;
-      }
-
-      this._manager.run(this._failedTestAssertions, failure => {
-        updateConfigAndRun({
-          mode: 'watch',
-          testNamePattern: failure ? `^${failure.fullName}$` : '',
-          testPathPatterns: failure ? [failure.path] : [],
-        });
-
-        if (!this._manager.isActive()) {
-          resolve();
-        }
-      });
+        throw new Error("STUB");
     });
   }
 

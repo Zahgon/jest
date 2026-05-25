@@ -29,7 +29,7 @@ export default class ReporterDispatcher {
 
   unregister(reporterConstructor: ReporterConstructor): void {
     this._reporters = this._reporters.filter(
-      reporter => !(reporter instanceof reporterConstructor),
+      reporter => { throw new Error("STUB"); },
     );
   }
 
@@ -108,8 +108,7 @@ export default class ReporterDispatcher {
   // Return a list of last errors for every reporter
   getErrors(): Array<Error> {
     return this._reporters.reduce<Array<Error>>((list, reporter) => {
-      const error = reporter.getLastError?.();
-      return error ? [...list, error] : list;
+        throw new Error("STUB");
     }, []);
   }
 

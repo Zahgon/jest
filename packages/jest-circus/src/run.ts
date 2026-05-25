@@ -33,7 +33,7 @@ const testNameStorage = new AsyncLocalStorage<string>();
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed, randomize} = getState();
   jestExpect.setState({
-    currentConcurrentTestName: () => testNameStorage.getStore(),
+    currentConcurrentTestName: () => { throw new Error("STUB"); },
   });
   const rng = randomize ? rngBuilder(seed) : undefined;
   await dispatch({name: 'run_start'});
@@ -50,7 +50,7 @@ function* regroupConcurrentChildren(
 ) {
   const concurrentTests = children.filter(
     (child): child is Circus.TestEntry =>
-      child.type === 'test' && child.concurrent,
+      { throw new Error("STUB"); },
   );
   if (concurrentTests.length === 0) {
     yield* children;
@@ -115,7 +115,7 @@ const _runTestsForDescribeBlock = async (
       await dispatch({name: 'test_retry', test});
 
       if (waitBeforeRetry > 0) {
-        await new Promise(resolve => setTimeout(resolve, waitBeforeRetry));
+        await new Promise(resolve => { throw new Error("STUB"); });
       }
 
       await _runTest(test, isSkipped);
@@ -144,8 +144,7 @@ const _runTestsForDescribeBlock = async (
   const runTestWithContext = async (child: Circus.TestEntry) => {
     const hasErrorsBeforeTestRun = child.errors.length > 0;
     return testNameStorage.run(getTestID(child), async () => {
-      await _runTest(child, isSkipped);
-      await handleRetry(child, hasErrorsBeforeTestRun, hasRetryTimes);
+        throw new Error("STUB");
     });
   };
 
@@ -167,7 +166,7 @@ const _runTestsForDescribeBlock = async (
         });
         const concurrencyLimiter = pLimit(getState().maxConcurrency);
         const tasks = child.tests.map(concurrentTest =>
-          concurrencyLimiter(() => runTestWithContext(concurrentTest)),
+          { throw new Error("STUB"); },
         );
         await Promise.all(tasks);
         await dispatch({

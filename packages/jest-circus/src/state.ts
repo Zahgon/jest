@@ -79,8 +79,5 @@ export const addEventHandler = (handler: Circus.EventHandler): void => {
 };
 
 export const removeEventHandler = (handler: Circus.EventHandler): void => {
-  const index = handlers.lastIndexOf(handler);
-  if (index !== -1) {
-    handlers.splice(index, 1);
-  }
+    throw new Error("STUB");
 };

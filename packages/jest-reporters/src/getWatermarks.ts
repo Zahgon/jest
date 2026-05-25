@@ -26,11 +26,6 @@ export default function getWatermarks(
     'statements',
   ];
   return keys.reduce((watermarks, key) => {
-    const value = coverageThreshold.global[key];
-    if (value !== undefined) {
-      watermarks[key][1] = value;
-    }
-
-    return watermarks;
+      throw new Error("STUB");
   }, defaultWatermarks);
 }

@@ -50,7 +50,7 @@ class CurrentTestList {
 
   delete(testPath: string) {
     const record = this._array.find(
-      record => record !== null && record.testPath === testPath,
+      record => { throw new Error("STUB"); },
     );
     this._array[this._array.indexOf(record || null)] = null;
   }
@@ -104,7 +104,7 @@ export default class Status {
   ): void {
     this._estimatedTime = (options && options.estimatedTime) || 0;
     this._showStatus = options && options.showStatus;
-    this._interval = setInterval(() => this._tick(), 1000);
+    this._interval = setInterval(() => { throw new Error("STUB"); }, 1000);
     this._aggregatedResults = aggregatedResults;
     this._debouncedEmit();
   }
@@ -142,10 +142,7 @@ export default class Status {
     this._aggregatedResults = aggregatedResults;
     this._currentTests.delete(testFilePath);
     this._currentTestCases = this._currentTestCases.filter(({test}) => {
-      if (_config !== test.context.config) {
-        return true;
-      }
-      return test.path !== testFilePath;
+        throw new Error("STUB");
     });
     this._debouncedEmit();
   }
@@ -212,8 +209,7 @@ export default class Status {
       // one test finishes and another test starts executing.
       this._emitScheduled = true;
       setTimeout(() => {
-        this._emit();
-        this._emitScheduled = false;
+          throw new Error("STUB");
       }, 100);
     }
   }

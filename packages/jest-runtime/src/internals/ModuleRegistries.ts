@@ -21,7 +21,7 @@ const isLiveEsm = (entry: JestModule | undefined): entry is VMModule => {
   return status === 'evaluated' || status === 'errored';
 };
 
-const notPermittedMethod = () => true;
+const notPermittedMethod = () => { throw new Error("STUB"); };
 
 class Isolation {
   readonly cjs: ModuleRegistry = new Map();
@@ -50,44 +50,44 @@ export class ModuleRegistries {
   >();
 
   getCjs(modulePath: string): InitialModule | Module | JestModule | undefined {
-    return (this.isolation?.cjs ?? this.moduleRegistry).get(modulePath);
+      throw new Error("STUB");
   }
   setCjs(
     modulePath: string,
     module: InitialModule | Module | JestModule,
   ): void {
-    (this.isolation?.cjs ?? this.moduleRegistry).set(modulePath, module);
+      throw new Error("STUB");
   }
   hasCjs(modulePath: string): boolean {
-    return (this.isolation?.cjs ?? this.moduleRegistry).has(modulePath);
+      throw new Error("STUB");
   }
   deleteCjs(modulePath: string): void {
-    (this.isolation?.cjs ?? this.moduleRegistry).delete(modulePath);
+      throw new Error("STUB");
   }
 
   getInternalCjs(
     modulePath: string,
   ): InitialModule | Module | JestModule | undefined {
-    return this.internalModuleRegistry.get(modulePath);
+      throw new Error("STUB");
   }
   setInternalCjs(
     modulePath: string,
     module: InitialModule | Module | JestModule,
   ): void {
-    this.internalModuleRegistry.set(modulePath, module);
+      throw new Error("STUB");
   }
   hasInternalCjs(modulePath: string): boolean {
-    return this.internalModuleRegistry.has(modulePath);
+      throw new Error("STUB");
   }
 
   getEsm(key: string): JestModule | undefined {
-    return (this.isolation?.esm ?? this.esModuleRegistry).get(key);
+      throw new Error("STUB");
   }
   setEsm(key: string, module: JestModule): void {
-    (this.isolation?.esm ?? this.esModuleRegistry).set(key, module);
+      throw new Error("STUB");
   }
   hasEsm(key: string): boolean {
-    return (this.isolation?.esm ?? this.esModuleRegistry).has(key);
+      throw new Error("STUB");
   }
 
   // Reads cascade: isolated overlay first, fall back to main. Writes go to
@@ -101,7 +101,7 @@ export class ModuleRegistries {
     return this.mockRegistry.get(moduleID);
   }
   setMock(moduleID: string, module: unknown): void {
-    (this.isolation?.mock ?? this.mockRegistry).set(moduleID, module);
+      throw new Error("STUB");
   }
   hasMock(moduleID: string): boolean {
     return (
@@ -137,20 +137,11 @@ export class ModuleRegistries {
   }
 
   isIsolated(): boolean {
-    return this.isolation !== null;
+      throw new Error("STUB");
   }
 
   enterIsolated(callerName: 'isolateModules' | 'isolateModulesAsync'): void {
-    if (this.isIsolated()) {
-      const other =
-        callerName === 'isolateModules'
-          ? 'isolateModulesAsync'
-          : 'isolateModules';
-      throw new Error(
-        `${callerName} cannot be nested inside another ${callerName} or ${other}.`,
-      );
-    }
-    this.isolation = new Isolation();
+      throw new Error("STUB");
   }
 
   exitIsolated(): void {
@@ -193,9 +184,7 @@ export class ModuleRegistries {
         }
       )._nodeModulePaths(dir),
       require: (() => {
-        throw new Error(
-          'require() on a require.cache ESM entry is not supported',
-        );
+          throw new Error("STUB");
       }) as unknown as NodeModule['require'],
     } satisfies NodeModule;
     this.esmRequireCacheWrappers.set(esm, wrapper);
@@ -212,28 +201,16 @@ export class ModuleRegistries {
       defineProperty: notPermittedMethod,
       deleteProperty: notPermittedMethod,
       get: (_target, key) => {
-        if (typeof key !== 'string') return undefined;
-        return (
-          (this.moduleRegistry.get(key) as NodeModule | undefined) ??
-          esmEntry(key)
-        );
+          throw new Error("STUB");
       },
       getOwnPropertyDescriptor() {
         return {configurable: true, enumerable: true};
       },
       has: (_target, key) => {
-        if (typeof key !== 'string') return false;
-        return (
-          this.moduleRegistry.has(key) ||
-          isLiveEsm(this.esModuleRegistry.get(key))
-        );
+          throw new Error("STUB");
       },
       ownKeys: () => {
-        const keys = new Set<string>(this.moduleRegistry.keys());
-        for (const [key, entry] of this.esModuleRegistry) {
-          if (isLiveEsm(entry)) keys.add(key);
-        }
-        return [...keys];
+          throw new Error("STUB");
       },
       set: notPermittedMethod,
     });

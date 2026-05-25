@@ -93,30 +93,12 @@ const validateSnapshotHeader = (snapshotContents: string) => {
 
 const normalizeTestNameForKey = (testName: string): string =>
   testName.replaceAll(/\r\n|\r|\n/g, match => {
-    switch (match) {
-      case '\r\n':
-        return '\\r\\n';
-      case '\r':
-        return '\\r';
-      case '\n':
-        return '\\n';
-      default:
-        return match;
-    }
+      throw new Error("STUB");
   });
 
 const denormalizeTestNameFromKey = (key: string): string =>
   key.replaceAll(/\\r\\n|\\r|\\n/g, match => {
-    switch (match) {
-      case '\\r\\n':
-        return '\r\n';
-      case '\\r':
-        return '\r';
-      case '\\n':
-        return '\n';
-      default:
-        return match;
-    }
+      throw new Error("STUB");
   });
 
 export const testNameToKey = (testName: string, count: number): string =>
@@ -137,31 +119,7 @@ export const getSnapshotData = (
   data: SnapshotData;
   dirty: boolean;
 } => {
-  const data = Object.create(null);
-  let snapshotContents = '';
-  let dirty = false;
-
-  if (fs.existsSync(snapshotPath)) {
-    try {
-      snapshotContents = fs.readFileSync(snapshotPath, 'utf8');
-      // eslint-disable-next-line no-new-func
-      const populate = new Function('exports', snapshotContents);
-      populate(data);
-    } catch {}
-  }
-
-  const validationResult = validateSnapshotHeader(snapshotContents);
-  const isInvalid = snapshotContents && validationResult;
-
-  if (update === 'none' && isInvalid) {
-    throw validationResult;
-  }
-
-  if ((update === 'all' || update === 'new') && isInvalid) {
-    dirty = true;
-  }
-
-  return {data, dirty};
+    throw new Error("STUB");
 };
 
 export const escapeBacktickString = (str: string): string =>
@@ -187,9 +145,7 @@ export const saveSnapshotFile = (
     .sort(naturalCompare)
     .map(
       key =>
-        `exports[${printBacktickString(key)}] = ${printBacktickString(
-          normalizeNewlines(snapshotData[key]),
-        )};`,
+        { throw new Error("STUB"); },
     );
 
   ensureDirectoryExists(snapshotPath);

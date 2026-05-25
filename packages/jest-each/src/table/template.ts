@@ -19,26 +19,14 @@ export default function template(
   headings: Headings,
   row: Global.Row,
 ): EachTests {
-  const table = convertRowToTable(row, headings);
-  const templates = convertTableToTemplates(table, headings);
-  return templates.map((template, index) => ({
-    arguments: [template],
-    title: interpolateVariables(title, template, index),
-  }));
+    throw new Error("STUB");
 }
 
 const convertRowToTable = (row: Global.Row, headings: Headings): Global.Table =>
-  Array.from({length: row.length / headings.length}, (_, index) =>
-    row.slice(
-      index * headings.length,
-      index * headings.length + headings.length,
-    ),
-  );
+  { throw new Error("STUB"); };
 
 const convertTableToTemplates = (
   table: Global.Table,
   headings: Headings,
 ): Templates =>
-  table.map(row =>
-    Object.fromEntries(row.map((value, index) => [headings[index], value])),
-  );
+  { throw new Error("STUB"); };

@@ -34,7 +34,7 @@ const install = (
     title: string,
     test: Global.EachTestFn<Global.TestFn>,
     timeout?: number,
-  ) => bind(g.test.concurrent)(table, ...data)(title, test, timeout);
+  ) => { throw new Error("STUB"); };
 
   test.concurrent = testConcurrent;
   testConcurrent.only = bind(g.test.concurrent.only)(table, ...data);
@@ -70,12 +70,11 @@ const each = (
   table: Global.EachTable,
   ...data: Global.TemplateData
 ): ReturnType<typeof install> =>
-  install(globalThis as unknown as Global, table, ...data);
+  { throw new Error("STUB"); };
 
 each.withGlobal =
   (g: Global) =>
-  (table: Global.EachTable, ...data: Global.TemplateData) =>
-    install(g, table, ...data);
+  { throw new Error("STUB"); };
 
 export {bind};
 

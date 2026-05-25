@@ -16,44 +16,13 @@ export default function getNoTestFoundVerbose(
   willExitWith0: boolean,
 ): string {
   const individualResults = testRunData.map(testRun => {
-    const stats = testRun.matches.stats || ({} as Stats);
-    const config = testRun.context.config;
-    const statsMessage = (Object.keys(stats) as Array<keyof Stats>)
-      .map(key => {
-        if (key === 'roots' && config.roots.length === 1) {
-          return null;
-        }
-        const value = (config as Record<string, unknown>)[key];
-        if (value) {
-          const valueAsString = Array.isArray(value)
-            ? value.join(', ')
-            : String(value);
-          const matches = pluralize('match', stats[key] || 0, 'es');
-          return `  ${key}: ${chalk.yellow(valueAsString)} - ${matches}`;
-        }
-        return null;
-      })
-      .filter(Boolean)
-      .join('\n');
-
-    return testRun.matches.total
-      ? `In ${chalk.bold(config.rootDir)}\n` +
-          `  ${pluralize(
-            'file',
-            testRun.matches.total || 0,
-            's',
-          )} checked.\n${statsMessage}`
-      : `No files found in ${config.rootDir}.\n` +
-          "Make sure Jest's configuration does not exclude this directory." +
-          '\nTo set up Jest, make sure a package.json file exists.\n' +
-          'Jest Documentation: ' +
-          'https://jestjs.io/docs/configuration';
+      throw new Error("STUB");
   });
   let dataMessage;
 
   if (globalConfig.runTestsByPath) {
     dataMessage = `Files: ${globalConfig.nonFlagArgs
-      .map(p => `"${p}"`)
+      .map(p => { throw new Error("STUB"); })
       .join(', ')}`;
   } else {
     dataMessage = `Pattern: ${chalk.yellow(

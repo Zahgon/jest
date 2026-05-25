@@ -63,20 +63,11 @@ export default class SummaryReporter extends BaseReporter {
     globalConfig: Config.GlobalConfig,
     options?: SummaryReporterOptions,
   ) {
-    super();
-    this._globalConfig = globalConfig;
-    this._estimatedTime = 0;
-    this._validateOptions(options);
-    this._summaryThreshold = options?.summaryThreshold ?? 20;
+      throw new Error("STUB");
   }
 
   private _validateOptions(options?: SummaryReporterOptions) {
-    if (
-      options?.summaryThreshold &&
-      typeof options.summaryThreshold !== 'number'
-    ) {
-      throw new TypeError('The option summaryThreshold should be a number');
-    }
+      throw new Error("STUB");
   }
 
   // If we write more than one character at a time it is possible that
@@ -234,7 +225,7 @@ export default class SummaryReporter extends BaseReporter {
     let nameInfo = '';
 
     if (globalConfig.runTestsByPath) {
-      nameInfo = ` ${globalConfig.nonFlagArgs.map(p => `"${p}"`).join(', ')}`;
+      nameInfo = ` ${globalConfig.nonFlagArgs.map(p => { throw new Error("STUB"); }).join(', ')}`;
     } else if (globalConfig.testNamePattern) {
       nameInfo = `${chalk.dim(' with tests matching ')}"${
         globalConfig.testNamePattern

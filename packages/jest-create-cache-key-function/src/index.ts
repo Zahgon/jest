@@ -47,41 +47,14 @@ function getGlobalCacheKey(
   values: Array<string>,
   length: number,
 ) {
-  return [
-    NODE_ENV,
-    BABEL_ENV,
-    ...values,
-    ...files.map((file: string) => readFileSync(file)),
-  ]
-    .reduce(
-      (hash, chunk) => hash.update('\0', 'utf8').update(chunk || ''),
-      createHash('sha1'),
-    )
-    .digest('hex')
-    .slice(0, length);
+    throw new Error("STUB");
 }
 
 function getCacheKeyFunction(
   globalCacheKey: string,
   length: number,
 ): GetCacheKeyFunction {
-  return ((sourceText, sourcePath, configString, options) => {
-    // Jest 27 passes a single options bag which contains `configString` rather than as a separate argument.
-    // We can hide that API difference, though, so this module is usable for both jest@<27 and jest@>=27
-    const inferredOptions = options || configString;
-    const {config, instrument} = inferredOptions;
-
-    return createHash('sha1')
-      .update(globalCacheKey)
-      .update('\0', 'utf8')
-      .update(sourceText)
-      .update('\0', 'utf8')
-      .update(config.rootDir ? relative(config.rootDir, sourcePath) : '')
-      .update('\0', 'utf8')
-      .update(instrument ? 'instrument' : '')
-      .digest('hex')
-      .slice(0, length);
-  }) as GetCacheKeyFunction;
+    throw new Error("STUB");
 }
 
 /**
@@ -97,5 +70,5 @@ export default function createCacheKey(
   values: Array<string> = [],
   length = process.platform === 'win32' ? 16 : 32,
 ): GetCacheKeyFunction {
-  return getCacheKeyFunction(getGlobalCacheKey(files, values, length), length);
+    throw new Error("STUB");
 }

@@ -53,8 +53,7 @@ class Diff {
   1: string;
 
   constructor(op: number, text: string) {
-    this[0] = op;
-    this[1] = text;
+      throw new Error("STUB");
   }
 }
 

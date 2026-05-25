@@ -37,22 +37,7 @@ function getExposedMethods(
   workerPath: string,
   options: WorkerFarmOptions,
 ): ReadonlyArray<string> {
-  let exposedMethods = options.exposedMethods;
-
-  // If no methods list is given, try getting it by auto-requiring the module.
-  if (!exposedMethods) {
-    const module: Record<string, unknown> = require(workerPath);
-
-    exposedMethods = Object.keys(module).filter(
-      name => typeof module[name] === 'function',
-    );
-
-    if (typeof module === 'function') {
-      exposedMethods = [...exposedMethods, 'default'];
-    }
-  }
-
-  return exposedMethods;
+    throw new Error("STUB");
 }
 
 /**
@@ -87,89 +72,29 @@ export class Worker {
   private readonly _workerPool: WorkerPoolInterface;
 
   constructor(workerPath: string | URL, options?: WorkerFarmOptions) {
-    this._options = {...options};
-    this._ending = false;
-
-    if (typeof workerPath !== 'string') {
-      workerPath = workerPath.href;
-    }
-
-    if (workerPath.startsWith('file:')) {
-      workerPath = fileURLToPath(workerPath);
-    } else if (!isAbsolute(workerPath)) {
-      throw new Error(`'workerPath' must be absolute, got '${workerPath}'`);
-    }
-
-    const workerPoolOptions: WorkerPoolOptions = {
-      enableWorkerThreads: this._options.enableWorkerThreads ?? false,
-      forkOptions: this._options.forkOptions ?? {},
-      idleMemoryLimit: this._options.idleMemoryLimit,
-      maxRetries: this._options.maxRetries ?? 3,
-      numWorkers:
-        this._options.numWorkers ?? Math.max(availableParallelism() - 1, 1),
-      resourceLimits: this._options.resourceLimits ?? {},
-      setupArgs: this._options.setupArgs ?? [],
-      workerGracefulExitTimeout: this._options.workerGracefulExitTimeout,
-    };
-
-    if (this._options.WorkerPool) {
-      this._workerPool = new this._options.WorkerPool(
-        workerPath,
-        workerPoolOptions,
-      );
-    } else {
-      this._workerPool = new WorkerPool(workerPath, workerPoolOptions);
-    }
-
-    this._farm = new Farm(
-      workerPoolOptions.numWorkers,
-      this._workerPool.send.bind(this._workerPool),
-      {
-        computeWorkerKey: this._options.computeWorkerKey,
-        taskQueue: this._options.taskQueue,
-        workerSchedulingPolicy: this._options.workerSchedulingPolicy,
-      },
-    );
-
-    this._bindExposedWorkerMethods(workerPath, this._options);
+      throw new Error("STUB");
   }
 
   private _bindExposedWorkerMethods(
     workerPath: string,
     options: WorkerFarmOptions,
   ): void {
-    for (const name of getExposedMethods(workerPath, options)) {
-      if (name.startsWith('_')) {
-        continue;
-      }
-
-      // eslint-disable-next-line no-prototype-builtins
-      if (this.constructor.prototype.hasOwnProperty(name)) {
-        throw new TypeError(`Cannot define a method called ${name}`);
-      }
-
-      // @ts-expect-error: dynamic extension of the class instance is expected.
-      this[name] = this._callFunctionWithArgs.bind(this, name);
-    }
+      throw new Error("STUB");
   }
 
   private _callFunctionWithArgs(
     method: string,
     ...args: Array<unknown>
   ): Promise<unknown> {
-    if (this._ending) {
-      throw new Error('Farm is ended, no more calls can be done to it');
-    }
-
-    return this._farm.doWork(method, ...args);
+      throw new Error("STUB");
   }
 
   getStderr(): NodeJS.ReadableStream {
-    return this._workerPool.getStderr();
+      throw new Error("STUB");
   }
 
   getStdout(): NodeJS.ReadableStream {
-    return this._workerPool.getStdout();
+      throw new Error("STUB");
   }
 
   async start(): Promise<void> {

@@ -18,32 +18,14 @@ export default class FailedTestsCache {
     if (!enabledTestsMap) {
       return tests;
     }
-    return tests.filter(test => enabledTestsMap[test.path]);
+    return tests.filter(test => { throw new Error("STUB"); });
   }
 
   setTestResults(testResults: Array<TestResult>): void {
     this._enabledTestsMap = (testResults || []).reduce<TestMap>(
       (suiteMap, testResult) => {
-        if (testResult.testExecError) {
-          suiteMap[testResult.testFilePath] = {};
-          return suiteMap;
-        }
-        if (!testResult.numFailingTests) {
-          return suiteMap;
-        }
-
-        suiteMap[testResult.testFilePath] = testResult.testResults.reduce<{
-          [name: string]: true;
-        }>((testMap, test) => {
-          if (test.status !== 'failed') {
-            return testMap;
-          }
-
-          testMap[test.fullName] = true;
-          return testMap;
-        }, {});
-        return suiteMap;
-      },
+            throw new Error("STUB");
+        },
       {},
     );
 

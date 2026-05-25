@@ -52,43 +52,6 @@ export default class ReportDispatcher implements Reporter {
   suiteStarted: (result: SuiteResult) => void;
 
   constructor(methods: Array<keyof Reporter>) {
-    const dispatchedMethods = methods || [];
-
-    for (const method of dispatchedMethods) {
-      this[method] = (function (m) {
-        return function () {
-          dispatch(m, arguments);
-        };
-      })(method);
-    }
-
-    let reporters: Array<Reporter> = [];
-    let fallbackReporter: Reporter | null = null;
-
-    this.addReporter = function (reporter) {
-      reporters.push(reporter);
-    };
-
-    this.provideFallbackReporter = function (reporter) {
-      fallbackReporter = reporter;
-    };
-
-    this.clearReporters = function () {
-      reporters = [];
-    };
-
-    return this;
-
-    function dispatch(method: keyof Reporter, args: unknown) {
-      if (reporters.length === 0 && fallbackReporter !== null) {
-        reporters.push(fallbackReporter);
-      }
-      for (const reporter of reporters) {
-        if (reporter[method]) {
-          // @ts-expect-error: wrong context
-          reporter[method].apply(reporter, args);
-        }
-      }
-    }
+      throw new Error("STUB");
   }
 }

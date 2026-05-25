@@ -12,9 +12,5 @@ export default function colorize(
   start: number,
   end: number,
 ): string {
-  return (
-    chalk.dim(str.slice(0, start)) +
-    chalk.reset(str.slice(start, end)) +
-    chalk.dim(str.slice(end))
-  );
+    throw new Error("STUB");
 }

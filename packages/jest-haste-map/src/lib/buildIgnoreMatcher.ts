@@ -15,13 +15,6 @@ export function buildIgnoreMatcher(
   retainAllFiles: boolean,
 ): (filePath: string) => boolean {
   return (filePath: string) => {
-    const ignoreMatched =
-      ignorePattern instanceof RegExp
-        ? ignorePattern.test(filePath)
-        : ignorePattern && ignorePattern(filePath);
-    return (
-      Boolean(ignoreMatched) ||
-      (!retainAllFiles && filePath.includes(NODE_MODULES))
-    );
+      throw new Error("STUB");
   };
 }

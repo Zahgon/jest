@@ -37,7 +37,7 @@ import type Timer from './Timer';
 const noopTimer = {
   start() {},
   elapsed() {
-    return 0;
+      throw new Error("STUB");
   },
 };
 
@@ -61,81 +61,6 @@ export default class JsApiReporter implements Reporter {
   specStarted: (spec: SpecResult) => void;
 
   constructor(options: {timer?: Timer}) {
-    const timer = options.timer || noopTimer;
-    let status = 'loaded';
-
-    this.started = false;
-    this.finished = false;
-    this.runDetails = {};
-
-    this.jasmineStarted = () => {
-      this.started = true;
-      status = 'started';
-      timer.start();
-    };
-
-    let executionTime: number;
-
-    function validateAfterAllExceptions({failedExpectations}: RunDetails) {
-      if (failedExpectations && failedExpectations.length > 0) {
-        throw failedExpectations[0];
-      }
-    }
-
-    this.jasmineDone = function (runDetails) {
-      validateAfterAllExceptions(runDetails);
-      this.finished = true;
-      this.runDetails = runDetails;
-      executionTime = timer.elapsed();
-      status = 'done';
-    };
-
-    this.status = function () {
-      return status;
-    };
-
-    const suites: Array<SuiteResult> = [];
-    const suites_hash: Record<string, SuiteResult> = {};
-
-    this.specStarted = function () {};
-
-    this.suiteStarted = function (result: SuiteResult) {
-      suites_hash[result.id] = result;
-    };
-
-    this.suiteDone = function (result: SuiteResult) {
-      storeSuite(result);
-    };
-
-    this.suiteResults = function (index, length) {
-      return suites.slice(index, index + length);
-    };
-
-    function storeSuite(result: SuiteResult) {
-      suites.push(result);
-      suites_hash[result.id] = result;
-    }
-
-    this.suites = function () {
-      return suites_hash;
-    };
-
-    const specs: Array<SpecResult> = [];
-
-    this.specDone = function (result) {
-      specs.push(result);
-    };
-
-    this.specResults = function (index, length) {
-      return specs.slice(index, index + length);
-    };
-
-    this.specs = function () {
-      return specs;
-    };
-
-    this.executionTime = function () {
-      return executionTime;
-    };
+      throw new Error("STUB");
   }
 }

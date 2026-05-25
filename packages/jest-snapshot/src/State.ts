@@ -77,27 +77,7 @@ export default class SnapshotState {
   updated: number;
 
   constructor(snapshotPath: string, options: SnapshotStateOptions) {
-    this._snapshotPath = snapshotPath;
-    const {data, dirty} = getSnapshotData(
-      this._snapshotPath,
-      options.updateSnapshot,
-    );
-    this._initialData = data;
-    this._snapshotData = data;
-    this._dirty = dirty;
-    this._prettierPath = options.prettierPath ?? null;
-    this._inlineSnapshots = [];
-    this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
-    this._counters = new Map();
-    this._index = 0;
-    this.expand = options.expand || false;
-    this.added = 0;
-    this.matched = 0;
-    this.unmatched = 0;
-    this._updateSnapshot = options.updateSnapshot;
-    this.updated = 0;
-    this.snapshotFormat = options.snapshotFormat;
-    this._rootDir = options.rootDir;
+      throw new Error("STUB");
   }
 
   markSnapshotsAsCheckedForTest(testName: string): void {

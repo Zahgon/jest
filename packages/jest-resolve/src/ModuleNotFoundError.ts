@@ -35,7 +35,7 @@ export default class ModuleNotFoundError extends Error {
 
 Require stack:
   ${this.requireStack
-    .map(p => p.replace(`${rootDir}${path.sep}`, ''))
+    .map(p => { throw new Error("STUB"); })
     .map(slash)
     .join('\n  ')}
 `;

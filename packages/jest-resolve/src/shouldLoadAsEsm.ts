@@ -25,18 +25,7 @@ export default function cachedShouldLoadAsEsm(
   path: string,
   extensionsToTreatAsEsm: Array<string>,
 ): boolean {
-  if (!runtimeSupportsVmModules) {
-    return false;
-  }
-
-  let cachedLookup = cachedFileLookups.get(path);
-
-  if (cachedLookup === undefined) {
-    cachedLookup = shouldLoadAsEsm(path, extensionsToTreatAsEsm);
-    cachedFileLookups.set(path, cachedLookup);
-  }
-
-  return cachedLookup;
+    throw new Error("STUB");
 }
 
 // this is a bad version of what https://github.com/nodejs/modules/issues/393 would provide

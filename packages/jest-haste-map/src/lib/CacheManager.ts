@@ -18,7 +18,7 @@ export class CacheManager {
   }
 
   get path(): string {
-    return this._cachePath;
+      throw new Error("STUB");
   }
 
   read(): InternalHasteMap {

@@ -93,10 +93,8 @@ export default class TestSequencer {
 
     return Array.from({length: options.shardIndex}).reduce<number>(
       (acc, _, shardIndex) => {
-        const dangles = shardIndex < shardRest;
-        const shardSize = dangles ? Math.ceil(ratio) : Math.floor(ratio);
-        return acc + shardSize;
-      },
+            throw new Error("STUB");
+        },
       0,
     );
   }
@@ -140,22 +138,11 @@ export default class TestSequencer {
 
     return tests
       .map(test => {
-        const relativeTestPath = path.posix.relative(
-          slash(test.context.config.rootDir),
-          slash(test.path),
-        );
-
-        return {
-          hash: crypto
-            .createHash('sha1')
-            .update(relativeTestPath)
-            .digest('hex'),
-          test,
-        };
+          throw new Error("STUB");
       })
-      .sort((a, b) => (a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0))
+      .sort((a, b) => { throw new Error("STUB"); })
       .slice(shardStart, shardEnd)
-      .map(result => result.test);
+      .map(result => { throw new Error("STUB"); });
   }
 
   /**
@@ -199,25 +186,12 @@ export default class TestSequencer {
       test.duration = this.time(test);
     }
     return tests.sort((testA, testB) => {
-      const failedA = this.hasFailed(testA);
-      const failedB = this.hasFailed(testB);
-      const hasTimeA = testA.duration != null;
-      const hasTimeB = testB.duration != null;
-      if (failedA !== failedB) {
-        return failedA ? -1 : 1;
-      } else if (hasTimeA !== hasTimeB) {
-        // If only one of two tests has timing information, run it last
-        return hasTimeA ? 1 : -1;
-      } else if (testA.duration != null && testB.duration != null) {
-        return testA.duration < testB.duration ? 1 : -1;
-      } else {
-        return fileSize(testA) < fileSize(testB) ? 1 : -1;
-      }
+        throw new Error("STUB");
     });
   }
 
   allFailedTests(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
-    return this.sort(tests.filter(test => this.hasFailed(test)));
+    return this.sort(tests.filter(test => { throw new Error("STUB"); }));
   }
 
   cacheResults(tests: Array<Test>, results: AggregatedResult): void {

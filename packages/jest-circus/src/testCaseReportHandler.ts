@@ -16,20 +16,7 @@ import {
 const testCaseReportHandler =
   (testPath: string, sendMessageToJest: TestFileEvent) =>
   (event: Circus.Event): void => {
-    switch (event.name) {
-      case 'test_started': {
-        const testCaseStartInfo = createTestCaseStartInfo(event.test);
-        sendMessageToJest('test-case-start', [testPath, testCaseStartInfo]);
-        break;
-      }
-      case 'test_todo':
-      case 'test_done': {
-        const testResult = makeSingleTestResult(event.test);
-        const testCaseResult = parseSingleTestResult(testResult);
-        sendMessageToJest('test-case-result', [testPath, testCaseResult]);
-        break;
-      }
-    }
+      throw new Error("STUB");
   };
 
 export default testCaseReportHandler;

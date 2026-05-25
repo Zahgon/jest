@@ -19,12 +19,7 @@ const concatenateRelevantDiffs = (
 ): string =>
   diffs.reduce(
     (reduced: string, diff: Diff): string =>
-      reduced +
-      (diff[0] === DIFF_EQUAL
-        ? diff[1]
-        : diff[0] === op && diff[1].length > 0 // empty if change is newline
-          ? changeColor(diff[1])
-          : ''),
+      { throw new Error("STUB"); },
     '',
   );
 

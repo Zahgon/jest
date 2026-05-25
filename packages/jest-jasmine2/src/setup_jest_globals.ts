@@ -35,28 +35,14 @@ const addSuppressedErrors = (result: SpecResult) => {
   if (suppressedErrors.length > 0) {
     result.status = 'failed';
 
-    result.failedExpectations = suppressedErrors.map(error => ({
-      actual: '',
-      // passing error for custom test reporters
-      error,
-      expected: '',
-      matcherName: '',
-      message: error.message,
-      passed: false,
-      stack: error.stack,
-    }));
+    result.failedExpectations = suppressedErrors.map(error => { throw new Error("STUB"); });
   }
 };
 
 const addAssertionErrors = (result: SpecResult) => {
   const assertionErrors = jestExpect.extractExpectedAssertionsErrors();
   if (assertionErrors.length > 0) {
-    const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
-      actual,
-      expected,
-      message: error.stack,
-      passed: false,
-    }));
+    const jasmineErrors = assertionErrors.map(({actual, error, expected}) => { throw new Error("STUB"); });
     result.status = 'failed';
     result.failedExpectations = [
       ...result.failedExpectations,
@@ -66,28 +52,7 @@ const addAssertionErrors = (result: SpecResult) => {
 };
 
 const patchJasmine = () => {
-  // @ts-expect-error: jasmine doesn't exist on globalThis
-  globalThis.jasmine.Spec = (realSpec => {
-    class Spec extends realSpec {
-      constructor(attr: Attributes) {
-        const resultCallback = attr.resultCallback;
-        attr.resultCallback = function (result: SpecResult) {
-          addSuppressedErrors(result);
-          addAssertionErrors(result);
-          resultCallback.call(attr, result);
-        };
-        const onStart = attr.onStart;
-        attr.onStart = (context: JasmineSpec) => {
-          jestExpect.setState({currentTestName: context.getFullName()});
-          onStart?.call(attr, context);
-        };
-        super(attr);
-      }
-    }
-
-    return Spec;
-    // @ts-expect-error: jasmine doesn't exist on globalThis
-  })(globalThis.jasmine.Spec);
+    throw new Error("STUB");
 };
 
 export default async function setupJestGlobals({
@@ -96,26 +61,5 @@ export default async function setupJestGlobals({
   localRequire,
   testPath,
 }: SetupOptions): Promise<SnapshotState> {
-  // Jest tests snapshotSerializers in order preceding built-in serializers.
-  // Therefore, add in reverse because the last added is the first tested.
-  for (let i = config.snapshotSerializers.length - 1; i >= 0; i--) {
-    addSerializer(localRequire(config.snapshotSerializers[i]));
-  }
-
-  patchJasmine();
-  const {expand, updateSnapshot} = globalConfig;
-  const {prettierPath, rootDir, snapshotFormat} = config;
-  const snapshotResolver = await buildSnapshotResolver(config, localRequire);
-  const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
-  const snapshotState = new SnapshotState(snapshotPath, {
-    expand,
-    prettierPath,
-    rootDir,
-    snapshotFormat,
-    updateSnapshot,
-  });
-
-  jestExpect.setState({snapshotState, testPath});
-  // Return it back to the outer scope (test runner outside the VM).
-  return snapshotState;
+    throw new Error("STUB");
 }

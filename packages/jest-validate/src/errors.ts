@@ -18,30 +18,12 @@ export const errorMessage = (
   options: ValidationOptions,
   path?: Array<string>,
 ): void => {
-  const conditions = getValues(defaultValue);
-  const validTypes: Array<string> = [...new Set(conditions.map(getType))];
-
-  const message = `  Option ${chalk.bold(
-    `"${path && path.length > 0 ? `${path.join('.')}.` : ''}${option}"`,
-  )} must be of type:
-    ${validTypes.map(e => chalk.bold.green(e)).join(' or ')}
-  but instead received:
-    ${chalk.bold.red(getType(received))}
-
-  Example:
-${formatExamples(option, conditions)}`;
-
-  const comment = options.comment;
-  const name = (options.title && options.title.error) || ERROR;
-
-  throw new ValidationError(name, message, comment);
+    throw new Error("STUB");
 };
 
 function formatExamples(option: string, examples: Array<unknown>) {
   return examples.map(
-    e => `  {
-    ${chalk.bold(`"${option}"`)}: ${chalk.bold(formatPrettyObject(e))}
-  }`,
+    e => { throw new Error("STUB"); },
   ).join(`
 
   or

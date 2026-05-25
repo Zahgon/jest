@@ -104,7 +104,7 @@ export type {
 } from './types';
 
 const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
-  .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
+  .map(vcs => { throw new Error("STUB"); })
   .join('|');
 
 /**
@@ -190,7 +190,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _cacheManager!: CacheManager;
   private _changeQueue?: ChangeQueue;
   private _fileProcessor!: FileProcessor;
-  private _ignoreFn: (filePath: string) => boolean = () => false;
+  private _ignoreFn: (filePath: string) => boolean = () => { throw new Error("STUB"); };
   private readonly _console: Console;
   private readonly _options: InternalOptions;
   private _watcherDriver?: WatcherDriver;
@@ -216,82 +216,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   }
 
   private constructor(options: Options) {
-    super();
-    this._options = {
-      cacheDirectory: options.cacheDirectory || tmpdir(),
-      computeDependencies: options.computeDependencies ?? true,
-      computeSha1: options.computeSha1 || false,
-      dependencyExtractor: options.dependencyExtractor || null,
-      enableSymlinks: options.enableSymlinks ?? false,
-      extensions: options.extensions,
-      forceNodeFilesystemAPI: options.forceNodeFilesystemAPI ?? false,
-      hasteImplModulePath: options.hasteImplModulePath,
-      id: options.id,
-      maxWorkers: options.maxWorkers,
-      mocksPattern: options.mocksPattern
-        ? new RegExp(options.mocksPattern)
-        : null,
-      platforms: options.platforms,
-      resetCache: options.resetCache,
-      retainAllFiles: options.retainAllFiles,
-      rootDir: options.rootDir,
-      roots: [...new Set(options.roots)],
-      skipPackageJson: !!options.skipPackageJson,
-      throwOnModuleCollision: !!options.throwOnModuleCollision,
-      useWatchman: options.useWatchman ?? true,
-      watch: !!options.watch,
-      workerThreads: options.workerThreads,
-    };
-    this._console = options.console || globalThis.console;
-
-    if (options.ignorePattern) {
-      if (options.ignorePattern instanceof RegExp) {
-        this._options.ignorePattern = new RegExp(
-          `${options.ignorePattern.source}|${VCS_DIRECTORIES}`,
-          options.ignorePattern.flags,
-        );
-      } else {
-        throw new TypeError(
-          'jest-haste-map: the `ignorePattern` option must be a RegExp',
-        );
-      }
-    } else {
-      this._options.ignorePattern = new RegExp(VCS_DIRECTORIES);
-    }
-
-    if (this._options.enableSymlinks && this._options.useWatchman) {
-      throw new Error(
-        'jest-haste-map: enableSymlinks config option was set, but ' +
-          'is incompatible with watchman.\n' +
-          'Set either `enableSymlinks` to false or `useWatchman` to false.',
-      );
-    }
-
-    this._ignoreFn = buildIgnoreMatcher(
-      this._options.ignorePattern,
-      this._options.retainAllFiles,
-    );
-    this._workerPool = new WorkerPool({
-      maxWorkers: this._options.maxWorkers,
-      workerPath: require.resolve('./worker'),
-      workerThreads: this._options.workerThreads,
-    });
-    this._fileProcessor = new FileProcessor(
-      {
-        computeDependencies: this._options.computeDependencies,
-        computeSha1: this._options.computeSha1,
-        dependencyExtractor: this._options.dependencyExtractor,
-        hasteImplModulePath: this._options.hasteImplModulePath,
-        mocksPattern: this._options.mocksPattern,
-        platforms: this._options.platforms,
-        retainAllFiles: this._options.retainAllFiles,
-        rootDir: this._options.rootDir,
-        skipPackageJson: this._options.skipPackageJson,
-        throwOnModuleCollision: this._options.throwOnModuleCollision,
-      },
-      this._console,
-      this._workerPool,
-    );
+      throw new Error("STUB");
   }
 
   private async setupCachePath(options: Options): Promise<void> {
@@ -326,7 +251,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       VERSION,
       this._options.id,
       this._options.roots
-        .map(root => fastPath.relative(options.rootDir, root))
+        .map(root => { throw new Error("STUB"); })
         .join(':'),
       this._options.extensions.join(':'),
       this._options.platforms.join(':'),
@@ -353,7 +278,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   }
 
   static getModuleMapFromJSON(json: SerializableModuleMap): HasteModuleMap {
-    return HasteModuleMap.fromJSON(json);
+      throw new Error("STUB");
   }
 
   getCacheFilePath(): string {
@@ -363,41 +288,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   build(): Promise<InternalHasteMapObject> {
     if (!this._buildPromise) {
       this._buildPromise = (async () => {
-        const data = await this._buildFileMap();
-
-        // Persist when we don't know if files changed (changedFiles undefined)
-        // or when we know a file was changed or deleted.
-        let hasteMap: InternalHasteMap;
-        if (
-          data.changedFiles === undefined ||
-          data.changedFiles.size > 0 ||
-          data.removedFiles.size > 0
-        ) {
-          hasteMap = await this._buildHasteMap(data);
-          this._persist(hasteMap);
-        } else {
-          hasteMap = data.hasteMap;
-        }
-
-        const rootDir = this._options.rootDir;
-        const hasteFS = new HasteFS({
-          files: hasteMap.files,
-          rootDir,
-        });
-        const moduleMap = new HasteModuleMap({
-          duplicates: hasteMap.duplicates,
-          map: hasteMap.map,
-          mocks: hasteMap.mocks,
-          rootDir,
-        });
-        const __hasteMapForTest =
-          (process.env.NODE_ENV === 'test' && hasteMap) || null;
-        await this._watch(hasteMap);
-        return {
-          __hasteMapForTest,
-          hasteFS,
-          moduleMap,
-        };
+          throw new Error("STUB");
       })();
     }
     return this._buildPromise;
@@ -411,13 +302,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   }
 
   readModuleMap(): HasteModuleMap {
-    const data = this.read();
-    return new HasteModuleMap({
-      duplicates: data.duplicates,
-      map: data.map,
-      mocks: data.mocks,
-      rootDir: this._options.rootDir,
-    });
+      throw new Error("STUB");
   }
 
   /**
@@ -456,7 +341,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     hasteMap: InternalHasteMap;
   }): Promise<InternalHasteMap> {
     return this._fileProcessor.buildHasteMap(data, (map, relPath, name) =>
-      this._recoverDuplicates(map, relPath, name),
+      { throw new Error("STUB"); },
     );
   }
 
@@ -523,23 +408,23 @@ class HasteMap extends EventEmitter implements IHasteMap {
     });
 
     this._changeQueue = new ChangeQueue(hasteMap, this._options.extensions, {
-      cleanup: () => this._workerPool.end(),
-      emit: event => this.emit('change', event),
-      ignore: filePath => this._ignore(filePath),
+      cleanup: () => { throw new Error("STUB"); },
+      emit: event => { throw new Error("STUB"); },
+      ignore: filePath => { throw new Error("STUB"); },
       mocksPattern: this._options.mocksPattern,
       onError: error =>
-        this._console.error(`jest-haste-map: watch error:\n  ${error.stack}\n`),
+        { throw new Error("STUB"); },
       platforms: this._options.platforms,
-      processFile: (map, filePath) => this._processFile(map, filePath),
+      processFile: (map, filePath) => { throw new Error("STUB"); },
       recoverDuplicates: (map, relPath, name) =>
-        this._recoverDuplicates(map, relPath, name),
+        { throw new Error("STUB"); },
       rootDir: this._options.rootDir,
     });
 
     this._changeQueue.start();
     try {
       await this._watcherDriver.start((type, filePath, root, stat) =>
-        this._changeQueue!.onChange(type, filePath, root, stat),
+        { throw new Error("STUB"); },
       );
     } catch (error) {
       this._changeQueue.stop();

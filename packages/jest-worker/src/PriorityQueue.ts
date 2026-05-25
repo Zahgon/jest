@@ -33,51 +33,19 @@ export default class PriorityQueue implements TaskQueue {
   constructor(private readonly _computePriority: ComputeTaskPriorityCallback) {}
 
   enqueue(task: QueueChildMessage, workerId?: number): void {
-    if (workerId == null) {
-      this._enqueue(task, this._sharedQueue);
-    } else {
-      const queue = this._getWorkerQueue(workerId);
-      this._enqueue(task, queue);
-    }
+      throw new Error("STUB");
   }
 
   _enqueue(task: QueueChildMessage, queue: MinHeap<QueueItem>): void {
-    const item = {
-      priority: this._computePriority(task.request[2], ...task.request[3]),
-      task,
-    };
-
-    queue.add(item);
+      throw new Error("STUB");
   }
 
   dequeue(workerId: number): QueueChildMessage | null {
-    const workerQueue = this._getWorkerQueue(workerId);
-
-    const workerTop = workerQueue.peek();
-    const sharedTop = this._sharedQueue.peek();
-
-    // use the task from the worker queue if there's no task in the shared queue
-    // or if the priority of the worker queue is smaller or equal to the
-    // priority of the top task in the shared queue. The tasks of the
-    // worker specific queue are preferred because no other worker can pick this
-    // specific task up.
-    if (
-      sharedTop == null ||
-      (workerTop != null && workerTop.priority <= sharedTop.priority)
-    ) {
-      return workerQueue.poll()?.task ?? null;
-    }
-
-    return this._sharedQueue.poll()!.task;
+      throw new Error("STUB");
   }
 
   _getWorkerQueue(workerId: number): MinHeap<QueueItem> {
-    let queue = this._queue[workerId];
-    if (queue == null) {
-      queue = this._queue[workerId] = new MinHeap();
-    }
-
-    return queue;
+      throw new Error("STUB");
   }
 }
 
@@ -89,7 +57,7 @@ class MinHeap<TItem extends HeapItem> {
   private readonly _heap: Array<TItem | null> = [];
 
   peek(): TItem | null {
-    return this._heap[0] ?? null;
+      throw new Error("STUB");
   }
 
   add(item: TItem): void {
@@ -119,52 +87,6 @@ class MinHeap<TItem extends HeapItem> {
   }
 
   poll(): TItem | null {
-    const nodes = this._heap;
-    const result = nodes[0];
-
-    const lastElement = nodes.pop();
-
-    // heap was empty or removed the last element
-    if (result == null || nodes.length === 0) {
-      return result ?? null;
-    }
-
-    let index = 0;
-    nodes[0] = lastElement ?? null;
-    const element = nodes[0]!;
-
-    while (true) {
-      let swapIndex = null;
-      const rightChildIndex = (index + 1) * 2;
-      const leftChildIndex = rightChildIndex - 1;
-      const rightChild = nodes[rightChildIndex];
-      const leftChild = nodes[leftChildIndex];
-
-      // if the left child is smaller, swap with the left
-      if (leftChild != null && leftChild.priority < element.priority) {
-        swapIndex = leftChildIndex;
-      }
-
-      // If the right child is smaller or the right child is smaller than the left
-      // then swap with the right child
-      if (
-        rightChild != null &&
-        rightChild.priority <
-          (swapIndex == null ? element : leftChild!).priority
-      ) {
-        swapIndex = rightChildIndex;
-      }
-
-      if (swapIndex == null) {
-        break;
-      }
-
-      nodes[index] = nodes[swapIndex];
-      nodes[swapIndex] = element;
-
-      index = swapIndex;
-    }
-
-    return result;
+      throw new Error("STUB");
   }
 }

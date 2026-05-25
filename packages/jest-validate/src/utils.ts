@@ -31,12 +31,7 @@ export class ValidationError extends Error {
   override message: string;
 
   constructor(name: string, message: string, comment?: string | null) {
-    super();
-    comment = comment ? `\n\n${comment}` : '\n';
-    this.name = '';
-    this.message = chalk.red(`${chalk.bold(name)}:\n\n${message}${comment}`);
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    Error.captureStackTrace(this, () => {});
+      throw new Error("STUB");
   }
 }
 
@@ -54,8 +49,7 @@ export const createDidYouMeanMessage = (
   allowedOptions: Array<string>,
 ): string => {
   const suggestion = allowedOptions.find(option => {
-    const steps: number = leven(option, unrecognized);
-    return steps < 3;
+      throw new Error("STUB");
   });
 
   return suggestion ? `Did you mean ${chalk.bold(format(suggestion))}?` : '';

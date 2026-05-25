@@ -20,7 +20,7 @@ export class TestState {
   }
 
   isBetweenTests(): boolean {
-    return this.state === 'betweenTests';
+      throw new Error("STUB");
   }
 
   /**

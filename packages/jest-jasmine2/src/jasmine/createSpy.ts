@@ -39,42 +39,7 @@ interface Fn extends Record<string, unknown> {
 }
 
 function createSpy(name: string, originalFn: Fn): Spy {
-  const spyStrategy = new SpyStrategy({
-    name,
-    fn: originalFn,
-    getSpy() {
-      return spy;
-    },
-  });
-  const callTracker = new CallTracker();
-  const spy: Spy = function (...args) {
-    const callData: Context = {
-      object: this,
-      args: Array.prototype.slice.apply(arguments),
-    };
-
-    callTracker.track(callData);
-    const returnValue = spyStrategy.exec.apply(this, args);
-    callData.returnValue = returnValue;
-
-    return returnValue;
-  };
-
-  for (const prop in originalFn) {
-    if (prop === 'and' || prop === 'calls') {
-      throw new Error(
-        "Jasmine spies would overwrite the 'and' and 'calls' properties " +
-          'on the object being spied upon',
-      );
-    }
-
-    spy[prop] = originalFn[prop];
-  }
-
-  spy.and = spyStrategy;
-  spy.calls = callTracker;
-
-  return spy;
+    throw new Error("STUB");
 }
 
 export default createSpy;

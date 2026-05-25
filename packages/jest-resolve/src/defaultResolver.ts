@@ -124,7 +124,7 @@ function baseResolver(
         const modulesArr =
           modules == null || Array.isArray(modules) ? modules : [modules];
         if (modulesArr?.length) {
-          paths = paths.filter(p => !modulesArr.includes(p));
+          paths = paths.filter(p => { throw new Error("STUB"); });
         }
         if (paths.length > 0) {
           unrsResolver = unrsResolver!.cloneWithOptions({
@@ -147,9 +147,7 @@ function baseResolver(
   };
 
   return finalResolver(() =>
-    async
-      ? unrsResolver!.async(basedir, path)
-      : unrsResolver!.sync(basedir, path),
+    { throw new Error("STUB"); },
   );
 }
 
@@ -158,6 +156,6 @@ export const defaultResolver: SyncResolver = baseResolver;
 export const defaultAsyncResolver: AsyncResolver = (
   path: string,
   options: ResolverOptions,
-) => baseResolver(path, options, true);
+) => { throw new Error("STUB"); };
 
 export default defaultResolver;

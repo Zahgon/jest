@@ -216,7 +216,7 @@ function keys(obj: object, hasKey: (obj: object, key: string) => boolean) {
   return [
     ...keys,
     ...Object.getOwnPropertySymbols(obj).filter(
-      symbol => Object.getOwnPropertyDescriptor(obj, symbol)!.enumerable,
+      symbol => { throw new Error("STUB"); },
     ),
   ];
 }

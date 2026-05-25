@@ -27,7 +27,7 @@ type Win = Window &
   };
 
 function isString(value: unknown): value is string {
-  return typeof value === 'string';
+    throw new Error("STUB");
 }
 
 export default abstract class BaseJSDOMEnvironment implements JestEnvironment<number> {
@@ -45,130 +45,7 @@ export default abstract class BaseJSDOMEnvironment implements JestEnvironment<nu
     context: EnvironmentContext,
     jsdomModule: typeof jsdom,
   ) {
-    const {projectConfig} = config;
-
-    const {JSDOM, ResourceLoader, VirtualConsole} = jsdomModule;
-
-    const virtualConsole = new VirtualConsole();
-
-    if (
-      'forwardTo' in virtualConsole &&
-      typeof virtualConsole.forwardTo === 'function'
-    ) {
-      // JSDOM 27+ uses `forwardTo`
-      virtualConsole.forwardTo(context.console);
-    } else if (
-      'sendTo' in virtualConsole &&
-      typeof virtualConsole.sendTo === 'function'
-    ) {
-      // JSDOM 26 uses `sendTo`
-      virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});
-    } else {
-      // Fallback for unexpected API changes
-      throw new TypeError(
-        'Unable to forward JSDOM console output - neither sendTo nor forwardTo methods are available',
-      );
-    }
-
-    virtualConsole.on('jsdomError', error => {
-      context.console.error(error);
-    });
-
-    this.dom = new JSDOM(
-      typeof projectConfig.testEnvironmentOptions.html === 'string'
-        ? projectConfig.testEnvironmentOptions.html
-        : '<!DOCTYPE html>',
-      {
-        pretendToBeVisual: true,
-        resources:
-          typeof projectConfig.testEnvironmentOptions.userAgent === 'string'
-            ? new ResourceLoader({
-                userAgent: projectConfig.testEnvironmentOptions.userAgent,
-              })
-            : undefined,
-        runScripts: 'dangerously',
-        url: 'http://localhost/',
-        virtualConsole,
-        ...projectConfig.testEnvironmentOptions,
-      },
-    );
-    const global = (this.global = this.dom.window as unknown as Win);
-
-    if (global == null) {
-      throw new Error('JSDOM did not return a Window object');
-    }
-
-    // TODO: remove at some point - for "universal" code (code should use `globalThis`)
-    global.global = global;
-
-    // Node's error-message stack size is limited at 10, but it's pretty useful
-    // to see more than that when a test fails.
-    this.global.Error.stackTraceLimit = 100;
-    installCommonGlobals(global, projectConfig.globals);
-
-    // TODO: remove this ASAP, but it currently causes tests to run really slow
-    global.Buffer = Buffer;
-
-    // Report uncaught errors.
-    this.errorEventListener = event => {
-      if (userErrorListenerCount === 0 && event.error != null) {
-        process.emit('uncaughtException', event.error);
-      }
-    };
-    global.addEventListener('error', this.errorEventListener);
-
-    // However, don't report them as uncaught if the user listens to 'error' event.
-    // In that case, we assume the might have custom error handling logic.
-    const originalAddListener = global.addEventListener.bind(global);
-    const originalRemoveListener = global.removeEventListener.bind(global);
-    let userErrorListenerCount = 0;
-    global.addEventListener = function (
-      ...args: Parameters<typeof originalAddListener>
-    ) {
-      if (args[0] === 'error') {
-        userErrorListenerCount++;
-      }
-      return originalAddListener.apply(this, args);
-    };
-    global.removeEventListener = function (
-      ...args: Parameters<typeof originalRemoveListener>
-    ) {
-      if (args[0] === 'error') {
-        userErrorListenerCount--;
-      }
-      return originalRemoveListener.apply(this, args);
-    };
-
-    if ('customExportConditions' in projectConfig.testEnvironmentOptions) {
-      const {customExportConditions} = projectConfig.testEnvironmentOptions;
-      if (
-        Array.isArray(customExportConditions) &&
-        customExportConditions.every(isString)
-      ) {
-        this._configuredExportConditions = customExportConditions;
-      } else {
-        throw new Error(
-          'Custom export conditions specified but they are not an array of strings',
-        );
-      }
-    }
-
-    this.moduleMocker = new ModuleMocker(global);
-
-    this.fakeTimers = new LegacyFakeTimers({
-      config: projectConfig,
-      global,
-      moduleMocker: this.moduleMocker,
-      timerConfig: {
-        idToRef: (id: number) => id,
-        refToId: (ref: number) => ref,
-      },
-    });
-
-    this.fakeTimersModern = new ModernFakeTimers({
-      config: projectConfig,
-      global,
-    });
+      throw new Error("STUB");
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -196,7 +73,7 @@ export default abstract class BaseJSDOMEnvironment implements JestEnvironment<nu
   }
 
   exportConditions(): Array<string> {
-    return this._configuredExportConditions ?? this.customExportConditions;
+      throw new Error("STUB");
   }
 
   getVmContext(): Context | null {

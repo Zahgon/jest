@@ -33,7 +33,7 @@ export default class CustomConsole extends Console {
   constructor(
     stdout: WriteStream,
     stderr: WriteStream,
-    formatBuffer: Formatter = (_type, message) => message,
+    formatBuffer: Formatter = (_type, message) => { throw new Error("STUB"); },
   ) {
     super(stdout, stderr);
     this._stdout = stdout;
@@ -56,15 +56,7 @@ export default class CustomConsole extends Console {
   }
 
   override assert(value: unknown, message?: string | Error): asserts value {
-    try {
-      assert.ok(value, message);
-    } catch (error) {
-      if (!(error instanceof AssertionError)) {
-        throw error;
-      }
-      // https://github.com/jestjs/jest/pull/13422#issuecomment-1273396392
-      this._logError('assert', error.toString().replaceAll(/:\n\n.*\n/gs, ''));
-    }
+      throw new Error("STUB");
   }
 
   override count(label = 'default'): void {
@@ -76,20 +68,19 @@ export default class CustomConsole extends Console {
   }
 
   override countReset(label = 'default'): void {
-    this._counters[label] = 0;
+      throw new Error("STUB");
   }
 
   override debug(firstArg: unknown, ...args: Array<unknown>): void {
-    this._log('debug', format(firstArg, ...args));
+      throw new Error("STUB");
   }
 
   override dir(firstArg: unknown, options: InspectOptions = {}): void {
-    const representation = inspect(firstArg, options);
-    this._log('dir', formatWithOptions(options, representation));
+      throw new Error("STUB");
   }
 
   override dirxml(firstArg: unknown, ...args: Array<unknown>): void {
-    this._log('dirxml', format(firstArg, ...args));
+      throw new Error("STUB");
   }
 
   override error(firstArg: unknown, ...args: Array<unknown>): void {
@@ -97,29 +88,19 @@ export default class CustomConsole extends Console {
   }
 
   override group(title?: string, ...args: Array<unknown>): void {
-    this._groupDepth++;
-
-    if (title != null || args.length > 0) {
-      this._log('group', chalk.bold(format(title, ...args)));
-    }
+      throw new Error("STUB");
   }
 
   override groupCollapsed(title?: string, ...args: Array<unknown>): void {
-    this._groupDepth++;
-
-    if (title != null || args.length > 0) {
-      this._log('groupCollapsed', chalk.bold(format(title, ...args)));
-    }
+      throw new Error("STUB");
   }
 
   override groupEnd(): void {
-    if (this._groupDepth > 0) {
-      this._groupDepth--;
-    }
+      throw new Error("STUB");
   }
 
   override info(firstArg: unknown, ...args: Array<unknown>): void {
-    this._log('info', format(firstArg, ...args));
+      throw new Error("STUB");
   }
 
   override log(firstArg: unknown, ...args: Array<unknown>): void {
@@ -135,24 +116,11 @@ export default class CustomConsole extends Console {
   }
 
   override timeEnd(label = 'default'): void {
-    const startTime = this._timers[label];
-
-    if (startTime != null) {
-      const endTime = Date.now();
-      const time = endTime - startTime.getTime();
-      this._log('time', format(`${label}: ${formatTime(time)}`));
-      delete this._timers[label];
-    }
+      throw new Error("STUB");
   }
 
   override timeLog(label = 'default', ...data: Array<unknown>): void {
-    const startTime = this._timers[label];
-
-    if (startTime != null) {
-      const endTime = new Date();
-      const time = endTime.getTime() - startTime.getTime();
-      this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
-    }
+      throw new Error("STUB");
   }
 
   override warn(firstArg: unknown, ...args: Array<unknown>): void {

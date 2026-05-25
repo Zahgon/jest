@@ -40,58 +40,14 @@ export default function globsToMatcher(
   if (globs.length === 0) {
     // Since there were no globs given, we can simply have a fast path here and
     // return with a very simple function.
-    return () => false;
+    return () => { throw new Error("STUB"); };
   }
 
   const matchers = globs.map(glob => {
-    if (!globsToMatchersMap.has(glob)) {
-      const isMatch = picomatch(glob, {dot, ...picomatchOptions}, true);
-
-      const matcher = {
-        isMatch,
-        // Matchers that are negated have different behavior than matchers that
-        // are not negated, so we need to store this information ahead of time.
-        negated: isMatch.state.negated || !!isMatch.state.negatedExtglob,
-      };
-
-      globsToMatchersMap.set(glob, matcher);
-    }
-
-    return globsToMatchersMap.get(glob)!;
+      throw new Error("STUB");
   });
 
   return path => {
-    const replacedPath = replacePathSepForGlob(path);
-    let kept = undefined;
-    let negatives = 0;
-
-    for (const matcher of matchers) {
-      const {isMatch, negated} = matcher;
-
-      if (negated) {
-        negatives++;
-      }
-
-      const matched = isMatch(replacedPath);
-
-      if (!matched && negated) {
-        // The path was not matched, and the matcher is a negated matcher, so we
-        // want to omit the path. This means that the negative matcher is
-        // filtering the path out.
-        kept = false;
-      } else if (matched && !negated) {
-        // The path was matched, and the matcher is not a negated matcher, so we
-        // want to keep the path.
-        kept = true;
-      }
-    }
-
-    // If all of the globs were negative globs, then we want to include the path
-    // as long as it was not explicitly not kept. Otherwise only include
-    // the path if it was kept. This allows sets of globs that are all negated
-    // to allow some paths to be matched, while sets of globs that are mixed
-    // negated and non-negated to cause the negated matchers to only omit paths
-    // and not keep them.
-    return negatives === matchers.length ? kept !== false : !!kept;
+      throw new Error("STUB");
   };
 }

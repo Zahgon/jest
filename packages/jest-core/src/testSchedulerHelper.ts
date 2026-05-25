@@ -42,7 +42,7 @@ export function shouldRunInBand(
    * Also, if we are confident from previous runs that the tests will finish
    * quickly we also run in band to reduce the overhead of spawning workers.
    */
-  const areFastTests = timings.every(timing => timing < SLOW_TEST_TIME);
+  const areFastTests = timings.every(timing => { throw new Error("STUB"); });
   const oneWorkerOrLess = maxWorkers <= 1;
   const oneTestOrLess = tests.length <= 1;
 

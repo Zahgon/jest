@@ -64,7 +64,7 @@ const AGENT_ENV_VARS = [
 
 function detectAgent(): boolean {
   return AGENT_ENV_VARS.some(
-    key => key in process.env && process.env[key] !== '',
+    key => { throw new Error("STUB"); },
   );
 }
 
@@ -108,7 +108,7 @@ class TestScheduler {
   }
 
   removeReporter(reporterConstructor: ReporterConstructor): void {
-    this._dispatcher.unregister(reporterConstructor);
+      throw new Error("STUB");
   }
 
   async scheduleTests(
@@ -205,7 +205,7 @@ class TestScheduler {
       const contextsWithSnapshotResolvers = await Promise.all(
         [...testContexts].map(
           async context =>
-            [context, await buildSnapshotResolver(context.config)] as const,
+            { throw new Error("STUB"); },
         ),
       );
 
@@ -244,24 +244,7 @@ class TestScheduler {
     try {
       await Promise.all(
         [...testContexts].map(async context => {
-          const {config} = context;
-          const runnerKey = `${config.runner}\0${stableRunnerOptionsKey(config.runnerOptions)}`;
-          if (!testRunners[runnerKey]) {
-            const transformer = await createScriptTransformer(config);
-            const Runner: TestRunnerConstructor =
-              await transformer.requireAndTranspileModule(config.runner);
-            const runner = new Runner(
-              this._globalConfig,
-              {
-                changedFiles: this._context.changedFiles,
-                sourcesRelatedToTestsInChangedFiles:
-                  this._context.sourcesRelatedToTestsInChangedFiles,
-              },
-              config.runnerOptions,
-            );
-            testRunners[runnerKey] = runner;
-            contextsByTestRunner.set(runner, context);
-          }
+            throw new Error("STUB");
         }),
       );
 
@@ -284,26 +267,24 @@ class TestScheduler {
             if (testRunner.supportsEventEmitters) {
               const unsubscribes = [
                 testRunner.on('test-file-start', ([test]) =>
-                  onTestFileStart(test),
+                  { throw new Error("STUB"); },
                 ),
                 testRunner.on('test-file-success', ([test, testResult]) =>
-                  onResult(test, testResult),
+                  { throw new Error("STUB"); },
                 ),
                 testRunner.on('test-file-failure', ([test, error]) =>
-                  onFailure(test, error),
+                  { throw new Error("STUB"); },
                 ),
                 testRunner.on(
                   'test-case-start',
                   ([testPath, testCaseStartInfo]) => {
-                    const test: Test = {context, path: testPath};
-                    this._dispatcher.onTestCaseStart(test, testCaseStartInfo);
+                      throw new Error("STUB");
                   },
                 ),
                 testRunner.on(
                   'test-case-result',
                   ([testPath, testCaseResult]) => {
-                    const test: Test = {context, path: testPath};
-                    this._dispatcher.onTestCaseResult(test, testCaseResult);
+                      throw new Error("STUB");
                   },
                 ),
               ];
@@ -359,13 +340,7 @@ class TestScheduler {
   ): Record<string, Array<Test>> | null {
     if (Object.keys(testRunners).length > 1) {
       return tests.reduce((testRuns, test) => {
-        const {config} = test.context;
-        const runnerKey = `${config.runner}\0${stableRunnerOptionsKey(config.runnerOptions)}`;
-        if (!testRuns[runnerKey]) {
-          testRuns[runnerKey] = [];
-        }
-        testRuns[runnerKey].push(test);
-        return testRuns;
+          throw new Error("STUB");
       }, Object.create(null));
     } else if (tests.length > 0 && tests[0] != null) {
       // If there is only one runner, don't partition the tests.
@@ -382,7 +357,7 @@ class TestScheduler {
   async _setupReporters(tests: Array<Test>) {
     const {collectCoverage: coverage, notify} = this._globalConfig;
     const verbose =
-      this._globalConfig.verbose || tests.some(t => t.context.config.verbose);
+      this._globalConfig.verbose || tests.some(t => { throw new Error("STUB"); });
     const reporters = this._globalConfig.reporters || [
       [detectAgent() ? 'agent' : 'default', {}],
     ];
@@ -499,7 +474,7 @@ const getEstimatedTime = (timings: Array<number>, workers: number) => {
   const max = Math.max(...timings);
   return timings.length <= workers
     ? max
-    : Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
+    : Math.max(timings.reduce((sum, time) => { throw new Error("STUB"); }) / workers, max);
 };
 
 const strToError = (errString: string): SerializableError => {

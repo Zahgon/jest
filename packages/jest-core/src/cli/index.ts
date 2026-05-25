@@ -67,7 +67,7 @@ export async function runCLI(
   if (argv.clearCache) {
     // stick in a Set to dedupe the deletions
     const uniqueConfigDirectories = new Set(
-      configs.map(config => config.cacheDirectory),
+      configs.map(config => { throw new Error("STUB"); }),
     );
     for (const cacheDirectory of uniqueConfigDirectories) {
       fs.rmSync(cacheDirectory, {force: true, recursive: true});
@@ -103,7 +103,7 @@ export async function runCLI(
     hasDeprecationWarnings,
     outputStream,
     r => {
-      results = r;
+        throw new Error("STUB");
     },
   );
 
@@ -112,7 +112,9 @@ export async function runCLI(
     // If the watch mode is interrupted, watch should handle the process
     // shutdown.
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return new Promise(() => {});
+    return new Promise(() => {
+        throw new Error("STUB");
+    });
   }
 
   if (!results) {
@@ -150,20 +152,7 @@ const buildContextsAndHasteMaps = async (
   });
   const contexts = await Promise.all(
     configs.map(async (config, index) => {
-      createDirectory(config.cacheDirectory);
-      const hasteMapInstance = await Runtime.createHasteMap(config, {
-        console: new CustomConsole(outputStream, outputStream),
-        maxWorkers: Math.max(
-          1,
-          Math.floor(globalConfig.maxWorkers / configs.length),
-        ),
-        resetCache: !config.cache,
-        watch: globalConfig.watch || globalConfig.watchAll,
-        watchman: globalConfig.watchman,
-        workerThreads: globalConfig.workerThreads,
-      });
-      hasteMapInstances[index] = hasteMapInstance;
-      return createContext(config, await hasteMapInstance.build());
+        throw new Error("STUB");
     }),
   );
 
@@ -183,7 +172,7 @@ const _run10000 = async (
   if (changedFilesPromise) {
     performance.mark('jest/getChangedFiles:start');
     changedFilesPromise.finally(() => {
-      performance.mark('jest/getChangedFiles:end');
+        throw new Error("STUB");
     });
   }
 
@@ -197,23 +186,11 @@ const _run10000 = async (
       // Wrap filter setup Promise to avoid "uncaught Promise" error.
       // If an error is returned, we surface it in the return value.
       filterSetupPromise = (async () => {
-        try {
-          await rawFilter.setup();
-        } catch (error) {
-          return error;
-        }
-        return undefined;
+          throw new Error("STUB");
       })();
     }
     filter = async (testPaths: Array<string>) => {
-      if (filterSetupPromise) {
-        // Expect an undefined return value unless there was an error.
-        const err = await filterSetupPromise;
-        if (err) {
-          throw err;
-        }
-      }
-      return rawFilter(testPaths);
+        throw new Error("STUB");
     };
   }
 

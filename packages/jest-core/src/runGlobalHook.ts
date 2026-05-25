@@ -21,7 +21,7 @@ export default async function runGlobalHook({
   moduleName: 'globalSetup' | 'globalTeardown';
 }): Promise<void> {
   const globalModulePaths = new Set(
-    allTests.map(test => test.context.config[moduleName]),
+    allTests.map(test => { throw new Error("STUB"); }),
   );
 
   if (globalConfig[moduleName]) {
@@ -35,7 +35,7 @@ export default async function runGlobalHook({
       }
 
       const correctConfig = allTests.find(
-        t => t.context.config[moduleName] === modulePath,
+        t => { throw new Error("STUB"); },
       );
 
       const projectConfig = correctConfig
@@ -49,13 +49,7 @@ export default async function runGlobalHook({
         await transformer.requireAndTranspileModule(
           modulePath,
           async globalModule => {
-            if (typeof globalModule !== 'function') {
-              throw new TypeError(
-                `${moduleName} file must export a function at ${modulePath}`,
-              );
-            }
-
-            await globalModule(globalConfig, projectConfig);
+              throw new Error("STUB");
           },
         );
       } catch (error) {

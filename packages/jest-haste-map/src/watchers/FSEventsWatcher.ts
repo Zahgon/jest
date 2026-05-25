@@ -54,47 +54,7 @@ export class FSEventsWatcher extends EventEmitter implements IWatcher {
   }
 
   constructor(dir: string, opts: WatcherOptions) {
-    if (!fsevents) {
-      throw new Error(
-        '`fsevents` unavailable (this watcher can only be used on Darwin)',
-      );
-    }
-
-    super();
-
-    this.dot = opts.dot || false;
-    this.ignored = opts.ignored;
-    this.glob = [...opts.glob];
-
-    this.hasIgnore = Boolean(opts.ignored);
-    this.doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
-
-    this.root = path.resolve(dir);
-    this.fsEventsWatchStopper = fsevents.watch(
-      this.root,
-      this.handleEvent.bind(this),
-    );
-
-    this._tracked = new Set();
-    walk(
-      {
-        exclude: this.hasIgnore ? this.doIgnore : undefined,
-        includeDirs: true,
-        onEntry: (_kind, filePath) => {
-          this._tracked.add(filePath);
-        },
-        onError: this.emit.bind(this, 'error'),
-        root: this.root,
-        statCache: opts.statCache,
-      },
-      err => {
-        if (err) {
-          this.emit('error', err);
-        } else {
-          this.emit('ready');
-        }
-      },
-    );
+      throw new Error("STUB");
   }
 
   /**
@@ -104,49 +64,16 @@ export class FSEventsWatcher extends EventEmitter implements IWatcher {
     await this.fsEventsWatchStopper();
     this.removeAllListeners();
     if (typeof callback === 'function') {
-      process.nextTick(() => callback());
+      process.nextTick(() => { throw new Error("STUB"); });
     }
   }
 
   private isFileIncluded(relativePath: string) {
-    if (this.doIgnore(relativePath)) {
-      return false;
-    }
-    return this.glob.length > 0
-      ? globsToMatcher(this.glob, {dot: this.dot})(relativePath)
-      : this.dot || globsToMatcher(['**/*'])(relativePath);
+      throw new Error("STUB");
   }
 
   private handleEvent(filepath: string) {
-    const relativePath = path.relative(this.root, filepath);
-    if (!this.isFileIncluded(relativePath)) {
-      return;
-    }
-
-    fs.lstat(filepath, (error, stat) => {
-      if (error && error.code !== 'ENOENT') {
-        this.emit('error', error);
-        return;
-      }
-
-      if (error) {
-        // Ignore files that aren't tracked and don't exist.
-        if (!this._tracked.has(filepath)) {
-          return;
-        }
-
-        this._emit(DELETE_EVENT, relativePath);
-        this._tracked.delete(filepath);
-        return;
-      }
-
-      if (this._tracked.has(filepath)) {
-        this._emit(CHANGE_EVENT, relativePath, stat);
-      } else {
-        this._tracked.add(filepath);
-        this._emit(ADD_EVENT, relativePath, stat);
-      }
-    });
+      throw new Error("STUB");
   }
 
   /**

@@ -126,35 +126,11 @@ export default class GitHubActionsReporter extends BaseReporter {
   }
 
   #getMessageDetails(failureMessage: string, config: Config.ProjectConfig) {
-    const {message, stack} = separateMessageFromStack(failureMessage);
-
-    const stackLines = getStackTraceLines(stack);
-    const topFrame = getTopFrame(stackLines);
-
-    const normalizedStackLines = stackLines.map(line =>
-      formatPath(line, config),
-    );
-    const messageText = [message, ...normalizedStackLines].join('\n');
-
-    return {
-      file: topFrame?.file,
-      line: topFrame?.line,
-      message: messageText,
-    };
+      throw new Error("STUB");
   }
 
   #createAnnotation({file, line, message, title, type}: AnnotationOptions) {
-    message = stripAnsi(
-      // copied from: https://github.com/actions/toolkit/blob/main/packages/core/src/command.ts
-      message
-        .replaceAll('%', '%25')
-        .replaceAll('\r', '%0D')
-        .replaceAll('\n', '%0A'),
-    );
-
-    this.log(
-      `\n::${type} file=${file},line=${line},title=${title}::${message}`,
-    );
+      throw new Error("STUB");
   }
 
   private isLastTestSuite(results: AggregatedResult): boolean {

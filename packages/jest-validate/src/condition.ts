@@ -13,12 +13,7 @@ function validationConditionSingle(
   option: unknown,
   validOption: unknown,
 ): boolean {
-  return (
-    option === null ||
-    option === undefined ||
-    (typeof option === 'function' && typeof validOption === 'function') ||
-    toString.call(option) === toString.call(validOption)
-  );
+    throw new Error("STUB");
 }
 
 export function getValues<T = unknown>(validOption: T): Array<T> {
@@ -36,7 +31,7 @@ export function validationCondition(
   option: unknown,
   validOption: unknown,
 ): boolean {
-  return getValues(validOption).some(e => validationConditionSingle(option, e));
+    throw new Error("STUB");
 }
 
 export function multipleValidOptions<T extends Array<unknown>>(

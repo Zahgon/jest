@@ -216,15 +216,8 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
 
       return {
         enabled: (bool: boolean) => {
-          if (bool) {
-            instance = tsLoader.register({
-              target: `node${process.version.slice(1)}`,
-              ...extraTSLoaderOptions,
-            });
-          } else {
-            instance?.unregister();
-          }
-        },
+              throw new Error("STUB");
+          },
       };
     }
 

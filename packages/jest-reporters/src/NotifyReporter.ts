@@ -124,19 +124,7 @@ export default class NotifyReporter extends BaseReporter {
             title,
           },
           (err, _, metadata) => {
-            if (err || !metadata) {
-              return;
-            }
-            if (metadata.activationValue === quitAnswer) {
-              exit(0);
-              return;
-            }
-            if (
-              metadata.activationValue === restartAnswer &&
-              this._context.startRun
-            ) {
-              this._context.startRun(this._globalConfig);
-            }
+              throw new Error("STUB");
           },
         );
       } else {
@@ -156,15 +144,5 @@ export default class NotifyReporter extends BaseReporter {
 }
 
 function loadNotifier(): typeof import('node-notifier') {
-  try {
-    return require('node-notifier');
-  } catch (error: any) {
-    if (error.code !== 'MODULE_NOT_FOUND') {
-      throw error;
-    }
-
-    throw new Error(
-      'notify reporter requires optional peer dependency "node-notifier" but it was not found',
-    );
-  }
+    throw new Error("STUB");
 }

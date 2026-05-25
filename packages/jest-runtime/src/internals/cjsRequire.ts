@@ -63,24 +63,17 @@ export class RequireBuilder {
       moduleName: string,
       resolveOptions?: ResolveOptions,
     ) => {
-      const resolved = this.resolve(from.filename, moduleName, resolveOptions);
-      if (
-        resolveOptions?.[JEST_RESOLVE_OUTSIDE_VM_OPTION] &&
-        options?.isInternalModule
-      ) {
-        return createOutsideJestVmPath(resolved);
-      }
-      return resolved;
+        throw new Error("STUB");
     };
     resolveImpl.paths = (moduleName: string) =>
-      this.resolvePaths(from.filename, moduleName);
+      { throw new Error("STUB"); };
 
     const moduleRequire = (
       options?.isInternalModule
         ? (moduleName: string) =>
-            this.requireInternal(from.filename, moduleName)
+            { throw new Error("STUB"); }
         : (moduleName: string) =>
-            this.requireDispatch(from.filename, moduleName)
+            { throw new Error("STUB"); }
     ) as NodeJS.Require;
     moduleRequire.extensions = Object.create(null);
     moduleRequire.resolve = resolveImpl;
@@ -216,67 +209,11 @@ export class CoreModuleProvider {
   }
 
   require(moduleName: string, supportPrefix: boolean): unknown {
-    const moduleWithoutNodePrefix =
-      supportPrefix && this.resolution.normalizeCoreModuleSpecifier(moduleName);
-
-    if (moduleWithoutNodePrefix === 'process') {
-      return this.environment.global.process;
-    }
-
-    if (moduleWithoutNodePrefix === 'module') {
-      return this.getMockedModuleClass();
-    }
-
-    const coreModule = require(moduleName);
-    protectProperties(coreModule);
-    return coreModule;
+      throw new Error("STUB");
   }
 
   private getMockedModuleClass(): typeof nativeModule.Module {
-    if (this.mockedModuleClass) {
-      return this.mockedModuleClass;
-    }
-
-    const createRequire = (modulePath: string | URL) => {
-      const filename =
-        typeof modulePath === 'string'
-          ? modulePath.startsWith('file:///')
-            ? fileURLToPath(new URL(modulePath))
-            : modulePath
-          : fileURLToPath(modulePath);
-
-      if (!path.isAbsolute(filename)) {
-        const error: NodeJS.ErrnoException = new TypeError(
-          `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received '${filename}'`,
-        );
-        error.code = 'ERR_INVALID_ARG_TYPE';
-        throw error;
-      }
-
-      return this.requireBuilder.forFilename(filename);
-    };
-
-    class Module extends nativeModule.Module {}
-
-    for (const [key, value] of Object.entries(nativeModule.Module)) {
-      // @ts-expect-error: no index signature
-      Module[key] = value;
-    }
-
-    Module.Module = Module;
-
-    if ('createRequire' in nativeModule) {
-      Module.createRequire = createRequire;
-    }
-    if ('syncBuiltinESMExports' in nativeModule) {
-      // cast since TS seems very confused about whether it exists or not
-      (Module as any).syncBuiltinESMExports =
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        function syncBuiltinESMExports() {};
-    }
-
-    this.mockedModuleClass = Module;
-    return Module;
+      throw new Error("STUB");
   }
 
   reset(): void {

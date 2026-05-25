@@ -16,14 +16,14 @@ export default function getNoTestFound(
   willExitWith0: boolean,
 ): string {
   const testFiles = testRunData.reduce(
-    (current, testRun) => current + (testRun.matches.total || 0),
+    (current, testRun) => { throw new Error("STUB"); },
     0,
   );
   let dataMessage;
 
   if (globalConfig.runTestsByPath) {
     dataMessage = `Files: ${globalConfig.nonFlagArgs
-      .map(p => `"${p}"`)
+      .map(p => { throw new Error("STUB"); })
       .join(', ')}`;
   } else {
     dataMessage = `Pattern: ${chalk.yellow(

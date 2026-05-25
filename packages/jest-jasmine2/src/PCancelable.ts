@@ -18,7 +18,9 @@ export default class PCancelable<T> implements PromiseLike<T> {
   private readonly _promise: Promise<T>;
   private _cancel?: () => void;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private _reject: (reason?: unknown) => void = () => {};
+  private _reject: (reason?: unknown) => void = () => {
+      throw new Error("STUB");
+  };
 
   constructor(
     executor: (
@@ -28,21 +30,7 @@ export default class PCancelable<T> implements PromiseLike<T> {
     ) => void,
   ) {
     this._promise = new Promise((resolve, reject) => {
-      this._reject = reject;
-
-      return executor(
-        fn => {
-          this._cancel = fn;
-        },
-        val => {
-          this._pending = false;
-          resolve(val);
-        },
-        err => {
-          this._pending = false;
-          reject(err);
-        },
-      );
+        throw new Error("STUB");
     });
   }
 

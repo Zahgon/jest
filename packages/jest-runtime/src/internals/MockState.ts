@@ -49,15 +49,7 @@ export class MockState {
   >();
 
   constructor(resolution: Resolution, config: Config.ProjectConfig) {
-    this.resolution = resolution;
-    this.shouldAutoMock = config.automock;
-
-    let unmock = unmockRegExpCache.get(config);
-    if (!unmock && config.unmockedModulePathPatterns) {
-      unmock = new RegExp(config.unmockedModulePathPatterns.join('|'));
-      unmockRegExpCache.set(config, unmock);
-    }
-    this.unmockList = unmock;
+      throw new Error("STUB");
   }
 
   shouldMockCjs(from: string, moduleName: string): MockDecision {
@@ -245,17 +237,7 @@ export class MockState {
     factory: () => unknown,
     options?: {virtual?: boolean},
   ): void {
-    if (options?.virtual) {
-      const mockPath = this.resolution.getModulePath(from, moduleName);
-      this.virtualCjsMocks.set(mockPath, true);
-    }
-    const moduleID = this.resolution.getCjsModuleId(
-      this.virtualCjsMocks,
-      from,
-      moduleName,
-    );
-    this.explicitCjsMock.set(moduleID, true);
-    this.cjsFactories.set(moduleID, factory);
+      throw new Error("STUB");
   }
 
   setModuleMock(
@@ -357,14 +339,14 @@ export class MockState {
   }
 
   hasCjsFactory(moduleID: string): boolean {
-    return this.cjsFactories.has(moduleID);
+      throw new Error("STUB");
   }
   getCjsFactory(moduleID: string): (() => unknown) | undefined {
     return this.cjsFactories.get(moduleID);
   }
 
   hasEsmFactory(moduleID: string): boolean {
-    return this.esmFactories.has(moduleID);
+      throw new Error("STUB");
   }
   getEsmFactory(
     moduleID: string,
@@ -373,7 +355,7 @@ export class MockState {
   }
 
   markTransitive(moduleID: string, value: boolean): void {
-    this.transitiveShouldMock.set(moduleID, value);
+      throw new Error("STUB");
   }
 
   hasMockMetadata(modulePath: string): boolean {
@@ -444,7 +426,7 @@ export function generateMock<T>(
     // the module in isolation. This could cause issues if the module being
     // mocked has calls into side-effectful APIs on another module.
     const moduleExports = registries.withScratchRegistries(() =>
-      requireModule(from, moduleName),
+      { throw new Error("STUB"); },
     );
 
     const mockMetadata = moduleMocker.getMetadata(moduleExports);

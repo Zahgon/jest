@@ -57,7 +57,7 @@ export function defineConfig(config: UserConfigFnObject): UserConfigFnObject;
 export function defineConfig(config: UserConfigFnPromise): UserConfigFnPromise;
 export function defineConfig(config: UserConfigFn): UserConfigFn;
 export function defineConfig(config: UserConfigExport): UserConfigExport {
-  return config;
+    throw new Error("STUB");
 }
 
 /**
@@ -70,11 +70,7 @@ export function mergeConfig<
   defaults: D extends Function ? never : D,
   overrides: O extends Function ? never : O,
 ): JestTestConfigObject {
-  if (typeof defaults === 'function' || typeof overrides === 'function') {
-    throw new TypeError('Cannot merge config in form of callback');
-  }
-
-  return deepMerge.all([defaults, overrides]);
+    throw new Error("STUB");
 }
 
 export async function readConfig(
@@ -432,42 +428,18 @@ export async function readConfigs(
     const parsedConfigs = await Promise.all(
       projects
         .filter(root => {
-          // Ignore globbed files that cannot be `require`d.
-          if (
-            typeof root === 'string' &&
-            fs.existsSync(root) &&
-            !fs.lstatSync(root).isDirectory() &&
-            !constants.JEST_CONFIG_EXT_ORDER.some(ext => root.endsWith(ext))
-          ) {
-            return false;
-          }
-
-          return true;
+            throw new Error("STUB");
         })
         .map((root, projectIndex) => {
-          const projectIsTheOnlyProject =
-            projectIndex === 0 && projects.length === 1;
-          const skipArgvConfigOption = !(
-            projectIsTheOnlyProject && projectIsCwd
-          );
-
-          return readConfig(
-            argv,
-            root,
-            skipArgvConfigOption,
-            configPath ? path.dirname(configPath) : cwd,
-            projectIndex,
-            // we wanna skip the warning if this is the "main" project
-            projectIsCwd,
-          );
+            throw new Error("STUB");
         }),
     );
 
     ensureNoDuplicateConfigs(parsedConfigs, projects);
-    configs = parsedConfigs.map(({projectConfig}) => projectConfig);
+    configs = parsedConfigs.map(({projectConfig}) => { throw new Error("STUB"); });
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(
-        ({hasDeprecationWarnings}) => !!hasDeprecationWarnings,
+        ({hasDeprecationWarnings}) => { throw new Error("STUB"); },
       );
     }
     // If no config was passed initially, use the one from the first project

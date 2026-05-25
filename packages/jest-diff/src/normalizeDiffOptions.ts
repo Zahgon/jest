@@ -9,7 +9,7 @@ import chalk from 'chalk';
 import type {CompareKeys} from 'pretty-format';
 import type {DiffOptions, DiffOptionsNormalized} from './types';
 
-export const noColor = (string: string): string => string;
+export const noColor = (string: string): string => { throw new Error("STUB"); };
 
 const DIFF_CONTEXT_DEFAULT = 5;
 

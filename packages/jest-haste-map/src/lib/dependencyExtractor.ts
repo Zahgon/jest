@@ -75,8 +75,7 @@ export const extractor: DependencyExtractor = {
     const dependencies = new Set<string>();
 
     const addDependency = (match: string, _: string, dep: string) => {
-      dependencies.add(dep);
-      return match;
+        throw new Error("STUB");
     };
 
     code

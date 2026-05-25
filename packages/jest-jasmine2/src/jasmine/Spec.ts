@@ -100,60 +100,11 @@ export default class Spec {
   static pendingSpecExceptionMessage: string;
 
   static isPendingSpecException(e: Error) {
-    return !!(
-      e &&
-      e.toString &&
-      e.toString().includes(Spec.pendingSpecExceptionMessage)
-    );
+      throw new Error("STUB");
   }
 
   constructor(attrs: Attributes) {
-    this.resultCallback = attrs.resultCallback || function () {};
-    this.id = attrs.id;
-    this.description = convertDescriptorToString(attrs.description);
-    this.queueableFn = attrs.queueableFn;
-    this.beforeAndAfterFns =
-      attrs.beforeAndAfterFns ||
-      function () {
-        return {befores: [], afters: []};
-      };
-    this.userContext =
-      attrs.userContext ||
-      function () {
-        return {};
-      };
-    this.onStart = attrs.onStart || function () {};
-    this.getSpecName =
-      attrs.getSpecName ||
-      function () {
-        return '';
-      };
-    this.queueRunnerFactory = attrs.queueRunnerFactory || function () {};
-    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
-
-    // eslint-disable-next-line unicorn/error-message
-    this.initError = new Error();
-    this.initError.name = '';
-
-    // Without this line v8 stores references to all closures
-    // in the stack in the Error object. This line stringifies the stack
-    // property to allow garbage-collecting objects on the stack
-    // https://crbug.com/v8/7142
-    // eslint-disable-next-line no-self-assign
-    this.initError.stack = this.initError.stack;
-
-    this.queueableFn.initError = this.initError;
-
-    // @ts-expect-error: misses some fields added later
-    this.result = {
-      id: this.id,
-      description: this.description,
-      fullName: this.getFullName(),
-      failedExpectations: [],
-      passedExpectations: [],
-      pendingReason: '',
-      testPath: attrs.getTestPath(),
-    };
+      throw new Error("STUB");
   }
 
   addExpectationResult(
@@ -161,59 +112,11 @@ export default class Spec {
     data: ExpectationResultFactoryOptions,
     isError?: boolean,
   ) {
-    const expectationResult = expectationResultFactory(data, this.initError);
-    if (passed) {
-      this.result.passedExpectations.push(expectationResult);
-    } else {
-      this.result.failedExpectations.push(expectationResult);
-
-      if (this.throwOnExpectationFailure && !isError) {
-        throw new ExpectationFailed();
-      }
-    }
+      throw new Error("STUB");
   }
 
   execute(onComplete?: () => void, enabled?: boolean) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-
-    this.onStart(this);
-
-    if (
-      !this.isExecutable() ||
-      this.markedPending ||
-      this.markedTodo ||
-      enabled === false
-    ) {
-      complete(enabled);
-      return;
-    }
-
-    const fns = this.beforeAndAfterFns();
-    const allFns = fns.befores.concat(this.queueableFn).concat(fns.afters);
-
-    this.currentRun = this.queueRunnerFactory({
-      queueableFns: allFns,
-      onException() {
-        // @ts-expect-error: wrong context
-        self.onException.apply(self, arguments);
-      },
-      userContext: this.userContext(),
-      setTimeout,
-      clearTimeout,
-      fail: () => {},
-    });
-
-    this.currentRun.then(() => complete(true));
-
-    function complete(enabledAgain?: boolean) {
-      self.result.status = self.status(enabledAgain);
-      self.resultCallback(self.result);
-
-      if (onComplete) {
-        onComplete();
-      }
-    }
+      throw new Error("STUB");
   }
 
   cancel() {
@@ -223,28 +126,7 @@ export default class Spec {
   }
 
   onException(error: ExpectationFailed | AssertionErrorWithStack) {
-    if (Spec.isPendingSpecException(error)) {
-      this.pend(extractCustomPendingMessage(error));
-      return;
-    }
-
-    if (error instanceof ExpectationFailed) {
-      return;
-    }
-
-    this.addExpectationResult(
-      false,
-      {
-        matcherName: '',
-        passed: false,
-        expected: '',
-        actual: '',
-        error: this.isAssertionError(error)
-          ? assertionErrorMessage(error, {expand: this.expand})
-          : error,
-      },
-      true,
-    );
+      throw new Error("STUB");
   }
 
   disable() {
@@ -252,14 +134,11 @@ export default class Spec {
   }
 
   pend(message?: string) {
-    this.markedPending = true;
-    if (message) {
-      this.result.pendingReason = message;
-    }
+      throw new Error("STUB");
   }
 
   todo() {
-    this.markedTodo = true;
+      throw new Error("STUB");
   }
 
   getResult() {
@@ -288,7 +167,7 @@ export default class Spec {
   }
 
   isExecutable() {
-    return !this.disabled;
+      throw new Error("STUB");
   }
 
   getFullName() {
@@ -306,12 +185,5 @@ export default class Spec {
 Spec.pendingSpecExceptionMessage = '=> marked Pending';
 
 const extractCustomPendingMessage = function (e: Error) {
-  const fullMessage = e.toString();
-  const boilerplateStart = fullMessage.indexOf(
-    Spec.pendingSpecExceptionMessage,
-  );
-  const boilerplateEnd =
-    boilerplateStart + Spec.pendingSpecExceptionMessage.length;
-
-  return fullMessage.slice(boilerplateEnd);
+    throw new Error("STUB");
 };

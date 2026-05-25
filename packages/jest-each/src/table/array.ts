@@ -24,60 +24,29 @@ export default function array(
   title: string,
   arrayTable: Global.ArrayTable,
 ): EachTests {
-  if (isTemplates(title, arrayTable)) {
-    return arrayTable.map((template, index) => ({
-      arguments: [template],
-      title: interpolateVariables(title, template, index).replaceAll(
-        ESCAPED_PLACEHOLDER_PREFIX,
-        PLACEHOLDER_PREFIX,
-      ),
-    }));
-  }
-  return normaliseTable(arrayTable).map((row, index) => ({
-    arguments: row,
-    title: formatTitle(title, row, index),
-  }));
+    throw new Error("STUB");
 }
 
 const isTemplates = (
   title: string,
   arrayTable: Global.ArrayTable,
 ): arrayTable is Templates =>
-  !SUPPORTED_PLACEHOLDERS.test(interpolateEscapedPlaceholders(title)) &&
-  !isTable(arrayTable) &&
-  arrayTable.every(col => col != null && typeof col === 'object');
+  { throw new Error("STUB"); };
 
 const normaliseTable = (table: Global.ArrayTable): Global.Table =>
-  isTable(table) ? table : table.map(colToRow);
+  { throw new Error("STUB"); };
 
 const isTable = (table: Global.ArrayTable): table is Global.Table =>
   table.every(Array.isArray);
 
-const colToRow = (col: Global.Col): Global.Row => [col];
+const colToRow = (col: Global.Col): Global.Row => { throw new Error("STUB"); };
 
 const formatTitle = (
   title: string,
   row: Global.Row,
   rowIndex: number,
 ): string =>
-  row
-    .reduce<string>(
-      (formattedTitle, value) => {
-        const [placeholder] = getMatchingPlaceholders(formattedTitle);
-        const normalisedValue = normalisePlaceholderValue(value);
-        if (!placeholder) return formattedTitle;
-
-        if (placeholder === PRETTY_PLACEHOLDER)
-          return interpolatePrettyPlaceholder(formattedTitle, normalisedValue);
-
-        return util.format(formattedTitle, normalisedValue);
-      },
-      interpolateTitleIndexAndNumber(
-        interpolateEscapedPlaceholders(title),
-        rowIndex,
-      ),
-    )
-    .replaceAll(JEST_EACH_PLACEHOLDER_ESCAPE, PLACEHOLDER_PREFIX);
+  { throw new Error("STUB"); };
 
 const normalisePlaceholderValue = (value: unknown) =>
   typeof value === 'string'

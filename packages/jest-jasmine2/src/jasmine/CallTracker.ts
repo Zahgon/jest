@@ -47,49 +47,7 @@ class CallTracker {
   reset: () => void;
 
   constructor() {
-    let calls: Array<Context> = [];
-
-    this.track = function (context: Context) {
-      calls.push(context);
-    };
-
-    this.any = function () {
-      return calls.length > 0;
-    };
-
-    this.count = function () {
-      return calls.length;
-    };
-
-    this.argsFor = function (index) {
-      const call = calls[index];
-      return call ? call.args : [];
-    };
-
-    this.all = function () {
-      return calls;
-    };
-
-    this.allArgs = function () {
-      const callArgs: Array<unknown> = [];
-      for (const call of calls) {
-        callArgs.push(call.args);
-      }
-
-      return callArgs;
-    };
-
-    this.first = function () {
-      return calls[0];
-    };
-
-    this.mostRecent = function () {
-      return calls.at(-1)!;
-    };
-
-    this.reset = function () {
-      calls = [];
-    };
+      throw new Error("STUB");
   }
 }
 

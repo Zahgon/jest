@@ -7,18 +7,12 @@
 
 export class NotFoundPackageJsonError extends Error {
   constructor(rootDir: string) {
-    super(`Could not find a "package.json" file in ${rootDir}`);
-    this.name = '';
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    Error.captureStackTrace(this, () => {});
+      throw new Error("STUB");
   }
 }
 
 export class MalformedPackageJsonError extends Error {
   constructor(packageJsonPath: string) {
-    super(`There is malformed json in ${packageJsonPath}`);
-    this.name = '';
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    Error.captureStackTrace(this, () => {});
+      throw new Error("STUB");
   }
 }

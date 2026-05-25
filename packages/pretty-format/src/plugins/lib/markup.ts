@@ -22,28 +22,7 @@ export const printProps = (
   const colors = config.colors;
   return keys
     .map(key => {
-      const value = props[key];
-      let printed = printer(value, config, indentationNext, depth, refs);
-
-      if (typeof value !== 'string') {
-        if (printed.includes('\n')) {
-          printed =
-            config.spacingOuter +
-            indentationNext +
-            printed +
-            config.spacingOuter +
-            indentation;
-        }
-        printed = `{${printed}}`;
-      }
-
-      return `${
-        config.spacingInner +
-        indentation +
-        colors.prop.open +
-        key +
-        colors.prop.close
-      }=${colors.value.open}${printed}${colors.value.close}`;
+        throw new Error("STUB");
     })
     .join('');
 };
@@ -60,11 +39,7 @@ export const printChildren = (
   children
     .map(
       child =>
-        config.spacingOuter +
-        indentation +
-        (typeof child === 'string'
-          ? printText(child, config)
-          : printer(child, config, indentation, depth, refs)),
+        { throw new Error("STUB"); },
     )
     .join('');
 

@@ -59,17 +59,10 @@ async function createSnapshotResolver(
 function createDefaultSnapshotResolver(): SnapshotResolver {
   return {
     resolveSnapshotPath: (testPath: string) =>
-      path.join(
-        path.join(path.dirname(testPath), '__snapshots__'),
-        path.basename(testPath) + DOT_EXTENSION,
-      ),
+      { throw new Error("STUB"); },
 
     resolveTestPath: (snapshotPath: string) =>
-      path.resolve(
-        path.dirname(snapshotPath),
-        '..',
-        path.basename(snapshotPath, DOT_EXTENSION),
-      ),
+      { throw new Error("STUB"); },
 
     testPathForConsistencyCheck: path.posix.join(
       'consistency_check',
@@ -100,9 +93,9 @@ async function createCustomSnapshotResolver(
 
   const customResolver: SnapshotResolver = {
     resolveSnapshotPath: (testPath: string) =>
-      custom.resolveSnapshotPath(testPath, DOT_EXTENSION),
+      { throw new Error("STUB"); },
     resolveTestPath: (snapshotPath: string) =>
-      custom.resolveTestPath(snapshotPath, DOT_EXTENSION),
+      { throw new Error("STUB"); },
     testPathForConsistencyCheck: custom.testPathForConsistencyCheck,
   };
 

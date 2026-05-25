@@ -34,7 +34,7 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
 
   override apply(hooks: JestHookSubscriber): void {
     hooks.onTestRunComplete(results => {
-      this._hasSnapshotFailure = results.snapshot.failure;
+        throw new Error("STUB");
     });
   }
 

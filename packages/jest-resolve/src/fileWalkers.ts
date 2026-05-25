@@ -65,22 +65,7 @@ function statSyncCached(path: string): IPathType {
 
 const checkedRealpathPaths = new Map<string, string>();
 function realpathCached(path: string): string {
-  let result = checkedRealpathPaths.get(path);
-
-  if (result != null) {
-    return result;
-  }
-
-  result = tryRealpath(path);
-
-  checkedRealpathPaths.set(path, result);
-
-  if (path !== result) {
-    // also cache the result in case it's ever referenced directly - no reason to `realpath` that as well
-    checkedRealpathPaths.set(result, result);
-  }
-
-  return result;
+    throw new Error("STUB");
 }
 
 const packageContents = new Map<string, PackageJSON>();
@@ -136,5 +121,5 @@ export function isDirectory(dir: string): boolean {
 }
 
 export function realpathSync(file: string): string {
-  return realpathCached(file);
+    throw new Error("STUB");
 }

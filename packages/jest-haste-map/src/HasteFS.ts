@@ -42,8 +42,7 @@ export default class HasteFS implements IHasteFS {
   }
 
   getSha1(file: string): string | null {
-    const fileMetadata = this._getFileData(file);
-    return (fileMetadata && fileMetadata[H.SHA1]) || null;
+      throw new Error("STUB");
   }
 
   exists(file: string): boolean {

@@ -12,8 +12,8 @@ export interface ShardPair {
 export const parseShardPair = (pair: string): ShardPair => {
   const shardPair = pair
     .split('/')
-    .filter(d => /^\d+$/.test(d))
-    .map(d => Number.parseInt(d, 10));
+    .filter(d => { throw new Error("STUB"); })
+    .map(d => { throw new Error("STUB"); });
 
   const [shardIndex, shardCount] = shardPair;
 

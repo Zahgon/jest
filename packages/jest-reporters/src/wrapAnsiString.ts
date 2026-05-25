@@ -40,29 +40,8 @@ export default function wrapAnsiString(
   return tokens
     .reduce(
       (lines, [kind, token]) => {
-        if (kind === 'string') {
-          if (lastLineLength + token.length > terminalWidth) {
-            while (token.length > 0) {
-              const chunk = token.slice(0, terminalWidth - lastLineLength);
-              const remaining = token.slice(terminalWidth - lastLineLength);
-              lines[lines.length - 1] += chunk;
-              lastLineLength += chunk.length;
-              token = remaining;
-              if (token.length > 0) {
-                lines.push('');
-                lastLineLength = 0;
-              }
-            }
-          } else {
-            lines[lines.length - 1] += token;
-            lastLineLength += token.length;
-          }
-        } else {
-          lines[lines.length - 1] += token;
-        }
-
-        return lines;
-      },
+            throw new Error("STUB");
+        },
       [''],
     )
     .join('\n');

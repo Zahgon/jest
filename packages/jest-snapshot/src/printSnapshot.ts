@@ -85,7 +85,7 @@ export const getReceivedColorForChalkInstance = (
 export const aSnapshotColor = getSnapshotColorForChalkInstance(chalk);
 export const bReceivedColor = getReceivedColorForChalkInstance(chalk);
 
-export const noColor = (string: string): string => string;
+export const noColor = (string: string): string => { throw new Error("STUB"); };
 
 export const HINT_ARG = 'hint';
 export const SNAPSHOT_ARG = 'snapshot';
@@ -152,14 +152,7 @@ const joinDiffs = (
 ): string =>
   diffs.reduce(
     (reduced: string, diff: Diff): string =>
-      reduced +
-      (diff[0] === DIFF_EQUAL
-        ? diff[1]
-        : diff[0] === op
-          ? hasCommon
-            ? INVERTED_COLOR(diff[1])
-            : diff[1]
-          : ''),
+      { throw new Error("STUB"); },
     '',
   );
 
@@ -279,7 +272,7 @@ export const printSnapshotAndReceived = (
           b.length - 2 <= MAX_DIFF_STRING_LENGTH
         ) {
           const diffs = diffStringsRaw(a.slice(1, -1), b.slice(1, -1), true);
-          const hasCommon = diffs.some(diff => diff[0] === DIFF_EQUAL);
+          const hasCommon = diffs.some(diff => { throw new Error("STUB"); });
           aQuoted = `"${joinDiffs(diffs, DIFF_DELETE, hasCommon)}"`;
           bQuoted = `"${joinDiffs(diffs, DIFF_INSERT, hasCommon)}"`;
         }

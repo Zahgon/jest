@@ -43,76 +43,11 @@ export default class DefaultReporter extends BaseReporter {
   static readonly filename = __filename;
 
   constructor(globalConfig: Config.GlobalConfig) {
-    super();
-    this._globalConfig = globalConfig;
-    this._clear = '';
-    this._out = process.stdout.write.bind(process.stdout);
-    this._err = process.stderr.write.bind(process.stderr);
-    this._status = new Status(globalConfig);
-    this._bufferedOutput = new Set();
-    this.__wrapStdio(process.stdout);
-    this.__wrapStdio(process.stderr);
-    this._status.onChange(() => {
-      this.__beginSynchronizedUpdate(
-        this._globalConfig.useStderr ? this._err : this._out,
-      );
-      this.__clearStatus();
-      this.__printStatus();
-      this.__endSynchronizedUpdate(
-        this._globalConfig.useStderr ? this._err : this._out,
-      );
-    });
+      throw new Error("STUB");
   }
 
   protected __wrapStdio(stream: NodeJS.WritableStream | WriteStream): void {
-    const write = stream.write.bind(stream);
-
-    let buffer: Array<string> = [];
-    let timeout: NodeJS.Timeout | null = null;
-
-    const flushBufferedOutput = () => {
-      const string = buffer.join('');
-      buffer = [];
-
-      // This is to avoid conflicts between random output and status text
-      this.__beginSynchronizedUpdate(
-        this._globalConfig.useStderr ? this._err : this._out,
-      );
-      this.__clearStatus();
-      if (string) {
-        write(string);
-      }
-      this.__printStatus();
-      this.__endSynchronizedUpdate(
-        this._globalConfig.useStderr ? this._err : this._out,
-      );
-
-      this._bufferedOutput.delete(flushBufferedOutput);
-    };
-
-    this._bufferedOutput.add(flushBufferedOutput);
-
-    const debouncedFlush = () => {
-      // If the process blows up no errors would be printed.
-      // There should be a smart way to buffer stderr, but for now
-      // we just won't buffer it.
-      if (stream === process.stderr) {
-        flushBufferedOutput();
-      } else {
-        if (!timeout) {
-          timeout = setTimeout(() => {
-            flushBufferedOutput();
-            timeout = null;
-          }, 100);
-        }
-      }
-    };
-
-    stream.write = (chunk: string) => {
-      buffer.push(chunk);
-      debouncedFlush();
-      return true;
-    };
+      throw new Error("STUB");
   }
 
   // Don't wait for the debounced call and flush all output immediately.

@@ -317,12 +317,12 @@ function matchArity(fn: Function, length: number): Function {
   switch (length) {
     case 1:
       mockConstructor = function (this: unknown, _a: unknown) {
-        return fn.apply(this, arguments);
+          throw new Error("STUB");
       };
       break;
     case 2:
       mockConstructor = function (this: unknown, _a: unknown, _b: unknown) {
-        return fn.apply(this, arguments);
+          throw new Error("STUB");
       };
       break;
     case 3:
@@ -332,7 +332,7 @@ function matchArity(fn: Function, length: number): Function {
         _b: unknown,
         _c: unknown,
       ) {
-        return fn.apply(this, arguments);
+          throw new Error("STUB");
       };
       break;
     case 4:
@@ -343,7 +343,7 @@ function matchArity(fn: Function, length: number): Function {
         _c: unknown,
         _d: unknown,
       ) {
-        return fn.apply(this, arguments);
+          throw new Error("STUB");
       };
       break;
     case 5:
@@ -355,7 +355,7 @@ function matchArity(fn: Function, length: number): Function {
         _d: unknown,
         _e: unknown,
       ) {
-        return fn.apply(this, arguments);
+          throw new Error("STUB");
       };
       break;
     case 6:
@@ -368,7 +368,7 @@ function matchArity(fn: Function, length: number): Function {
         _e: unknown,
         _f: unknown,
       ) {
-        return fn.apply(this, arguments);
+          throw new Error("STUB");
       };
       break;
     case 7:
@@ -382,7 +382,7 @@ function matchArity(fn: Function, length: number): Function {
         _f: unknown,
         _g: unknown,
       ) {
-        return fn.apply(this, arguments);
+          throw new Error("STUB");
       };
       break;
     case 8:
@@ -397,7 +397,7 @@ function matchArity(fn: Function, length: number): Function {
         _g: unknown,
         _h: unknown,
       ) {
-        return fn.apply(this, arguments);
+          throw new Error("STUB");
       };
       break;
     case 9:
@@ -413,12 +413,12 @@ function matchArity(fn: Function, length: number): Function {
         _h: unknown,
         _i: unknown,
       ) {
-        return fn.apply(this, arguments);
+          throw new Error("STUB");
       };
       break;
     default:
       mockConstructor = function (this: unknown) {
-        return fn.apply(this, arguments);
+          throw new Error("STUB");
       };
       break;
   }
@@ -593,33 +593,7 @@ export class ModuleMocker {
       this: unknown,
       ...callArgs: Parameters<T>
     ) {
-      const config = ensureConfig(f);
-      const matching = config.whenCalledWithRegistrations.filter(branch =>
-        equals(branch.matchers, callArgs, [iterableEquality]),
-      );
-      // (1) Forward find: first matching branch with a queued once.
-      const onceBranch = matching.find(
-        branch => ensureConfig(branch.subMock).specificMockImpls.length > 0,
-      );
-      if (onceBranch) {
-        return onceBranch.subMock.apply(this, callArgs);
-      }
-      // (2) Reverse walk for last-registered persistent.
-      for (let i = matching.length - 1; i >= 0; i--) {
-        const branch = matching[i];
-        if (ensureConfig(branch.subMock).mockImpl !== undefined) {
-          return branch.subMock.apply(this, callArgs);
-        }
-      }
-      // (3) Fall through to the pre-dispatcher impl.
-      if (config.fallbackImpl !== undefined) {
-        return config.fallbackImpl.apply(this, callArgs);
-      }
-      // (4) Fall through to the prototype impl (class hierarchy auto-mocks).
-      if (f._protoImpl) {
-        return f._protoImpl.apply(this, callArgs);
-      }
-      return undefined;
+        throw new Error("STUB");
     };
   }
 
@@ -718,93 +692,7 @@ export class ModuleMocker {
         this: ReturnType<T>,
         ...args: Parameters<T>
       ) {
-        const mockState = mocker._ensureMockState(f);
-        const mockConfig = mocker._ensureMockConfig(f);
-        mockState.instances.push(this);
-        mockState.contexts.push(this);
-        mockState.calls.push(args);
-        // Create and record an "incomplete" mock result immediately upon
-        // calling rather than waiting for the mock to return. This avoids
-        // issues caused by recursion where results can be recorded in the
-        // wrong order.
-        const mockResult: MockFunctionResult = {
-          type: 'incomplete',
-          value: undefined,
-        };
-        mockState.results.push(mockResult);
-        mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
-
-        // Will be set to the return value of the mock if an error is not thrown
-        let finalReturnValue;
-        // Will be set to the error that is thrown by the mock (if it throws)
-        let thrownError;
-        // Will be set to true if the mock throws an error. The presence of a
-        // value in `thrownError` is not a 100% reliable indicator because a
-        // function could throw a value of undefined.
-        let callDidThrowError = false;
-
-        try {
-          // The bulk of the implementation is wrapped in an immediately
-          // executed arrow function so the return value of the mock function
-          // can be easily captured and recorded, despite the many separate
-          // return points within the logic.
-          finalReturnValue = (() => {
-            if (this instanceof f) {
-              // This is probably being called as a constructor
-              for (const slot of prototypeSlots) {
-                // Copy prototype methods to the instance to make
-                // it easier to interact with mock instance call and
-                // return values
-                if (prototype[slot].type === 'function') {
-                  // @ts-expect-error no index signature
-                  const protoImpl = this[slot];
-                  // @ts-expect-error no index signature
-                  this[slot] = mocker.generateFromMetadata(prototype[slot]);
-                  // @ts-expect-error no index signature
-                  this[slot]._protoImpl = protoImpl;
-                }
-              }
-
-              // Run the mock constructor implementation
-              const mockImpl =
-                mockConfig.specificMockImpls.length > 0
-                  ? mockConfig.specificMockImpls.shift()
-                  : mockConfig.mockImpl;
-              return mockImpl && mockImpl.apply(this, arguments);
-            }
-
-            // If mockImplementationOnce()/mockImplementation() is last set,
-            // implementation use the mock
-            let specificMockImpl = mockConfig.specificMockImpls.shift();
-            if (specificMockImpl === undefined) {
-              specificMockImpl = mockConfig.mockImpl;
-            }
-            if (specificMockImpl) {
-              return specificMockImpl.apply(this, arguments);
-            }
-            // Otherwise use prototype implementation
-            if (f._protoImpl) {
-              return f._protoImpl.apply(this, arguments);
-            }
-
-            return undefined;
-          })();
-        } catch (error) {
-          // Store the thrown error so we can record it, then re-throw it.
-          thrownError = error;
-          callDidThrowError = true;
-          throw error;
-        } finally {
-          // Record the result of the function.
-          // NOTE: Intentionally NOT pushing/indexing into the array of mock
-          //       results here to avoid corrupting results data if mockClear()
-          //       is called during the execution of the mock.
-          // @ts-expect-error reassigning 'incomplete'
-          mockResult.type = callDidThrowError ? 'throw' : 'return';
-          mockResult.value = callDidThrowError ? thrownError : finalReturnValue;
-        }
-
-        return finalReturnValue;
+          throw new Error("STUB");
       }, metadata.length || 0);
 
       const f = this._createMockFunction(metadata, mockConstructor) as Mock;
@@ -815,12 +703,7 @@ export class ModuleMocker {
       // replaced it.
       const dispatcherImpl = this._makeWhenDispatcherImpl(f);
       f.getMockImplementation = () => {
-        const mockConfig = this._ensureMockConfig(f);
-        // The dispatcher is internal — surface the user's underlying impl.
-        if (mockConfig.mockImpl === dispatcherImpl) {
-          return mockConfig.fallbackImpl as T;
-        }
-        return mockConfig.mockImpl as T;
+          throw new Error("STUB");
       };
 
       if (typeof restore === 'function') {
@@ -833,61 +716,44 @@ export class ModuleMocker {
       Object.defineProperty(f, 'mock', {
         configurable: false,
         enumerable: true,
-        get: () => this._ensureMockState(f),
-        set: val => this._mockState.set(f, val),
+        get: () => { throw new Error("STUB"); },
+        set: val => { throw new Error("STUB"); },
       });
 
       f.mockClear = () => {
-        this._mockState.delete(f);
-        return f;
+          throw new Error("STUB");
       };
 
       f.mockReset = () => {
-        f.mockClear();
-        this._resetWhenCalledWithSubMocks(f);
-        this._mockConfigRegistry.delete(f);
-        return f;
+          throw new Error("STUB");
       };
 
       f.mockRestore = () => {
-        f.mockReset();
-        return restore ? restore() : undefined;
+          throw new Error("STUB");
       };
 
       f.mockReturnValueOnce = (value: ReturnType<T>) =>
         // next function call will return this value or default return value
-        f.mockImplementationOnce(() => value);
+        { throw new Error("STUB"); };
 
       f.mockResolvedValueOnce = (value: ResolveType<T>) =>
-        f.mockImplementationOnce(() =>
-          this._environmentGlobal.Promise.resolve(value),
-        );
+        { throw new Error("STUB"); };
 
       f.mockRejectedValueOnce = (value: unknown) =>
-        f.mockImplementationOnce(() =>
-          this._environmentGlobal.Promise.reject(value),
-        );
+        { throw new Error("STUB"); };
 
       f.mockReturnValue = (value: ReturnType<T>) =>
         // next function call will return specified return value or this one
-        f.mockImplementation(() => value);
+        { throw new Error("STUB"); };
 
       f.mockResolvedValue = (value: ResolveType<T>) =>
-        f.mockImplementation(() =>
-          this._environmentGlobal.Promise.resolve(value),
-        );
+        { throw new Error("STUB"); };
 
       f.mockRejectedValue = (value: unknown) =>
-        f.mockImplementation(() =>
-          this._environmentGlobal.Promise.reject(value),
-        );
+        { throw new Error("STUB"); };
 
       f.mockImplementationOnce = (fn: T) => {
-        // next function call will use this mock implementation return value
-        // or default mock implementation return value
-        const mockConfig = this._ensureMockConfig(f);
-        mockConfig.specificMockImpls.push(fn);
-        return f;
+          throw new Error("STUB");
       };
 
       f.withImplementation = withImplementation.bind(this);
@@ -905,73 +771,26 @@ export class ModuleMocker {
         fn: T,
         callback: (() => void) | (() => Promise<unknown>),
       ): void | Promise<void> {
-        // Remember previous mock implementation, then set new one
-        const mockConfig = this._ensureMockConfig(f);
-        const previousImplementation = mockConfig.mockImpl;
-        const previousSpecificImplementations = mockConfig.specificMockImpls;
-        const previousFallbackImpl = mockConfig.fallbackImpl;
-        mockConfig.mockImpl = fn;
-        mockConfig.specificMockImpls = [];
-
-        const returnedValue = callback();
-
-        if (isPromise(returnedValue)) {
-          return returnedValue.then(() => {
-            mockConfig.mockImpl = previousImplementation;
-            mockConfig.specificMockImpls = previousSpecificImplementations;
-            mockConfig.fallbackImpl = previousFallbackImpl;
-          });
-        } else {
-          mockConfig.mockImpl = previousImplementation;
-          mockConfig.specificMockImpls = previousSpecificImplementations;
-          mockConfig.fallbackImpl = previousFallbackImpl;
-        }
+          throw new Error("STUB");
       }
 
       f.mockImplementation = (fn: T) => {
-        // next function call will use mock implementation return value;
-        // when whenCalledWith routing is active, set the fall-through instead
-        const mockConfig = this._ensureMockConfig(f);
-        if (mockConfig.mockImpl === dispatcherImpl) {
-          mockConfig.fallbackImpl = fn;
-        } else {
-          mockConfig.mockImpl = fn;
-        }
-        return f;
+          throw new Error("STUB");
       };
 
       f.whenCalledWith = (...args: FunctionParameters<T>) => {
-        const mockConfig = this._ensureMockConfig(f);
-
-        // If the user replaced our dispatcher (e.g. via mockImplementation),
-        // reinstall it with their new mockImpl as the fallback. Keep prior
-        // registrations — re-arming a fallback shouldn't silently drop them.
-        if (mockConfig.mockImpl !== dispatcherImpl) {
-          mockConfig.fallbackImpl = mockConfig.mockImpl;
-          mockConfig.mockImpl = dispatcherImpl;
-        }
-
-        const subMock = this._makeComponent({type: 'function'}) as Mock<T>;
-        mockConfig.whenCalledWithRegistrations.push({matchers: args, subMock});
-        return subMock;
+          throw new Error("STUB");
       };
 
       f.mockReturnThis = () =>
-        f.mockImplementation(function (this: ReturnType<T>) {
-          return this;
-        });
+        { throw new Error("STUB"); };
 
       f.mockName = (name: string) => {
-        if (name) {
-          const mockConfig = this._ensureMockConfig(f);
-          mockConfig.mockName = name;
-        }
-        return f;
+          throw new Error("STUB");
       };
 
       f.getMockName = () => {
-        const mockConfig = this._ensureMockConfig(f);
-        return mockConfig.mockName || 'jest.fn()';
+          throw new Error("STUB");
       };
 
       if (metadata.mockImpl) {
@@ -1058,8 +877,8 @@ export class ModuleMocker {
       } else {
         callbacks.push(
           (function (ref) {
-            return () => (mock[slot] = refs[ref]);
-          })(slotMetadata.ref),
+                throw new Error("STUB");
+            })(slotMetadata.ref),
         );
       }
     }
@@ -1083,18 +902,7 @@ export class ModuleMocker {
     object: T,
     propertyKey: K,
   ): ReplacedPropertyRestorer<T, K> | undefined {
-    for (const spyState of this._spyState) {
-      if (
-        'object' in spyState &&
-        'property' in spyState &&
-        spyState.object === object &&
-        spyState.property === propertyKey
-      ) {
-        return spyState as ReplacedPropertyRestorer<T, K>;
-      }
-    }
-
-    return;
+      throw new Error("STUB");
   }
 
   /**
@@ -1297,25 +1105,20 @@ export class ModuleMocker {
       if (descriptor && descriptor.get) {
         const originalGet = descriptor.get;
         mock = this._makeComponent({type: 'function'}, () => {
-          descriptor!.get = originalGet;
-          Object.defineProperty(object, methodKey, descriptor!);
+            throw new Error("STUB");
         });
-        descriptor.get = () => mock;
+        descriptor.get = () => { throw new Error("STUB"); };
         Object.defineProperty(object, methodKey, descriptor);
       } else {
         mock = this._makeComponent({type: 'function'}, () => {
-          if (isMethodOwner) {
-            object[methodKey] = original;
-          } else {
-            delete object[methodKey];
-          }
+            throw new Error("STUB");
         });
         // @ts-expect-error overriding original method with a Mock
         object[methodKey] = mock;
       }
 
       mock.mockImplementation(function (this: unknown) {
-        return original.apply(this, arguments);
+          throw new Error("STUB");
       });
     }
 
@@ -1377,16 +1180,13 @@ export class ModuleMocker {
       }
 
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
-        // @ts-expect-error: mock is assignable
-        descriptor![accessType] = original;
-        Object.defineProperty(object, propertyKey, descriptor!);
+          throw new Error("STUB");
       });
 
       (descriptor[accessType] as Mock).mockImplementation(function (
         this: unknown,
       ) {
-        // @ts-expect-error - wrong context
-        return original.apply(this, arguments);
+          throw new Error("STUB");
       });
     }
 
@@ -1399,111 +1199,7 @@ export class ModuleMocker {
     propertyKey: K,
     value: T[K],
   ): Replaced<T[K]> {
-    if (
-      object == null ||
-      (typeof object !== 'object' && typeof object !== 'function')
-    ) {
-      throw new Error(
-        `Cannot use replaceProperty on a primitive value; ${this._typeOf(
-          object,
-        )} given`,
-      );
-    }
-
-    if (propertyKey == null) {
-      throw new Error('No property name supplied');
-    }
-
-    let descriptor = Object.getOwnPropertyDescriptor(object, propertyKey);
-    let proto = Object.getPrototypeOf(object);
-    while (!descriptor && proto !== null) {
-      descriptor = Object.getOwnPropertyDescriptor(proto, propertyKey);
-      proto = Object.getPrototypeOf(proto);
-    }
-    if (!descriptor) {
-      throw new Error(
-        `Property \`${String(
-          propertyKey,
-        )}\` does not exist in the provided object`,
-      );
-    }
-    if (!descriptor.configurable) {
-      throw new Error(
-        `Property \`${String(propertyKey)}\` is not declared configurable`,
-      );
-    }
-
-    if (descriptor.get !== undefined) {
-      throw new Error(
-        `Cannot replace the \`${String(
-          propertyKey,
-        )}\` property because it has a getter. Use \`jest.spyOn(object, '${String(
-          propertyKey,
-        )}', 'get').mockReturnValue(value)\` instead.`,
-      );
-    }
-
-    if (descriptor.set !== undefined) {
-      throw new Error(
-        `Cannot replace the \`${String(
-          propertyKey,
-        )}\` property because it has a setter. Use \`jest.spyOn(object, '${String(
-          propertyKey,
-        )}', 'set').mockReturnValue(value)\` instead.`,
-      );
-    }
-
-    if (typeof descriptor.value === 'function') {
-      throw new TypeError(
-        `Cannot replace the \`${String(
-          propertyKey,
-        )}\` property because it is a function. Use \`jest.spyOn(object, '${String(
-          propertyKey,
-        )}')\` instead.`,
-      );
-    }
-
-    const existingRestore = this._findReplacedProperty(object, propertyKey);
-
-    if (existingRestore) {
-      return existingRestore.replaced.replaceValue(value);
-    }
-
-    const isPropertyOwner = Object.prototype.hasOwnProperty.call(
-      object,
-      propertyKey,
-    );
-    const originalValue = descriptor.value;
-
-    const restore: ReplacedPropertyRestorer<T, K> = () => {
-      if (isPropertyOwner) {
-        object[propertyKey] = originalValue;
-      } else {
-        delete object[propertyKey];
-      }
-    };
-
-    const replaced: Replaced<T[K]> = {
-      replaceValue: value => {
-        object[propertyKey] = value;
-
-        return replaced;
-      },
-
-      restore: () => {
-        restore();
-
-        this._spyState.delete(restore);
-      },
-    };
-
-    restore.object = object;
-    restore.property = propertyKey;
-    restore.replaced = replaced;
-
-    this._spyState.add(restore);
-
-    return replaced.replaceValue(value);
+      throw new Error("STUB");
   }
 
   clearAllMocks(): void {
@@ -1560,7 +1256,7 @@ export class ModuleMocker {
     source: T,
     _options?: {shallow: boolean},
   ): Mocked<T> | MockedShallow<T> {
-    return source as Mocked<T> | MockedShallow<T>;
+      throw new Error("STUB");
   }
 }
 

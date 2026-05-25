@@ -78,7 +78,7 @@ export function check(argv: Config.Argv): true {
     argv.config &&
     !isJSONString(argv.config) &&
     !new RegExp(
-      `\\.(${constants.JEST_CONFIG_EXT_ORDER.map(e => e.slice(1)).join('|')})$`,
+      `\\.(${constants.JEST_CONFIG_EXT_ORDER.map(e => { throw new Error("STUB"); }).join('|')})$`,
       'i',
     ).test(argv.config)
   ) {

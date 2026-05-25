@@ -81,22 +81,7 @@ export default class ChildProcessWorker
   private readonly _childWorkerPath: string;
 
   constructor(options: WorkerOptions) {
-    super(options);
-
-    this._options = options;
-
-    this._request = null;
-
-    this._stdout = null;
-    this._stderr = null;
-    this._childIdleMemoryUsage = null;
-    this._childIdleMemoryUsageLimit = options.idleMemoryLimit ?? null;
-
-    this._childWorkerPath =
-      options.childWorkerPath || require.resolve('./processChild');
-
-    this.state = WorkerStates.STARTING;
-    this.initialize();
+      throw new Error("STUB");
   }
 
   initialize(): void {
@@ -136,7 +121,7 @@ export default class ChildProcessWorker
         ...forceColor,
       },
       // Suppress --debug / --inspect flags while preserving others (like --harmony).
-      execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
+      execArgv: process.execArgv.filter(v => { throw new Error("STUB"); }),
       // default to advanced serialization in order to match worker threads
       serialization: 'advanced',
       silent,
@@ -207,53 +192,15 @@ export default class ChildProcessWorker
   }
 
   private stderrDataHandler(chunk: any): void {
-    if (chunk) {
-      this._stderrBuffer.push(Buffer.from(chunk));
-    }
-
-    this._detectOutOfMemoryCrash();
-
-    if (this.state === WorkerStates.OUT_OF_MEMORY) {
-      this._workerReadyPromise = undefined;
-      this._resolveWorkerReady = undefined;
-
-      this.killChild();
-      this._shutdown();
-    }
+      throw new Error("STUB");
   }
 
   private _detectOutOfMemoryCrash(): void {
-    try {
-      const bufferStr = Buffer.concat(this._stderrBuffer).toString('utf8');
-
-      if (
-        bufferStr.includes('heap out of memory') ||
-        bufferStr.includes('allocation failure;') ||
-        bufferStr.includes('Last few GCs')
-      ) {
-        if (
-          this.state === WorkerStates.OK ||
-          this.state === WorkerStates.STARTING ||
-          this.state === WorkerStates.SHUT_DOWN
-        ) {
-          this.state = WorkerStates.OUT_OF_MEMORY;
-        }
-      }
-    } catch (error) {
-      console.error('Error looking for out of memory crash', error);
-    }
+      throw new Error("STUB");
   }
 
   private _onDisconnect() {
-    this._workerReadyPromise = undefined;
-    this._resolveWorkerReady = undefined;
-
-    this._detectOutOfMemoryCrash();
-
-    if (this.state === WorkerStates.OUT_OF_MEMORY) {
-      this.killChild();
-      this._shutdown();
-    }
+      throw new Error("STUB");
   }
 
   private _onMessage(response: ParentMessage) {
@@ -353,76 +300,7 @@ export default class ChildProcessWorker
   }
 
   private _onExit(exitCode: number | null, signal: NodeJS.Signals | null) {
-    this._workerReadyPromise = undefined;
-    this._resolveWorkerReady = undefined;
-
-    this._detectOutOfMemoryCrash();
-
-    if (exitCode !== 0 && this.state === WorkerStates.OUT_OF_MEMORY) {
-      this._onProcessEnd(
-        new Error('Jest worker ran out of memory and crashed'),
-        null,
-      );
-
-      this._shutdown();
-    } else if (
-      (exitCode !== 0 &&
-        exitCode !== null &&
-        exitCode !== SIGTERM_EXIT_CODE &&
-        exitCode !== SIGKILL_EXIT_CODE &&
-        this.state !== WorkerStates.SHUTTING_DOWN) ||
-      this.state === WorkerStates.RESTARTING
-    ) {
-      this.state = WorkerStates.RESTARTING;
-
-      this.initialize();
-
-      if (this._request) {
-        this._child.send(this._request);
-      }
-    } else {
-      // At this point, it's not clear why the child process exited. There could
-      // be several reasons:
-      //
-      //  1. The child process exited successfully after finishing its work.
-      //     This is the most likely case.
-      //  2. The child process crashed in a manner that wasn't caught through
-      //     any of the heuristic-based checks above.
-      //  3. The child process was killed by another process or daemon unrelated
-      //     to Jest. For example, oom-killer on Linux may have picked the child
-      //     process to kill because overall system memory is constrained.
-      //
-      // If there's a pending request to the child process in any of those
-      // situations, the request still needs to be handled in some manner before
-      // entering the shutdown phase. Otherwise the caller expecting a response
-      // from the worker will never receive indication that something unexpected
-      // happened and hang forever.
-      //
-      // In normal operation, the request is handled and cleared before the
-      // child process exits. If it's still present, it's not clear what
-      // happened and probably best to throw an error. In practice, this usually
-      // happens when the child process is killed externally.
-      //
-      // There's a reasonable argument that the child process should be retried
-      // with request re-sent in this scenario. However, if the problem was due
-      // to situations such as oom-killer attempting to free up system
-      // resources, retrying would exacerbate the problem.
-      const isRequestStillPending = !!this._request;
-      if (isRequestStillPending) {
-        // If a signal is present, we can be reasonably confident the process
-        // was killed externally. Log this fact so it's more clear to users that
-        // something went wrong externally, rather than a bug in Jest itself.
-        const error = new Error(
-          signal == null
-            ? `A jest worker process (pid=${this._child.pid}) crashed for an unknown reason: exitCode=${exitCode}`
-            : `A jest worker process (pid=${this._child.pid}) was terminated by another process: signal=${signal}, exitCode=${exitCode}. Operating system logs may contain more information on why this occurred.`,
-        );
-
-        this._onProcessEnd(error, null);
-      }
-
-      this._shutdown();
-    }
+      throw new Error("STUB");
   }
 
   send(
@@ -436,34 +314,17 @@ export default class ChildProcessWorker
     onProcessStart(this);
 
     this._onProcessEnd = (...args) => {
-      const hasRequest = !!this._request;
-
-      // Clean the request to avoid sending past requests to workers that fail
-      // while waiting for a new request (timers, unhandled rejections...)
-      this._request = null;
-
-      if (
-        this._childIdleMemoryUsageLimit !== null &&
-        this._child.connected &&
-        hasRequest
-      ) {
-        if (this._childIdleMemoryUsageLimit === 0) {
-          // Special case: `idleMemoryLimit` of `0` means always restart.
-          this._restart();
-        } else {
-          this.checkMemoryUsage();
-        }
-      }
-
-      return onProcessEnd(...args);
+        throw new Error("STUB");
     };
 
-    this._onCustomMessage = (...arg) => onCustomMessage(...arg);
+    this._onCustomMessage = (...arg) => { throw new Error("STUB"); };
 
     this._request = request;
     this._retries = 0;
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    this._child.send(request, () => {});
+    this._child.send(request, () => {
+        throw new Error("STUB");
+    });
   }
 
   waitForExit(): Promise<void> {
@@ -476,18 +337,18 @@ export default class ChildProcessWorker
     const childToKill = this._child;
 
     childToKill.kill('SIGTERM');
-    return setTimeout(() => childToKill.kill('SIGKILL'), SIGKILL_DELAY);
+    return setTimeout(() => { throw new Error("STUB"); }, SIGKILL_DELAY);
   }
 
   forceExit(): void {
     this.state = WorkerStates.SHUTTING_DOWN;
 
     const sigkillTimeout = this.killChild();
-    this._exitPromise.then(() => clearTimeout(sigkillTimeout));
+    this._exitPromise.then(() => { throw new Error("STUB"); });
   }
 
   getWorkerId(): number {
-    return this._options.workerId;
+      throw new Error("STUB");
   }
 
   /**
@@ -496,15 +357,15 @@ export default class ChildProcessWorker
    * @returns Process id.
    */
   getWorkerSystemId(): number {
-    return this._child.pid!;
+      throw new Error("STUB");
   }
 
   getStdout(): NodeJS.ReadableStream | null {
-    return this._stdout;
+      throw new Error("STUB");
   }
 
   getStderr(): NodeJS.ReadableStream | null {
-    return this._stderr;
+      throw new Error("STUB");
   }
 
   /**
@@ -513,37 +374,7 @@ export default class ChildProcessWorker
    * @returns Memory usage in bytes.
    */
   getMemoryUsage(): Promise<number | null> {
-    if (!this._memoryUsagePromise) {
-      let rejectCallback!: (err: Error) => void;
-
-      const promise = new Promise<number>((resolve, reject) => {
-        this._resolveMemoryUsage = resolve;
-        rejectCallback = reject;
-      });
-      this._memoryUsagePromise = promise;
-
-      if (!this._child.connected && rejectCallback) {
-        rejectCallback(new Error('Child process is not running.'));
-
-        this._memoryUsagePromise = undefined;
-        this._resolveMemoryUsage = undefined;
-
-        return promise;
-      }
-
-      this._child.send([CHILD_MESSAGE_MEM_USAGE], err => {
-        if (err && rejectCallback) {
-          this._memoryUsagePromise = undefined;
-          this._resolveMemoryUsage = undefined;
-
-          rejectCallback(err);
-        }
-      });
-
-      return promise;
-    }
-
-    return this._memoryUsagePromise;
+      throw new Error("STUB");
   }
 
   /**
@@ -557,14 +388,12 @@ export default class ChildProcessWorker
     } else {
       this._memoryUsageCheck = true;
       this._child.send([CHILD_MESSAGE_MEM_USAGE], err => {
-        if (err) {
-          console.error('Unable to check memory usage', err);
-        }
+          throw new Error("STUB");
       });
     }
   }
 
   isWorkerRunning(): boolean {
-    return this._child.connected && !this._child.killed;
+      throw new Error("STUB");
   }
 }

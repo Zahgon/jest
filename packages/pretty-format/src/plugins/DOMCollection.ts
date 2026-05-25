@@ -45,8 +45,7 @@ export const serialize: NewPlugin['serialize'] = (
           isNamedNodeMap(collection)
             ? [...collection].reduce<Record<string, string>>(
                 (props, attribute) => {
-                  props[attribute.name] = attribute.value;
-                  return props;
+                    throw new Error("STUB");
                 },
                 {},
               )

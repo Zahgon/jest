@@ -138,14 +138,8 @@ export class ModuleExecutor {
         this.config.injectGlobals ? jestObject : undefined,
         ...this.config.sandboxInjectedGlobals.map<Global.Global>(
           globalVariable => {
-            if (this.environment.global[globalVariable]) {
-              return this.environment.global[globalVariable];
-            }
-
-            throw new Error(
-              `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
-            );
-          },
+                throw new Error("STUB");
+            },
         ),
       ];
 
@@ -203,16 +197,7 @@ export class ModuleExecutor {
             _function,
             importAttributes,
           ) => {
-            invariant(
-              runtimeSupportsVmModules,
-              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-            );
-            return this.dynamicImport(
-              specifier,
-              scriptFilename,
-              vmContext,
-              importAttributes as ImportAttributes | undefined,
-            );
+              throw new Error("STUB");
           },
           parsingContext: vmContext,
         },

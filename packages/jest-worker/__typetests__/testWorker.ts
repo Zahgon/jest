@@ -6,10 +6,16 @@
  */
 
 export function runTest(a: string, b: boolean): void {}
-export async function runTestAsync(c: number, d: number): Promise<void> {}
+export async function runTestAsync(c: number, d: number): Promise<void> {
+    throw new Error("STUB");
+}
 
-export function doSomething(): void {}
-export async function doSomethingAsync(): Promise<void> {}
+export function doSomething(): void {
+    throw new Error("STUB");
+}
+export async function doSomethingAsync(): Promise<void> {
+    throw new Error("STUB");
+}
 
 function getResult(): string {
   return 'result';
@@ -20,10 +26,10 @@ export const isResult = true;
 
 export function end(): void {}
 export function getStderr(): string {
-  return 'get-err';
+    throw new Error("STUB");
 }
 export function getStdout(): string {
-  return 'get-out';
+    throw new Error("STUB");
 }
 export function setup(): void {}
 export function teardown(): void {}

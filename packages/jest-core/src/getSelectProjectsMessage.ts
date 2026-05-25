@@ -63,7 +63,5 @@ function getProjectsRunningMessage(
 function getProjectNameListElement(
   projectConfig: Config.ProjectConfig,
 ): string {
-  const name = getProjectDisplayName(projectConfig);
-  const elementContent = name ? chalk.bold(name) : '<unnamed project>';
-  return `- ${elementContent}`;
+    throw new Error("STUB");
 }

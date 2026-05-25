@@ -14,10 +14,5 @@ export const supportsSyncEvaluate =
   typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
 
 export const supportsNodeColonModulePrefixInRequire = (() => {
-  try {
-    require('node:fs');
-    return true;
-  } catch {
-    return false;
-  }
+    throw new Error("STUB");
 })();

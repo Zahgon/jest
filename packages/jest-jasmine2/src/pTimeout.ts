@@ -14,17 +14,5 @@ export default function pTimeout(
   setTimeout: (typeof globalThis)['setTimeout'],
   onTimeout: () => void,
 ): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => resolve(onTimeout()), ms);
-    promise.then(
-      val => {
-        clearTimeout(timer);
-        resolve(val);
-      },
-      error => {
-        clearTimeout(timer);
-        reject(error);
-      },
-    );
-  });
+    throw new Error("STUB");
 }

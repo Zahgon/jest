@@ -33,7 +33,7 @@ const getPropKeys = (object: ReactTestObject) => {
 
   return props
     ? Object.keys(props)
-        .filter(key => props[key] !== undefined)
+        .filter(key => { throw new Error("STUB"); })
         .sort()
     : [];
 };

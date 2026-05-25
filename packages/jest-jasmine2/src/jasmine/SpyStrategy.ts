@@ -43,63 +43,13 @@ export default class SpyStrategy {
 
   constructor({
     name = 'unknown',
-    fn = function () {},
-    getSpy = function () {},
+    fn = function () {
+        throw new Error("STUB");
+    },
+    getSpy = function () {
+        throw new Error("STUB");
+    },
   }: {name?: string; fn?: Function; getSpy?: () => unknown} = {}) {
-    const identity = name;
-    const originalFn = fn;
-    let plan: Function = function () {};
-
-    this.identity = function () {
-      return identity;
-    };
-
-    this.exec = function () {
-      return plan.apply(this, arguments);
-    };
-
-    this.callThrough = function () {
-      plan = originalFn;
-      return getSpy();
-    };
-
-    this.returnValue = function (value) {
-      plan = function () {
-        return value;
-      };
-      return getSpy();
-    };
-
-    this.returnValues = function () {
-      const values = Array.prototype.slice.call(arguments);
-      plan = function () {
-        return values.shift();
-      };
-      return getSpy();
-    };
-
-    this.throwError = function (something) {
-      const error =
-        something instanceof Error ? something : new Error(something);
-      plan = function () {
-        throw error;
-      };
-      return getSpy();
-    };
-
-    this.callFake = function (fn) {
-      if (typeof fn !== 'function') {
-        throw new TypeError(
-          `Argument passed to callFake should be a function, got ${fn}`,
-        );
-      }
-      plan = fn;
-      return getSpy();
-    };
-
-    this.stub = function (_fn) {
-      plan = function () {};
-      return getSpy();
-    };
+      throw new Error("STUB");
   }
 }

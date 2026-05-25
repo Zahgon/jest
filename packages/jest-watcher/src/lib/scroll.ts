@@ -11,23 +11,5 @@ export default function scroll(
   size: number,
   {offset, max}: ScrollOptions,
 ): {end: number; index: number; start: number} {
-  let start = 0;
-  let index = Math.min(offset, size);
-
-  const halfScreen = max / 2;
-
-  if (index <= halfScreen) {
-    start = 0;
-  } else {
-    if (size >= max) {
-      start = Math.min(index - halfScreen - 1, size - max);
-    }
-    index = Math.min(index - start, size);
-  }
-
-  return {
-    end: Math.min(size, start + max),
-    index,
-    start,
-  };
+    throw new Error("STUB");
 }

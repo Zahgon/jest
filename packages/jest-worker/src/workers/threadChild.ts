@@ -45,54 +45,7 @@ let initialized = false;
  * non-zero exit code.
  */
 const messageListener = (request: any) => {
-  switch (request[0]) {
-    case CHILD_MESSAGE_INITIALIZE:
-      const init: ChildMessageInitialize = request;
-      file = init[2];
-      setupArgs = init[3];
-      process.env.JEST_WORKER_ID = init[4];
-      break;
-
-    case CHILD_MESSAGE_CALL:
-      const call: ChildMessageCall = request;
-      execMethod(call[2], call[3]);
-      break;
-
-    case CHILD_MESSAGE_END:
-      end();
-      break;
-
-    case CHILD_MESSAGE_MEM_USAGE:
-      reportMemoryUsage();
-      break;
-
-    case CHILD_MESSAGE_CALL_SETUP:
-      if (initialized) {
-        reportSuccess(void 0);
-      } else {
-        const main = require(file!);
-
-        initialized = true;
-
-        if (main.setup) {
-          execFunction(
-            main.setup,
-            main,
-            setupArgs,
-            reportSuccess,
-            reportInitializeError,
-          );
-        } else {
-          reportSuccess(void 0);
-        }
-      }
-      break;
-
-    default:
-      throw new TypeError(
-        `Unexpected request from parent process: ${request[0]}`,
-      );
-  }
+    throw new Error("STUB");
 };
 parentPort!.on('message', messageListener);
 
@@ -139,7 +92,7 @@ function reportClientError(error: Error) {
 }
 
 function reportInitializeError(error: Error) {
-  return reportError(error, PARENT_MESSAGE_SETUP_ERROR);
+    throw new Error("STUB");
 }
 
 function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {

@@ -22,11 +22,9 @@ export function syntheticFromExports(
 ): SyntheticModule {
   const entries = Object.entries(exportsObject);
   return new SyntheticModule(
-    entries.map(([key]) => key),
+    entries.map(([key]) => { throw new Error("STUB"); }),
     function () {
-      for (const [key, value] of entries) {
-        this.setExport(key, value);
-      }
+        throw new Error("STUB");
     },
     {context, identifier},
   );
@@ -42,8 +40,7 @@ export function buildJsonSyntheticModule(
   return new SyntheticModule(
     ['default'],
     function () {
-      const obj = JSON.parse(jsonText);
-      this.setExport('default', obj);
+        throw new Error("STUB");
     },
     {context, identifier},
   );
@@ -62,22 +59,9 @@ export function buildWasmSyntheticModule(
   const imports = WebAssembly.Module.imports(wasmModule);
 
   return new SyntheticModule(
-    exports.map(({name}) => name),
+    exports.map(({name}) => { throw new Error("STUB"); }),
     function () {
-      const importsObject: WebAssembly.Imports = {};
-      for (const {module: depSpec, name} of imports) {
-        if (!importsObject[depSpec]) {
-          importsObject[depSpec] = {};
-        }
-        const namespace = getDepNamespace(depSpec);
-        importsObject[depSpec][name] = namespace[
-          name
-        ] as WebAssembly.ImportValue;
-      }
-      const wasmInstance = new WebAssembly.Instance(wasmModule, importsObject);
-      for (const {name} of exports) {
-        this.setExport(name, wasmInstance.exports[name]);
-      }
+        throw new Error("STUB");
     },
     {context, identifier},
   );
@@ -126,24 +110,13 @@ export function buildCjsAsEsmSyntheticModule(
   ]);
 
   const cjsExports = [...allCandidates].filter(exportName => {
-    // `default` is handled separately below as the whole module.exports.
-    if (exportName === 'default' || cjsRecord == null) {
-      return false;
-    }
-    return Object.hasOwn(cjsRecord, exportName);
+      throw new Error("STUB");
   });
 
   return new SyntheticModule(
     [...cjsExports, 'default'],
     function () {
-      if (cjsRecord != null) {
-        for (const exportName of cjsExports) {
-          this.setExport(exportName, Reflect.get(cjsRecord, exportName));
-        }
-      }
-      // module.exports is the ESM default, matching Node's CJS-from-ESM behavior.
-      // __esModule is not honored — see Node docs on named exports from CJS.
-      this.setExport('default', cjs);
+        throw new Error("STUB");
     },
     {context, identifier: modulePath},
   );
@@ -178,7 +151,7 @@ async function evaluateSyntheticModuleAsync(
   module: SyntheticModule,
 ): Promise<SyntheticModule> {
   await module.link(() => {
-    throw new Error('This should never happen');
+      throw new Error("STUB");
   });
 
   await module.evaluate();

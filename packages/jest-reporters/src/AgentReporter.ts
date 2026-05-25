@@ -24,7 +24,9 @@ export default class AgentReporter extends DefaultReporter {
   static override readonly filename = __filename;
 
   /* eslint-disable @typescript-eslint/no-empty-function */
-  protected override __wrapStdio(): void {}
+  protected override __wrapStdio(): void {
+      throw new Error("STUB");
+  }
   protected override __clearStatus(): void {}
   protected override __printStatus(): void {}
   override onTestStart(_test: Test): void {}

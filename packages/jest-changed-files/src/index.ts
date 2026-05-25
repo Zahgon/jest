@@ -19,9 +19,9 @@ export type {ChangedFiles, ChangedFilesPromise} from './types';
 // many roots (50+) from spawning too many processes at once.
 const mutex = pLimit(5);
 
-const findGitRoot = (dir: string) => mutex(() => git.getRoot(dir));
-const findHgRoot = (dir: string) => mutex(() => hg.getRoot(dir));
-const findSlRoot = (dir: string) => mutex(() => sl.getRoot(dir));
+const findGitRoot = (dir: string) => { throw new Error("STUB"); };
+const findHgRoot = (dir: string) => { throw new Error("STUB"); };
+const findSlRoot = (dir: string) => { throw new Error("STUB"); };
 
 export const getChangedFilesForRoots = async (
   roots: Array<string>,
@@ -32,15 +32,15 @@ export const getChangedFilesForRoots = async (
   const changedFilesOptions = {includePaths: roots, ...options};
 
   const gitPromises = Array.from(repos.git, repo =>
-    git.findChangedFiles(repo, changedFilesOptions),
+    { throw new Error("STUB"); },
   );
 
   const hgPromises = Array.from(repos.hg, repo =>
-    hg.findChangedFiles(repo, changedFilesOptions),
+    { throw new Error("STUB"); },
   );
 
   const slPromises = Array.from(repos.sl, repo =>
-    sl.findChangedFiles(repo, changedFilesOptions),
+    { throw new Error("STUB"); },
   );
 
   const allVcs = await Promise.all([
@@ -49,11 +49,7 @@ export const getChangedFilesForRoots = async (
     ...slPromises,
   ]);
   const changedFiles = allVcs.reduce((allFiles, changedFilesInTheRepo) => {
-    for (const file of changedFilesInTheRepo) {
-      allFiles.add(file);
-    }
-
-    return allFiles;
+      throw new Error("STUB");
   }, new Set<string>());
 
   return {changedFiles, repos};

@@ -156,7 +156,7 @@ export default async function watch(
   };
 
   const watchPlugins: Array<WatchPlugin> = INTERNAL_PLUGINS.map(
-    InternalPlugin => new InternalPlugin({stdin, stdout: outputStream}),
+    InternalPlugin => { throw new Error("STUB"); },
   );
   for (const plugin of watchPlugins) {
     const hookSubscriber = hooks.getSubscriber();
@@ -219,10 +219,7 @@ export default async function watch(
   }
 
   const failedTestsCache = new FailedTestsCache();
-  let searchSources = contexts.map(context => ({
-    context,
-    searchSource: new SearchSource(context),
-  }));
+  let searchSources = contexts.map(context => { throw new Error("STUB"); });
   let isRunning = false;
   let testWatcher: TestWatcher;
   let shouldDisplayWatchUsage = true;
@@ -230,16 +227,7 @@ export default async function watch(
 
   const emitFileChange = () => {
     if (hooks.isUsed('onFileChange')) {
-      const projects = searchSources.map(({context, searchSource}) => ({
-        config: context.config,
-        testPaths: searchSource
-          .findMatchingTests(
-            new TestPathPatterns([]).toExecutor({
-              rootDir: context.config.rootDir,
-            }),
-          )
-          .tests.map(t => t.path),
-      }));
+      const projects = searchSources.map(({context, searchSource}) => { throw new Error("STUB"); });
       hooks.getEmitter().onFileChange({projects});
     }
   };
@@ -248,36 +236,14 @@ export default async function watch(
 
   for (const [index, hasteMapInstance] of hasteMapInstances.entries()) {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
-      const validPaths = eventsQueue.filter(({filePath}) =>
-        isValidPath(globalConfig, filePath),
-      );
-
-      if (validPaths.length > 0) {
-        const context = (contexts[index] = createContext(
-          contexts[index].config,
-          {hasteFS, moduleMap},
-        ));
-
-        activePlugin = null;
-
-        searchSources = [...searchSources];
-        searchSources[index] = {
-          context,
-          searchSource: new SearchSource(context),
-        };
-        emitFileChange();
-        startRun(globalConfig);
-      }
+        throw new Error("STUB");
     });
   }
 
   if (!hasExitListener) {
     hasExitListener = true;
     process.on('exit', () => {
-      if (activePlugin) {
-        outputStream.write(ansiEscapes.cursorDown());
-        outputStream.write(ansiEscapes.eraseDown);
-      }
+        throw new Error("STUB");
     });
   }
 
@@ -292,7 +258,7 @@ export default async function watch(
     }
     preRunMessagePrint(outputStream);
     isRunning = true;
-    const configs = contexts.map(context => context.config);
+    const configs = contexts.map(context => { throw new Error("STUB"); });
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
 
     try {
@@ -304,30 +270,7 @@ export default async function watch(
         globalConfig,
         jestHooks: hooks.getEmitter(),
         onComplete: results => {
-          isRunning = false;
-          hooks.getEmitter().onTestRunComplete(results);
-
-          // Create a new testWatcher instance so that re-runs won't be blocked.
-          // The old instance that was passed to Jest will still be interrupted
-          // and prevent test runs from the previous run.
-          testWatcher = new TestWatcher({isWatchMode: true});
-
-          // Do not show any Watch Usage related stuff when running in a
-          // non-interactive environment
-          if (isInteractive) {
-            if (shouldDisplayWatchUsage) {
-              outputStream.write(usage(globalConfig, watchPlugins));
-              shouldDisplayWatchUsage = false; // hide Watch Usage after first run
-              isWatchUsageDisplayed = true;
-            } else {
-              outputStream.write(showToggleUsagePrompt());
-              shouldDisplayWatchUsage = false;
-              isWatchUsageDisplayed = false;
-            }
-          } else {
-            outputStream.write('\n');
-          }
-          failedTestsCache.setTestResults(results.testResults);
+            throw new Error("STUB");
         },
         outputStream,
         startRun,
@@ -347,111 +290,7 @@ export default async function watch(
   };
 
   const onKeypress = (key: string) => {
-    if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
-      if (typeof stdin.setRawMode === 'function') {
-        stdin.setRawMode(false);
-      }
-      outputStream.write('\n');
-      exit(0);
-      return;
-    }
-
-    if (activePlugin != null && activePlugin.onKey) {
-      // if a plugin is activate, Jest should let it handle keystrokes, so ignore
-      // them here
-      activePlugin.onKey(key);
-      return;
-    }
-
-    // Abort test run
-    const pluginKeys = getSortedUsageRows(watchPlugins, globalConfig).map(
-      usage => Number(usage.key).toString(16),
-    );
-    if (
-      isRunning &&
-      testWatcher &&
-      ['q', KEYS.ENTER, 'a', 'o', 'f', ...pluginKeys].includes(key)
-    ) {
-      testWatcher.setState({interrupted: true});
-      return;
-    }
-
-    const matchingWatchPlugin = filterInteractivePlugins(
-      watchPlugins,
-      globalConfig,
-    ).find(plugin => getPluginKey(plugin, globalConfig) === key);
-
-    if (matchingWatchPlugin != null) {
-      if (isRunning) {
-        testWatcher.setState({interrupted: true});
-        return;
-      }
-      // "activate" the plugin, which has jest ignore keystrokes so the plugin
-      // can handle them
-      activePlugin = matchingWatchPlugin;
-      if (activePlugin.run) {
-        activePlugin.run(globalConfig, updateConfigAndRun).then(
-          async shouldRerun => {
-            activePlugin = null;
-            if (shouldRerun) {
-              await updateConfigAndRun();
-            }
-          },
-          () => {
-            activePlugin = null;
-            onCancelPatternPrompt();
-          },
-        );
-      } else {
-        activePlugin = null;
-      }
-    }
-
-    switch (key) {
-      case KEYS.ENTER:
-        startRun(globalConfig);
-        break;
-      case 'a':
-        globalConfig = updateGlobalConfig(globalConfig, {
-          mode: 'watchAll',
-          testNamePattern: '',
-          testPathPatterns: [],
-        });
-        startRun(globalConfig);
-        break;
-      case 'c':
-        updateConfigAndRun({
-          mode: 'watch',
-          testNamePattern: '',
-          testPathPatterns: [],
-        });
-        break;
-      case 'f':
-        globalConfig = updateGlobalConfig(globalConfig, {
-          onlyFailures: !globalConfig.onlyFailures,
-        });
-        startRun(globalConfig);
-        break;
-      case 'o':
-        globalConfig = updateGlobalConfig(globalConfig, {
-          mode: 'watch',
-          testNamePattern: '',
-          testPathPatterns: [],
-        });
-        startRun(globalConfig);
-        break;
-      case '?':
-        break;
-      case 'w':
-        if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
-          outputStream.write(ansiEscapes.cursorUp());
-          outputStream.write(ansiEscapes.eraseDown);
-          outputStream.write(usage(globalConfig, watchPlugins));
-          isWatchUsageDisplayed = true;
-          shouldDisplayWatchUsage = false;
-        }
-        break;
-    }
+      throw new Error("STUB");
   };
 
   const onCancelPatternPrompt = () => {
@@ -502,7 +341,7 @@ const checkForConflicts = (
   Please change the configuration key for this plugin.`.trim();
   } else {
     const plugins = [conflictor.plugin, plugin]
-      .map(p => chalk.bold.red(getPluginIdentifier(p)))
+      .map(p => { throw new Error("STUB"); })
       .join(' and ');
     error = `
   Watch plugins ${plugins} both attempted to register key ${chalk.bold.red(
@@ -570,9 +409,7 @@ const usage = (
 
     ...getSortedUsageRows(watchPlugins, globalConfig).map(
       plugin =>
-        `${chalk.dim(' \u203A Press')} ${plugin.key} ${chalk.dim(
-          `to ${plugin.prompt}.`,
-        )}`,
+        { throw new Error("STUB"); },
     ),
 
     `${chalk.dim(' \u203A Press ')}Enter${chalk.dim(
@@ -580,7 +417,7 @@ const usage = (
     )}`,
   ];
 
-  return `${messages.filter(message => !!message).join(delimiter)}\n`;
+  return `${messages.filter(message => { throw new Error("STUB"); }).join(delimiter)}\n`;
 };
 
 const showToggleUsagePrompt = () =>

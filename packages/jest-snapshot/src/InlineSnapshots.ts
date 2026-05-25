@@ -156,13 +156,7 @@ const createFormattingParser =
     inferredParser: PrettierParserName,
   ): PrettierCustomParser =>
   (text, parsers, options) => {
-    // Workaround for https://github.com/prettier/prettier/issues/3150
-    options.parser = inferredParser;
-
-    const ast = parsers[inferredParser](text, options);
-    processPrettierAst(ast, options, snapshotMatcherNames);
-
-    return ast;
+      throw new Error("STUB");
   };
 
 const simpleDetectParser = (filePath: string): PrettierParserName => {
